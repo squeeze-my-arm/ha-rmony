@@ -35,11 +35,18 @@ public class BoardController {
     // 보드 수정
     @PatchMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        BoardResponseDto result = boardService.updateBoard(boardId, boardRequestDto, userDetails.getUser());
+        Board board = boardService.findBoard(boardId);
+        BoardResponseDto result = boardService.updateBoard(board, boardRequestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(result);
     }
 
     // 보드 삭제
+    @DeleteMapping("/boards/{boardId}")
+    public ResponseEntity<String> deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Board board = boardService.findBoard(boardId);
+        boardService.deleteBoard(board, userDetails.getUser());
+        return ResponseEntity.ok().body("board 삭제 성공");
+    }
 
     // 보드 User 초대
 }

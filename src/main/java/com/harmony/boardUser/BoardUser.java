@@ -21,6 +21,11 @@ public class BoardUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_user_id", nullable = false, updatable = false)
     private Long id;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private BoardUserEnum role;
+
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
@@ -34,9 +39,10 @@ public class BoardUser {
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
-    public BoardUser(Board board, User user) {
+    public BoardUser(Board board, User user, BoardUserEnum role) {
         this.board = board;
         this.user = user;
+        this.role = role;
     }
 
     /**
