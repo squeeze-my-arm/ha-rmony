@@ -31,7 +31,13 @@ public class BoardController {
         BoardResponseDto result = boardService.createBoard(boardRequestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(result);
     }
+
     // 보드 수정
+    @PatchMapping("/boards/{boardId}")
+    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        BoardResponseDto result = boardService.updateBoard(boardId, boardRequestDto, userDetails.getUser());
+        return ResponseEntity.status(201).body(result);
+    }
 
     // 보드 삭제
 

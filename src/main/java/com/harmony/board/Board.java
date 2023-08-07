@@ -4,6 +4,7 @@ import com.harmony.boardUser.BoardUser;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +26,7 @@ public class Board extends Timestamped {
     @Column(name = "board_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "board_title", nullable = false, unique = true)
+    @Column(name = "board_title", nullable = false)
     private String boardTitle;
 
     @Column(name = "board_color", nullable = false)
@@ -42,9 +43,11 @@ public class Board extends Timestamped {
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
-    public Board(BoardRequestDto boardRequestDto) {
-        this.boardTitle = boardRequestDto.getBoardTitle();
-        this.boardColor = boardRequestDto.getBoardColor();
+    @Builder
+    public Board(String boardTitle, String boardColor, String boardDesc) {
+        this.boardTitle = boardTitle;
+        this.boardColor = boardColor;
+        this.boardDesc = boardDesc;
     }
 
     /**
@@ -55,5 +58,9 @@ public class Board extends Timestamped {
     /**
      * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
      */
-
+    public void update(BoardRequestDto boardRequestDto) {
+        if (boardRequestDto.getBoardTitle() != null) this.boardTitle = boardRequestDto.getBoardTitle();
+        if (boardRequestDto.getBoardColor() != null) this.boardColor = boardRequestDto.getBoardColor();
+        if (boardRequestDto.getBoardDesc() != null) this.boardDesc = boardRequestDto.getBoardDesc();
+    }
 }

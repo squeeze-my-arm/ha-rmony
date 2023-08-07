@@ -6,6 +6,7 @@ import com.harmony.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,15 @@ public class BoardService {
     }
 
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
-        Board board = boardRepository.save(new Board(boardRequestDto));
+        Board board = boardRepository.save(new Board(boardRequestDto.getBoardTitle(), boardRequestDto.getBoardColor(), boardRequestDto.getBoardDesc()));
         BoardUser boardUser = boardUserRepository.save(new BoardUser(board, user));
+        return new BoardResponseDto(board);
+    }
+
+    @Transactional
+    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto, User user) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
+        board.update(boardRequestDto);
         return new BoardResponseDto(board);
     }
 }
