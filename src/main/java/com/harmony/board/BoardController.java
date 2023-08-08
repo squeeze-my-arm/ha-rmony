@@ -17,13 +17,18 @@ public class BoardController {
 
     // 보드 전체 조회
     @GetMapping("/boards")
-    public ResponseEntity<List<BoardResponseDto>> getBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<BoardResponseDto> result = boardService.getBoards(userDetails.getUser());
+    public ResponseEntity<List<BoardResponseDto>> getBoardList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<BoardResponseDto> result = boardService.getBoardList(userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
     // 보드 상세 조회
-
+    @GetMapping("/boards/{boardId}")
+    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Board board = boardService.findBoard(boardId);
+        BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
 
     // 보드 생성
     @PostMapping("/boards/create")

@@ -19,13 +19,17 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardUserRepository boardUserRepository;
 
-    public List<BoardResponseDto> getBoards(User user) {
+    public List<BoardResponseDto> getBoardList(User user) {
         List<BoardUser> boards = boardUserRepository.findAllByUser(user);
         List<Board> boardList = new ArrayList<>();
         for (BoardUser board : boards) {
             boardList.add(board.getBoard());
         }
         return boardList.stream().map(BoardResponseDto::new).toList();
+    }
+
+    public BoardResponseDto getBoard(Board board, User user) {
+        return new BoardResponseDto(board);
     }
 
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
@@ -40,7 +44,7 @@ public class BoardService {
         board.update(boardRequestDto);
         return new BoardResponseDto(board);
     }
-    
+
     @Transactional
     public void deleteBoard(Board board, User user) {
         boardRepository.delete(board);
@@ -51,4 +55,6 @@ public class BoardService {
                 new IllegalArgumentException("선택한 게시글은 존재하지 않습니다.")
         );
     }
+
+
 }
