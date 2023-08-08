@@ -48,7 +48,6 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
     /**
      * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
      */
@@ -57,4 +56,8 @@ public class Comment extends Timestamped {
     /**
      * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
      */
+    public void update(CommentRequestDto commentRequestDto) {
+        this.commentContent = commentRequestDto.getCommentContent();
+    }
+
 }

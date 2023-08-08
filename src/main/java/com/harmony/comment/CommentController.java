@@ -25,4 +25,14 @@ public class CommentController {
         return ResponseEntity.ok().body(commentResponseDto);
     }
 
+    // 댓글 수정
+    @PutMapping("/{cardid}/comments/{commentid}")
+    public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long cardid, @PathVariable Long commentid,
+                                                            @RequestBody CommentRequestDto commentRequestDto,
+                                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Comment comment = commentService.findComment(commentid);
+        CommentResponseDto commentResponseDto = commentService.updateComment(cardid, comment, commentRequestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(commentResponseDto);
+    }
+
 }
