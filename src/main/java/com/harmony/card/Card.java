@@ -87,12 +87,21 @@ public class Card extends Timestamped {
     }
     if (requestDto.getColumn() != null) {
       this.column = requestDto.getColumn();
-    }if(requestDto.getCardOrder()!=null){
-      this.cardOrder=requestDto.getCardOrder();
+    }
+    if (requestDto.getCardOrder() != null) {
+      this.cardOrder = requestDto.getCardOrder();
     }
   }
 
   public void addCardUser(CardUser cardUser) {
     this.cardUsers.add(cardUser);
+  }
+
+  public void removeCardUser(CardUser cardUser) {
+    this.cardUsers.remove(cardUser);
+  }
+
+  public void clearCardUsers() {
+    this.cardUsers.clear();
   }
 }

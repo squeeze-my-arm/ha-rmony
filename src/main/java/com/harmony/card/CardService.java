@@ -1,10 +1,12 @@
 package com.harmony.card;
 
 import com.harmony.aop.BoardUserCheck;
+import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
 import com.harmony.column.ColumnRepository;
 import com.harmony.column.Columns;
 import com.harmony.user.User;
+import com.harmony.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class CardService {
   private final CardRepository cardRepository;
   private final CardUserRepository cardUserRepository;
   private final ColumnRepository columnRepository;
+  private final UserRepository userRepository;
 
   //카드 생성
   //목록에 추가하고 그 index 에 따른 값 등록
@@ -35,10 +38,6 @@ public class CardService {
     return new CardResponseDto(card);
   }
 
-  //    CardUser cardUser = new CardUser(card, user);
-//
-//    card.addCardUser(cardUser);
-  //cardUserRepository.save(cardUser);
   //카드 수정
   @BoardUserCheck
   @Transactional
@@ -46,16 +45,37 @@ public class CardService {
       User user) {
     Card card = findCard(cardId);
     card.updateCard(requestDto);
+    //프론트에서 입력받아온 name 들, 기존 목록 비우고 새 목록의 걸 모두 추가
+    if (!requestDto.getCardUserNames().isEmpty()) {
+      card.clearCardUsers();
+      cardUserRepository.deleteAllByCard(card);
+      log.info("삭제 확인");
+      //카드유저(card id가 이거인 카드유저 모두 삭제)
+      for (String name : requestDto.getCardUserNames()) {
+        User requestUser = userRepository.findByUsername(name)
+            .orElseThrow(() -> new IllegalArgumentException("해당 아이디를 가진 유저가 없습니다."));
+        createCardUser(card, requestUser);
+        //새로운 목록의 것들 모두 등록
+      }
+      log.info("생성 반복 확인");
+    }
     return new CardResponseDto(card);
-
   }
 
   //카드 삭제
-  @BoardUserCheck
-  @Transactional
   public void deleteCard(Long boardId, Long cardId, User user) {
     cardRepository.delete(findCard(cardId));
   }
+
+  //카드유저 생성
+  @Transactional
+  public void createCardUser(Card card, User user) {
+    CardUser cardUser = new CardUser(card, user);
+
+    card.addCardUser(cardUser);
+    cardUserRepository.save(cardUser);
+  }
+
 
   private Card findCard(Long cardId) {
     return cardRepository.findById(cardId)

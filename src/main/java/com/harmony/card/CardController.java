@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,22 +30,29 @@ public class CardController {
     return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
-  //카드 수정 ->
-  @PutMapping("/boards/{boardId}/columns/cards/{cardId}")
+  //카드 수정
+  @PatchMapping("/boards/{boardId}/columns/cards/{cardId}")
   public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long boardId,
       @PathVariable Long cardId,
       @RequestBody CardRequestDto requestDto,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    CardResponseDto result = cardService.updateCard(boardId, cardId, requestDto, userDetails.getUser());
+    CardResponseDto result = cardService.updateCard(boardId, cardId, requestDto,
+        userDetails.getUser());
     return ResponseEntity.ok(result);
   }
 
   //카드 삭제
   @DeleteMapping("boards/{boardId}/columns/cards/{cardId}")
-  public ResponseEntity<String> deleteCard( @PathVariable Long boardId, @PathVariable Long cardId,
+  public ResponseEntity<String> deleteCard(@PathVariable Long boardId, @PathVariable Long cardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     cardService.deleteCard(boardId, cardId, userDetails.getUser());
     return ResponseEntity.ok("card 삭제 성공");
   }
+
+  //카드 유저 등록
+
+  //카드 유저 삭제
+
+
 }
