@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,10 +22,18 @@ public class UserService {
 
     private final JwtUtil jwtUtil;
 
-    public void signUp(SignupRequestDto signupRequestDto) {
+    public void signUp(SignupRequestDto signupRequestDto) throws SQLIntegrityConstraintViolationException {
         String username = signupRequestDto.getUsername();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
         String nickname = signupRequestDto.getNickname();
+
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("중복된 username 입니다");
+        }
+
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new SQLIntegrityConstraintViolationException("중복된 nickname 입니다");
+        }
 
         User user = new User(username, password, nickname);
 
@@ -36,7 +46,7 @@ public class UserService {
 
         User user = findUser(username);
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("로그인 실패");
+            throw new IllegalArgumentException("username 혹은 비밀번호를 확인하세요");
         }
 
         String token = jwtUtil.createToken(username);
