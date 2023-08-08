@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <title>Document</title>
     <style>
         :root {
@@ -457,6 +465,12 @@
 </div>
 </body>
 <script>
+
+    $(document).ready(function () {
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+    });
+
     let container = document.getElementById('container')
 
     toggle = () => {
@@ -479,7 +493,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/api/users/signup",
+            url: "/api/users/login",
             data: JSON.stringify({
                 username: username,
                 password: password
@@ -487,12 +501,39 @@
             contentType: "application/json",
 
             success: function (response) {
-                alert("로그인 완료!");
-                window.location.href = "http://localhost:8080/";
+                if (response === "로그인 성공") {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'center-center',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: '로그인 성공'
+                    }).then(() => {
+                        window.location.href = "http://localhost:8080/";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '로그인 실패',
+                        text: response,
+                    });
+                }
             },
             error: function (xhr) {
-                alert("로그인 실패");
-                return;
+                Swal.fire({
+                    icon: 'error',
+                    title: '로그인 실패',
+                    text: "아이디 혹은 비밀번호를 확인하세요",
+                });
             }
         })
     }
@@ -503,9 +544,12 @@
         var password = document.getElementById("signuppassword").value;
         var confirmpassword = document.getElementById("signupconfirmpassword").value;
 
-        if (username === '' || password === '' || nickname === '') {
-            alert("정보를 모두 입력해주세요");
-            return;
+        if (username === '' || password === '' || nickname === '' || confirmpassword === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: '회원가입 실패',
+                text: "회원 정보를 모두 입력해주세요"
+            });
         }
 
         // if (password !== confirmpassword) {
@@ -526,12 +570,43 @@
             contentType: "application/json",
 
             success: function (response) {
-                alert("회원가입 완료!");
-                window.location.href = "http://localhost:8080/api/users/login-page";
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 800,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: '회원가입 성공'
+                }).then(() => {
+                    window.location.href = "http://localhost:8080/api/users/login-page";
+                });
+
             },
             error: function (xhr) {
-                alert("회원가입 실패");
-                return;
+                if (xhr.responseText) {
+                    try {
+                        const responseJson = JSON.parse(xhr.responseText);
+                        const errorMessage = responseJson.message;
+                        Swal.fire({
+                            icon: 'error',
+                            title: '회원가입 실패',
+                            text: errorMessage,
+                        });
+                    } catch (e) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '회원가입 실패'
+                        });
+                    }
+                }
             }
         })
     }
