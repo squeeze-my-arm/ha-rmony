@@ -1,5 +1,6 @@
 package com.harmony.boardColumn;
 
+import com.harmony.board.Board;
 import com.harmony.user.User;
 
 import java.util.List;
@@ -29,5 +30,9 @@ public interface BoardColumnService {
     게시글 정보
     유저 정보
      */
-    void deleteBoardColumn();
+    void deleteBoardColumn(BoardColumn boardColumn, Board board);
+
+//    void deleteBoardColumn(Long id);
+
+    BoardColumn findBoardColumn(Long id);
 }

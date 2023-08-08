@@ -9,10 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 // lombok
 @Getter
@@ -43,9 +40,9 @@ public class Board extends Timestamped {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true) // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
     @OrderBy("boardColumnOrder ASC")
-    private List<BoardColumn> boardColumns = new ArrayList<>();
+    private List<BoardColumn> boardColumnList = new LinkedList<>();
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
@@ -71,14 +68,14 @@ public class Board extends Timestamped {
     }
 
     public Integer getLastBoardColumnOrder() {
-        if (boardColumns.isEmpty()) {
+        if (boardColumnList.isEmpty()) {
             return 0;
         } else {
-            return boardColumns.get(boardColumns.size() - 1).getBoardColumnOrder();
+            return boardColumnList.get(boardColumnList.size() - 1).getBoardColumnOrder();
         }
     }
 
     public void addColumnList(BoardColumn boardColumn) {
-        this.boardColumns.add(boardColumn);
+        this.boardColumnList.add(boardColumn);
     }
 }
