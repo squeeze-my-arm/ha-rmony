@@ -41,8 +41,8 @@ public class UserCheckAop {
     @Pointcut("execution(* com.harmony.comment.CommentService.updateComment(..))")
     private void updateComment() {}
 
-//    @Pointcut("execution(* com.harmony.comment.CommentService.deleteComment(..))")
-//    private void deleteComment() {}
+    @Pointcut("execution(* com.harmony.comment.CommentService.deleteComment(..))")
+    private void deleteComment() {}
 
     @Around("updateBoard() || deleteBoard()")
     public Object executePostRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -70,12 +70,12 @@ public class UserCheckAop {
         return joinPoint.proceed();
     }
 
-    @Around("updateComment()")
+    @Around("updateComment() || deleteComment()")
     public Object executeCommentRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         // Comment를 찾음
         Comment comment = (Comment) joinPoint.getArgs()[1];
 
-        // 로그인한 기록이 없다면 수행시간을 기록하지 않음
+        // 로그인한 기록
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인 한 회원의 정보

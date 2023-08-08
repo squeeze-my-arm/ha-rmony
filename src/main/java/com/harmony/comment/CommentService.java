@@ -2,9 +2,11 @@ package com.harmony.comment;
 
 import com.harmony.card.Card;
 import com.harmony.card.CardService;
+import com.harmony.common.ApiResponseDto;
 import com.harmony.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,7 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long cardid, Comment comment, CommentRequestDto commentRequestDto, User user) {
+    public CommentResponseDto updateComment(Long cardid, Comment comment, CommentRequestDto commentRequestDto) {
         // 댓글 내용 수정
         comment.update(commentRequestDto);
 
@@ -39,10 +41,19 @@ public class CommentService {
         return new CommentResponseDto(updatedComment);
     }
 
+    // 댓글 삭제
+    public ApiResponseDto deleteComment(Long cardid, Comment comment) {
+        // 댓글 삭제
+        commentRepository.delete(comment);
+
+        // card에서도 댓글 삭제 !
+
+        return new ApiResponseDto("댓글 삭제 완료", HttpStatus.OK.value());
+    }
+
     // 댓글 찾기
     public Comment findComment(Long commentid) {
         return commentRepository.findById(commentid).orElseThrow(IllegalArgumentException::new);
     }
-
 
 }
