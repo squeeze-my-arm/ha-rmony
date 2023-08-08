@@ -52,6 +52,4 @@ public class BoardController {
         boardService.deleteBoard(board, userDetails.getUser());
         return ResponseEntity.ok().body("board 삭제 성공");
     }
-
-    // 보드 User 초대
 }

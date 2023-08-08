@@ -50,7 +50,7 @@ public class UserCheckAop {
 
         if (auth.getPrincipal().getClass() == UserDetailsImpl.class) {
             // board를 create한 사람과 login한 user가 같은지 비교
-            if (!(boardUser.getUser().equals(loginUser))) {
+            if (!(boardUser.getUser().getUsername().equals(loginUser.getUsername()))) {
                 log.warn("작성자만 Board 를 수정/삭제 할 수 있습니다.");
                 throw new RejectedExecutionException();
             }
