@@ -60,4 +60,8 @@ public class Comment extends Timestamped {
         this.commentContent = commentRequestDto.getCommentContent();
     }
 
+    public void setCard(Card card) {
+        this.card = card;
+    }
+
 }

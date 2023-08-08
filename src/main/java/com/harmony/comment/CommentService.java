@@ -20,12 +20,19 @@ public class CommentService {
 
     // 댓글 작성
     public CommentResponseDto createComment(Long cardid, CommentRequestDto commentRequestDto, User user) {
+        // 해당 카드 존재 확인
         Card card = cardService.findCard(cardid);
 
+        // 댓글 생성
         Comment comment = new Comment(commentRequestDto, card, user);
 
+        // 카드에 댓글 추가
+        card.addComment(comment);
+
+        // Repository에 댓글 저장
         Comment savedComment = commentRepository.save(comment);
 
+        // CommentResponseDto에 담아서 return
         return new CommentResponseDto(savedComment);
     }
 
@@ -38,16 +45,22 @@ public class CommentService {
         // 댓글 저장
         Comment updatedComment = commentRepository.save(comment);
 
+        // CommentResponseDto에 담아서 return
         return new CommentResponseDto(updatedComment);
     }
 
     // 댓글 삭제
     public ApiResponseDto deleteComment(Long cardid, Comment comment) {
+        // 카드 존재 확인
+        Card card = cardService.findCard(cardid);
+        
         // 댓글 삭제
         commentRepository.delete(comment);
 
-        // card에서도 댓글 삭제 !
+        // 카드에 있는 댓글도 삭제
+        card.getComments().remove(comment);
 
+        // 상태코드와 메시지 반환
         return new ApiResponseDto("댓글 삭제 완료", HttpStatus.OK.value());
     }
 
