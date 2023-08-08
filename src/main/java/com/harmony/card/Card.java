@@ -1,12 +1,13 @@
 package com.harmony.card;
 
-import com.harmony.column.Columns;
+import com.harmony.boardcolumn.BoardColumn;
 import com.harmony.comment.Comment;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Card extends Timestamped {
    */
   @ManyToOne
   @JoinColumn(name = "column_id")
-  private Columns columns;
+  private BoardColumn boardColumn;
 
   @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)   // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
   @Column(name = "comments")
@@ -67,6 +68,10 @@ public class Card extends Timestamped {
   public void addComment(Comment comment) {
     this.comments.add(comment);
     comment.setCard(this);
+  }
+
+  public void setBoardColumn(BoardColumn boardColumn) {
+    this.boardColumn = boardColumn;
   }
 
 }
