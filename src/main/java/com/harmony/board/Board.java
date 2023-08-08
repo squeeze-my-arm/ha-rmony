@@ -1,5 +1,6 @@
 package com.harmony.board;
 
+import com.harmony.boardColumn.BoardColumn;
 import com.harmony.boardUser.BoardUser;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
@@ -8,7 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 // lombok
@@ -40,6 +43,9 @@ public class Board extends Timestamped {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("boardColumnOrder ASC")
+    private List<BoardColumn> boardColumns = new ArrayList<>();
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
@@ -62,5 +68,17 @@ public class Board extends Timestamped {
         if (boardRequestDto.getBoardTitle() != null) this.boardTitle = boardRequestDto.getBoardTitle();
         if (boardRequestDto.getBoardColor() != null) this.boardColor = boardRequestDto.getBoardColor();
         if (boardRequestDto.getBoardDesc() != null) this.boardDesc = boardRequestDto.getBoardDesc();
+    }
+
+    public Integer getLastBoardColumnOrder() {
+        if (boardColumns.isEmpty()) {
+            return 0;
+        } else {
+            return boardColumns.get(boardColumns.size() - 1).getBoardColumnOrder();
+        }
+    }
+
+    public void addColumnList(BoardColumn boardColumn) {
+        this.boardColumns.add(boardColumn);
     }
 }
