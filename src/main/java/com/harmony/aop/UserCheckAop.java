@@ -6,6 +6,7 @@ import com.harmony.boardUser.BoardUserEnum;
 import com.harmony.boardUser.BoardUserRepository;
 import com.harmony.security.UserDetailsImpl;
 import com.harmony.user.User;
+import java.util.concurrent.RejectedExecutionException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,8 +16,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j(topic = "UserCheckAop")
 @Aspect
@@ -35,7 +34,7 @@ public class UserCheckAop {
     }
 
     @Around("updateBoard() || deleteBoard()")
-    public Object executePostRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object executeBoardRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         // Board 받아옴
         Board board = (Board) joinPoint.getArgs()[0];
 
@@ -59,4 +58,5 @@ public class UserCheckAop {
         // 핵심기능 수행
         return joinPoint.proceed();
     }
+
 }
