@@ -27,4 +27,13 @@ public class BoardUserService {
             boardUserRepository.save(new BoardUser(board, user, BoardUserEnum.USER));
         }
     }
+
+    public void deleteBoardUser(Long boardId, User user) {
+        Board board = boardService.findBoard(boardId);
+        BoardUser boardUser = boardUserRepository.findByUserAndBoard(user, board).orElseThrow();
+        if (boardUser.getRole() == BoardUserEnum.ADMIN) {
+            throw new IllegalArgumentException("관리자는 삭제 불가능함");
+        }
+        boardUserRepository.deleteById(boardUser.getId());
+    }
 }

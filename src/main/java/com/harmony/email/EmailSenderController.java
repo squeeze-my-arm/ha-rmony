@@ -17,7 +17,7 @@ public class EmailSenderController {
     private final EmailSenderService emailSenderService;
 
     // User에게 초대링크 전송
-    @PostMapping("/boards/invited/{boardId}")
+    @PostMapping("/invited/{boardId}")
     public ResponseEntity<String> inviteUser(@PathVariable Long boardId,
                                              @RequestBody Map<String, String> invitedUser,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {

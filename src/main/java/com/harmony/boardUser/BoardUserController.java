@@ -1,9 +1,11 @@
 package com.harmony.boardUser;
 
+import com.harmony.security.UserDetailsImpl;
 import com.harmony.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +42,11 @@ public class BoardUserController {
             return new ResponseEntity<>(httpHeaders, HttpStatus.MOVED_PERMANENTLY);*/
         log.info("로그인이 필요합니다!");
         return ResponseEntity.ok().body("로그인필요함ㄴ");
+    }
+
+    @DeleteMapping("/boardUser/{boardId}")
+    public ResponseEntity<String> deleteBoardUser(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardUserService.deleteBoardUser(boardId, userDetails.getUser());
+        return ResponseEntity.ok().body("board 삭제 성공");
     }
 }

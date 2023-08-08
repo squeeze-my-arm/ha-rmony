@@ -31,7 +31,7 @@ public class BoardController {
     }
 
     // 보드 생성
-    @PostMapping("/boards/create")
+    @PostMapping("/boards")
     public ResponseEntity<BoardResponseDto> createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         BoardResponseDto result = boardService.createBoard(boardRequestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(result);
