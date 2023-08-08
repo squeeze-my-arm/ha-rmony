@@ -1,0 +1,28 @@
+package com.harmony.comment;
+
+
+import com.harmony.security.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+
+// lombok
+@RequiredArgsConstructor
+
+// spring web
+@RestController
+@RequestMapping("/api/cards")
+public class CommentController {
+
+    private final CommentService commentService;
+
+    // 댓글 작성
+    @PostMapping("/{cardid}/comments")
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long cardid, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CommentResponseDto commentResponseDto = commentService.createComment(cardid, commentRequestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(commentResponseDto);
+    }
+
+}
