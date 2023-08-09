@@ -1,38 +1,34 @@
 package com.harmony.boardColumn;
 
-import com.harmony.board.Board;
 import com.harmony.user.User;
-
-import java.util.List;
 
 public interface BoardColumnService {
 
     /*
-
+    컬럼 생성
+    생성할 컬럼 정보
+    유저 정보
      */
     BoardColumnResponseDto createBoardColumn(BoardColumnRequestDto boardColumnRequestDto, User user);
 
-    /*
-    컬럼 전체 조회
-     */
-    List<BoardColumnResponseDto> getBoardColumn();
 
     /*
     컬럼 수정
-    기존 게시글 정보
-    수정할 게시글 정보
+    수정할 컬럼 ID
+    수정할 컬럼 정보
     유저 정보
      */
-    BoardColumnResponseDto updateBoardColumn();
+    BoardColumnResponseDto updateBoardColumn(Long columnId, BoardColumnRequestDto boardColumnRequestDto, User user);
 
     /*
-    게시글 삭제
-    게시글 정보
-    유저 정보
+    컬럼 삭제
+    컬럼 ID
      */
-    void deleteBoardColumn(BoardColumn boardColumn, Board board);
+    void deleteBoardColumn(Long columnId);
 
-//    void deleteBoardColumn(Long id);
-
-    BoardColumn findBoardColumn(Long id);
+    /*
+    컬럼 찾기
+    컬럼 ID
+     */
+    BoardColumn findBoardColumn(Long columnId);
 }

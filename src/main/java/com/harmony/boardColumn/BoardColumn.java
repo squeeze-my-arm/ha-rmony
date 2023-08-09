@@ -36,15 +36,20 @@ public class BoardColumn extends Timestamped {
   @Column(name = "columns_id", nullable = false, updatable = false)
   private Long id;
 
-  @Column(name = "column_name", nullable = false)
-  private String boardColumnName;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "board_id", nullable = false, updatable = false)
-  public Board board;
 
-  @Column(name = "column_order", nullable = false)
-  private Integer boardColumnOrder;
+
+    @Column(name="board_column_name", nullable = false)
+    private String boardColumnName;
+
+    @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false, updatable = false)
+    public Board board;
+
+
+    @Column(name = "column_order", nullable = false)
+    private Integer boardColumnOrder;
+
 
     @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Card> cards = new LinkedList<>();
@@ -54,11 +59,13 @@ public class BoardColumn extends Timestamped {
         this.board = board;
         this.boardColumnName = boardColumnName;
         this.boardColumnOrder = boardColumnOrder;
+    }
 
 
+    public void update(BoardColumnRequestDto boardColumnRequestDto) {
+        if (boardColumnRequestDto.getBoardColumnName() != null) this.boardColumnName = boardColumnRequestDto.getBoardColumnName();
+        if (boardColumnRequestDto.getBoardColumnOrder() != null) this.boardColumnOrder = boardColumnRequestDto.getBoardColumnOrder();
   }
-
-
 
 
   public void addCard(Card card) {
@@ -76,5 +83,4 @@ public class BoardColumn extends Timestamped {
     public void setBoardColumnOrder(Integer boardColumnOrder) {
         this.boardColumnOrder = boardColumnOrder;
     }
-
 }

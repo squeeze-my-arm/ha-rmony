@@ -7,16 +7,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class BoardColumnServiceImpl implements BoardColumnService {
+
     private final BoardColumnRepository boardColumnRepository;
+
     private final BoardService boardService;
 
+    // 컬럼 생성
     @Override
     @Transactional
     public BoardColumnResponseDto createBoardColumn(BoardColumnRequestDto boardColumnRequestDto,
@@ -24,56 +27,66 @@ public class BoardColumnServiceImpl implements BoardColumnService {
         Board board = boardService.findBoard(boardColumnRequestDto.getBoardId());
         Integer boardColumnOrder = board.getLastBoardColumnOrder() + 1;
 
-        BoardColumn boardColumn = new BoardColumn(board, boardColumnRequestDto.getColumnName(), boardColumnOrder);
+        BoardColumn boardColumn = new BoardColumn(board, boardColumnRequestDto.getBoardColumnName(), boardColumnOrder);
         board.addColumnList(boardColumn);
 
         return new BoardColumnResponseDto(boardColumnRepository.save(boardColumn));
     }
 
-    @Override
-    public List<BoardColumnResponseDto> getBoardColumn() {
-        return null;
-    }
-
-    @Override
-    public BoardColumnResponseDto updateBoardColumn() {
-        return null;
-    }
-
+    // 컬럼 수정
     @Override
     @Transactional
-    public void deleteBoardColumn(BoardColumn boardColumn, Board board) {
-        Integer deleteOrder = boardColumn.getBoardColumnOrder();
-//        log.info(boardColumn.getId().toString());
-//        BoardColumn boardColumn = boardColumnRepository.findById(id).orElseThrow(
-//                ()-> new RuntimeException("되라 ㅜ")
-//        );
-        boardColumnRepository.delete(boardColumn);
+    public BoardColumnResponseDto updateBoardColumn(Long columnId, BoardColumnRequestDto boardColumnRequestDto, User user) {
+        BoardColumn boardColumn = findBoardColumn(columnId);
+        Board board = boardService.findBoard(boardColumn.getBoard().getId());
 
-        List<BoardColumn> remainedBoardColumns = boardColumnRepository.findByBoardId(board.getId());
-        for(BoardColumn column : remainedBoardColumns) {
-            Integer currentOrder = column.getBoardColumnOrder();
-            if(currentOrder > deleteOrder) {
-                column.setBoardColumnOrder(currentOrder-1);
+        Integer oldOrder = boardColumn.getBoardColumnOrder();
+        Integer newOrder = boardColumnRequestDto.getBoardColumnOrder();
+
+        if (newOrder != null && !newOrder.equals(oldOrder)) {
+            List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardId(board.getId());
+            if (newOrder < oldOrder) {
+                for (BoardColumn column : remainedBoardColumnList) {
+                    if (column.getBoardColumnOrder() >= newOrder && column.getBoardColumnOrder() < oldOrder) {
+                        column.setBoardColumnOrder(column.getBoardColumnOrder() + 1);
+                    }
+                }
+            } else {
+                for (BoardColumn column : remainedBoardColumnList) {
+                    if (column.getBoardColumnOrder() <= newOrder && column.getBoardColumnOrder() > oldOrder) {
+                        column.setBoardColumnOrder(column.getBoardColumnOrder() - 1);
+                    }
+                }
             }
+            remainedBoardColumnList.sort(Comparator.comparingInt(BoardColumn::getBoardColumnOrder));
         }
+        boardColumn.update(boardColumnRequestDto);
 
-//        Board loadedBoard = boardService.findBoard(board.getId()); // 영속성 컨텍스트에서 다시 로드
-//
-//        loadedBoard.getBoardColumns().stream()
-//                .filter(column -> column.getBoardColumnOrder() > deleteOrder)
-//                .forEach(column -> column.setBoardColumnOrder(column.getBoardColumnOrder() - 1));
-
-//        List<BoardColumn> columnsToUpdate = board.getBoardColumnList().stream()
-//                .filter(column -> column.getBoardColumnOrder() > deleteOrder)
-//                .toList();
-//        for (BoardColumn columnToUpdate : columnsToUpdate) {
-//            columnToUpdate.setBoardColumnOrder(columnToUpdate.getBoardColumnOrder() - 1);
-//        }
+        return new BoardColumnResponseDto(boardColumn);
     }
 
-    public BoardColumn findBoardColumn(Long id) {
-        return boardColumnRepository.findById(id).orElseThrow(()->
+    // 컬럼 삭제
+    @Override
+    @Transactional
+    public void deleteBoardColumn(Long columnId) {
+        BoardColumn boardColumn = findBoardColumn(columnId);
+        Board board = boardService.findBoard(boardColumn.getBoard().getId());
+
+        Integer deleteOrder = boardColumn.getBoardColumnOrder();
+
+        boardColumnRepository.delete(boardColumn);
+
+        List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardId(board.getId());
+        for (BoardColumn column : remainedBoardColumnList) {
+            Integer currentOrder = column.getBoardColumnOrder();
+            if (currentOrder > deleteOrder) {
+                column.setBoardColumnOrder(currentOrder - 1);
+            }
+        }
+    }
+
+    public BoardColumn findBoardColumn(Long columnId) {
+        return boardColumnRepository.findById(columnId).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 컬럼입니다."));
     }
 }
