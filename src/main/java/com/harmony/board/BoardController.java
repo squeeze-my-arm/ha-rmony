@@ -31,7 +31,7 @@ public class BoardController {
     }
 
     // 보드 생성
-    @PostMapping("/boards/create")
+    @PostMapping("/boards")
     public ResponseEntity<BoardResponseDto> createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         BoardResponseDto result = boardService.createBoard(boardRequestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(result);
@@ -52,6 +52,4 @@ public class BoardController {
         boardService.deleteBoard(board, userDetails.getUser());
         return ResponseEntity.ok().body("board 삭제 성공");
     }
-
-    // 보드 User 초대
 }
