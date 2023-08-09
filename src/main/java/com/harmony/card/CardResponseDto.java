@@ -1,6 +1,7 @@
 package com.harmony.card;
 
 
+import com.harmony.cardUser.CardUser;
 import com.harmony.comment.Comment;
 import com.harmony.comment.CommentResponseDto;
 import com.harmony.common.ApiResponseDto;

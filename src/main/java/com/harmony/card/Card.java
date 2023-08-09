@@ -1,9 +1,8 @@
 package com.harmony.card;
 
-import com.harmony.boardcolumn.BoardColumn;
+import com.harmony.boardColumn.BoardColumn;
 import com.harmony.comment.Comment;
 import com.harmony.cardUser.CardUser;
-import com.harmony.column.Columns;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
@@ -20,7 +19,6 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AccessLevel;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +34,7 @@ import java.util.List;
 @Builder
 // jpa
 @Entity
-@Table(name = "card")
+@Table(name = "cards")
 public class Card extends Timestamped {
 
   /**
@@ -74,7 +72,7 @@ public class Card extends Timestamped {
   @JoinColumn(name = "column_id")
   private BoardColumn boardColumn;
 
-  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
   private Set<CardUser> cardUsers = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)   // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
@@ -102,9 +100,6 @@ public class Card extends Timestamped {
     if (requestDto.getDesc() != null) {
       this.description = requestDto.getDesc();
     }
-    if (requestDto.getColumn() != null) {
-      this.column = requestDto.getColumn();
-    }
     if (requestDto.getCardOrder() != null) {
       this.cardOrder = requestDto.getCardOrder();
     }
@@ -113,6 +108,7 @@ public class Card extends Timestamped {
   public void addCardUser(CardUser cardUser) {
     this.cardUsers.add(cardUser);
   }
+
   public void addComment(Comment comment) {
     this.comments.add(comment);
     comment.setCard(this);

@@ -1,26 +1,14 @@
 package com.harmony.card;
 
 
-import com.harmony.boardcolumn.BoardColumnRepository;
 import com.harmony.common.ApiResponseDto;
+import com.harmony.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.harmony.security.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RequestMapping("/api")
@@ -30,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CardController {
 
     private final CardService cardService;
-    private final BoardColumnRepository boardColumnRepository;
 
     //카드 생성 body 에 ""없이 그냥 cardName 에 들어갈 값 입력하면 된다.
     @PostMapping("/boards/{boardId}/columns/{columnId}/cards")

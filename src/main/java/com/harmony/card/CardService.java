@@ -1,13 +1,13 @@
 package com.harmony.card;
 
 
-import com.harmony.boardcolumn.BoardColumn;
-import com.harmony.boardcolumn.BoardColumnRepository;
+import com.harmony.board.Board;
+import com.harmony.boardColumn.BoardColumn;
+import com.harmony.boardColumn.BoardColumnRepository;
 
 import com.harmony.aop.BoardUserCheck;
 import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
-import com.harmony.column.Columns;
 import com.harmony.user.User;
 import com.harmony.user.UserRepository;
 
@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -39,6 +41,9 @@ public class CardService {
         // 이동하는 카드 찾기
         Card card = findCard(cardid);
         log.info("cardId : " + card.getId().toString());
+        
+        // 전달받는 index는 0부터 시작하는 값을 기준으로 받아야 함
+        // 카드의 order는 0부터 시작하는 것으로 설정
 
         // 이동하는 컬럼 찾기
         BoardColumn oldcolumn = card.getBoardColumn();
@@ -80,6 +85,7 @@ public class CardService {
         BoardColumn column = boardColumnRepository.findById(columnId)
                 .orElseThrow(() -> new IllegalArgumentException("컬럼이 존재하지 않습니다."));
         Card card = Card.builder().cardname(cardName).boardColumn(column).color("BLACK").build();
+        card.setCardOrder(column.getCards().size()+1);
 
         cardRepository.save(card);
 
@@ -113,7 +119,21 @@ public class CardService {
     }
 
     //카드 삭제
+    @Transactional
     public void deleteCard(Long boardId, Long cardId, User user) {
+        Card card = findCard(cardId);
+        BoardColumn boardColumn = findBoardColumn(card.getBoardColumn().getId());
+
+        // 해당 컬럼의 카드 리스트에서 카드 지우기
+        boardColumn.removeCard(card);
+
+        // 카드 order 재정렬하기
+        List<Card> cards = boardColumn.getCards();
+        for (int i=0; i<cards.size(); i++) {
+            cards.get(i).setCardOrder(i);
+            cardRepository.save(cards.get(i));
+        }
+
         cardRepository.delete(findCard(cardId));
     }
 
