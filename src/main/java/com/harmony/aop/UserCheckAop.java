@@ -108,10 +108,13 @@ public class UserCheckAop {
         }
         log.info("AOP executeUserCheck 통과");
         // 핵심기능 수행
+        return joinPoint.proceed();
+    }
 
     @Around("updateComment() || deleteComment()")
     public Object executeCommentRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         // Comment를 찾음
+        log.info("commentid: " + joinPoint.getArgs()[1].toString());
         Comment comment = (Comment) joinPoint.getArgs()[1];
 
         // 로그인한 기록
@@ -120,15 +123,14 @@ public class UserCheckAop {
         // 로그인 한 회원의 정보
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         User loginUser = userDetails.getUser();
+        log.info(loginUser.getUsername());
 
         if (auth.getPrincipal().getClass() == UserDetailsImpl.class) {
-            if (!(comment.getUser().equals(loginUser))) {
+            if (!(comment.getUser().getUsername().equals(loginUser.getUsername()))) {  // unique 값인 username으로 비교
                 log.warn("작성자만 수정/삭제할 수 있습니다");
                 return ResponseEntity.badRequest().body(new ApiResponseDto("작성자만 수정/삭제할 수 있습니다", HttpStatus.BAD_REQUEST.value()));
             }
         }
-
-
         return joinPoint.proceed();
     }
 

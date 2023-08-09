@@ -1,10 +1,6 @@
 package com.harmony.card;
 
 
-import com.harmony.board.Board;
-import com.harmony.boardColumn.BoardColumn;
-import com.harmony.boardColumn.BoardColumnRepository;
-
 import com.harmony.aop.BoardUserCheck;
 import com.harmony.boardColumn.BoardColumn;
 import com.harmony.boardColumn.BoardColumnRepository;
@@ -13,13 +9,13 @@ import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
 import com.harmony.user.User;
 import com.harmony.user.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.concurrent.RejectedExecutionException;
+
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @Slf4j
@@ -29,8 +25,8 @@ public class CardService {
     private final CardRepository cardRepository;
     private final CardUserRepository cardUserRepository;
     private final BoardColumnRepository boardColumnRepository;
-    private final UserRepository userRepository;;
-    private final BoardColumnRepository boardColumnRepository;
+    private final UserRepository userRepository;
+    private final BoardUserRepository boardUserRepository;
 
     public CardResponseDto getOneCard(Long cardid) {
         log.info("조회 하기");

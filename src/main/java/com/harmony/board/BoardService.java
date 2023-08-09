@@ -20,12 +20,18 @@ public class BoardService {
   private final BoardUserRepository boardUserRepository;
 
   public List<BoardResponseDto> getBoardList(User user) {
-    List<BoardUser> boards = boardUserRepository.findAllByUser(user);
-    List<Board> boardList = new ArrayList<>();
-    for (BoardUser board : boards) {
-      boardList.add(board.getBoard());
-    }
-    return boardList.stream().map(BoardResponseDto::new).toList();
+    List<Long> idList = boardUserRepository.findAllByUser(user).stream().map(BoardUser::getBoard).map(Board::getId).toList();
+    log.info("id 목록 뽑아오기");
+    return boardRepository.findAllById(idList).stream().map(BoardResponseDto::new).toList();
+
+    /*  List<BoardUser> boards = boardUserRepository.findAllByUser(user);
+        List<Board> boardList = new ArrayList<>();
+
+        for (BoardUser board : boards) {
+          boardList.add(board.getBoard());
+        }
+
+        return boardList.stream().map(BoardResponseDto::new).toList(); */
   }
 
   public BoardResponseDto getBoard(Board board, User user) {

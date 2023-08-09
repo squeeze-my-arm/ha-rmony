@@ -40,10 +40,7 @@ public class Board extends Timestamped {
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
-
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
-
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)    // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
     @OrderBy("boardColumnOrder ASC")
     private List<BoardColumn> boardColumnList = new LinkedList<>();
 
