@@ -18,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name="cards")
 public class Card extends Timestamped {
+
   /**
    * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
    */
@@ -29,17 +30,17 @@ public class Card extends Timestamped {
   @Column(name="card_name", nullable = false, unique = true, length = 25)
   private String cardname;
 
-  @Column(name="card_desc", nullable = false)
+  @Column(name="card_desc")
   private String description;
 
-  @Column(name="card_color", nullable = false)
+  @Column(name="card_color")
   private String color;
 
   @Column(name="deadline")
   private String deadline;
 
   @Column(name="card_order")
-  private Long cardOrder;
+  private Integer cardOrder;
 
   /**
    * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
@@ -53,9 +54,9 @@ public class Card extends Timestamped {
   @JoinColumn(name = "column_id")
   private BoardColumn boardColumn;
 
-  @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)   // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
+  @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)   // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
   @Column(name = "comments")
-  private List<Comment> comments = new ArrayList<>();;
+  List<Comment> comments = new ArrayList<>();;
 
   /**
    * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
@@ -74,4 +75,7 @@ public class Card extends Timestamped {
     this.boardColumn = boardColumn;
   }
 
+  public void setCardOrder(Integer order) {
+    this.cardOrder = order;
+  }
 }

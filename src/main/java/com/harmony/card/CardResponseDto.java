@@ -19,6 +19,7 @@ public class CardResponseDto extends ApiResponseDto {
     private String cardDesc;
     private LocalDateTime createdAt;
     private String deadline;
+    private Integer cardOrder;
     // 담당자 (책임자)
     // private String cardUser;
     private List<CommentResponseDto> commentList = new ArrayList<>();
@@ -30,8 +31,11 @@ public class CardResponseDto extends ApiResponseDto {
         this.cardDesc = card.getDescription();
         this.createdAt = card.getCreatedAt();
         this.deadline = card.getDeadline();
-        for (Comment comment: card.getComments()) {
-            this.commentList.add(new CommentResponseDto(comment));
+
+        if (card.getComments().size() > 0) {
+            for (Comment comment: card.getComments()) {
+                this.commentList.add(new CommentResponseDto(comment));
+            }
         }
     }
 

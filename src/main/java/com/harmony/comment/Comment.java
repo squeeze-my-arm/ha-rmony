@@ -5,12 +5,13 @@ import com.harmony.card.Card;
 import com.harmony.common.Timestamped;
 import com.harmony.user.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 // lombok
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 // jpa
 @Entity
@@ -40,12 +41,12 @@ public class Comment extends Timestamped {
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "card_id")
     private Card card;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     /**
@@ -59,7 +60,7 @@ public class Comment extends Timestamped {
     public void update(CommentRequestDto commentRequestDto) {
         this.commentContent = commentRequestDto.getCommentContent();
     }
-
+    
     public void setCard(Card card) {
         this.card = card;
     }
