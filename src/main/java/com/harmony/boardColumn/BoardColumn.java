@@ -44,4 +44,8 @@ public class BoardColumn extends Timestamped {
     public void setBoardColumnOrder(Integer boardColumnOrder) {
         this.boardColumnOrder = boardColumnOrder;
     }
+
+    public void setBoardColumnName(String boardColumnName) {
+        this.boardColumnName = boardColumnName;
+    }
 }
