@@ -10,5 +10,7 @@ public class BoardColumnRequestDto {
 
     private Long boardId;
 
-    private String columnName;
+    private String boardColumnName;
+
+    private Integer boardColumnOrder;
 }

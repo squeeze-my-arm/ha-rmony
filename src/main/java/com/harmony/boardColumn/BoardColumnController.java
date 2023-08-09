@@ -15,24 +15,35 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class BoardColumnController {
 
-    private final BoardColumnRepository boardColumnRepository;
     private final BoardColumnServiceImpl boardColumnService;
     private final BoardService boardService;
 
     // 컬럼 생성
     // 하이픈 사용 유무 체크
     @PostMapping("/board-columns")
-    public ResponseEntity<BoardColumnResponseDto> createPost(@RequestBody BoardColumnRequestDto boardColumnRequestDto,
+    public ResponseEntity<BoardColumnResponseDto> createBoardColumn(@RequestBody BoardColumnRequestDto boardColumnRequestDto,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         BoardColumnResponseDto boardColumn = boardColumnService.createBoardColumn(boardColumnRequestDto, userDetails.getUser());
         return ResponseEntity.status(201).body(boardColumn);
     }
 
+    // 컬럼 수정
+    @PutMapping("/board-columns/{columnId}")
+    public ResponseEntity<BoardColumnResponseDto> updateBoardColumn(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                        @RequestBody BoardColumnRequestDto boardColumnRequestDto,
+                                                        @PathVariable Long columnId) {
+
+            BoardColumn boardColumn = boardColumnService.findBoardColumn(columnId);
+            BoardColumnResponseDto responseDto = boardColumnService.updateBoardColumn(boardColumn, boardColumnRequestDto, userDetails.getUser());
+            return ResponseEntity.ok().body(responseDto);
+
+    }
+
     // 컬럼 삭제
-    @DeleteMapping("/board-columns/{id}")
+    @DeleteMapping("/board-columns/{columnId}")
     public ResponseEntity<String> deleteBoardColumn(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                    @PathVariable Long id) {
-            BoardColumn boardColumn = boardColumnService.findBoardColumn(id);
+                                                    @PathVariable Long columnId) {
+            BoardColumn boardColumn = boardColumnService.findBoardColumn(columnId);
 //            log.info(boardColumn.getBoardColumnName());
             Board board = boardService.findBoard(boardColumn.getBoard().getId());
 //            log.info(board.getBoardTitle());
@@ -40,5 +51,6 @@ public class BoardColumnController {
 //            boardColumnRepository.deleteById(boardColumn.getId());
             return ResponseEntity.ok().body("컬럼이 삭제 되었습니다.");
     }
+
 }
 

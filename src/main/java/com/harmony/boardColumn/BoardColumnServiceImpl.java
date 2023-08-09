@@ -24,20 +24,22 @@ public class BoardColumnServiceImpl implements BoardColumnService {
         Board board = boardService.findBoard(boardColumnRequestDto.getBoardId());
         Integer boardColumnOrder = board.getLastBoardColumnOrder() + 1;
 
-        BoardColumn boardColumn = new BoardColumn(board, boardColumnRequestDto.getColumnName(), boardColumnOrder);
+        BoardColumn boardColumn = new BoardColumn(board, boardColumnRequestDto.getBoardColumnName(), boardColumnOrder);
         board.addColumnList(boardColumn);
 
         return new BoardColumnResponseDto(boardColumnRepository.save(boardColumn));
     }
 
     @Override
-    public List<BoardColumnResponseDto> getBoardColumn() {
-        return null;
-    }
+    @Transactional
+    public BoardColumnResponseDto updateBoardColumn(BoardColumn boardColumn, BoardColumnRequestDto boardColumnRequestDto, User user) {
 
-    @Override
-    public BoardColumnResponseDto updateBoardColumn() {
-        return null;
+        boardColumn.update(boardColumnRequestDto);
+//        if (boardColumnRequestDto.getBoardColumnOrder()!=null) {
+//
+//        }
+//        boardColumnRepository.save(boardColumn); // 이게 왜 있어야 하는가?
+        return new BoardColumnResponseDto(boardColumn);
     }
 
     @Override
@@ -72,8 +74,8 @@ public class BoardColumnServiceImpl implements BoardColumnService {
 //        }
     }
 
-    public BoardColumn findBoardColumn(Long id) {
-        return boardColumnRepository.findById(id).orElseThrow(()->
+    public BoardColumn findBoardColumn(Long columnId) {
+        return boardColumnRepository.findById(columnId).orElseThrow(()->
                 new IllegalArgumentException("존재하지 않는 컬럼입니다."));
     }
 }

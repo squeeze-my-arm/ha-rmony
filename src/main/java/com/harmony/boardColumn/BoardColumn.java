@@ -19,10 +19,10 @@ public class BoardColumn extends Timestamped {
     @Column(name="columns_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name="column_name", nullable = false)
+    @Column(name="board_column_name", nullable = false)
     private String boardColumnName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "board_id", nullable = false, updatable = false)
     public Board board;
 
@@ -34,10 +34,18 @@ public class BoardColumn extends Timestamped {
         this.board = board;
         this.boardColumnName = boardColumnName;
         this.boardColumnOrder = boardColumnOrder;
+    }
 
+    public void update(BoardColumnRequestDto boardColumnRequestDto) {
+        if (boardColumnRequestDto.getBoardColumnName() != null) this.boardColumnName = boardColumnRequestDto.getBoardColumnName();
+        if (boardColumnRequestDto.getBoardColumnOrder() != null) this.boardColumnOrder = boardColumnRequestDto.getBoardColumnOrder();
     }
 
     public void setBoardColumnOrder(Integer boardColumnOrder) {
         this.boardColumnOrder = boardColumnOrder;
+    }
+
+    public void setBoardColumnName(String boardColumnName) {
+        this.boardColumnName = boardColumnName;
     }
 }
