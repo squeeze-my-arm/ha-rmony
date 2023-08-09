@@ -40,10 +40,12 @@ public class UserCheckAop {
     }
 
     @Pointcut("execution(* com.harmony.comment.CommentService.updateComment(..))")
-    private void updateComment() {}
+    private void updateComment() {
+    }
 
     @Pointcut("execution(* com.harmony.comment.CommentService.deleteComment(..))")
-    private void deleteComment() {}
+    private void deleteComment() {
+    }
 
     @Around("updateBoard() || deleteBoard()")
     public Object executeBoardRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -108,6 +110,8 @@ public class UserCheckAop {
         }
         log.info("AOP executeUserCheck 통과");
         // 핵심기능 수행
+        return joinPoint.proceed();
+    }
 
     @Around("updateComment() || deleteComment()")
     public Object executeCommentRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
