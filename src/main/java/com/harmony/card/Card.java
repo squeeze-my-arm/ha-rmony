@@ -1,8 +1,10 @@
 package com.harmony.card;
 
 import com.harmony.boardColumn.BoardColumn;
+import com.harmony.comment.Comment;
 import com.harmony.cardUser.CardUser;
 import com.harmony.common.Timestamped;
+import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,13 +24,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 // jpa
 @Entity
-@Table(name = "card")
+@Table(name = "cards")
 public class Card extends Timestamped {
 
   /**
@@ -51,19 +57,27 @@ public class Card extends Timestamped {
   @Column(name = "deadline")
   private LocalDate deadline;
 
-  @Column(name = "card_order")
+  @Column(name="card_order")
   private Long cardOrder;
+
+  /**
+   * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
+   */
 
   /**
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
-  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ManyToOne
+  @JoinColumn(name = "column_id")
+  private BoardColumn boardColumn;
+
+  @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
   @Builder.Default
   private Set<CardUser> cardUsers = new LinkedHashSet<>();
 
-  @ManyToOne
-  @JoinColumn(name = "columns_id")
-  private BoardColumn boardColumn;
+  @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)   // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
+  @Column(name = "comments")
+  List<Comment> comments = new ArrayList<>();;
 
   /**
    * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
@@ -95,7 +109,24 @@ public class Card extends Timestamped {
     this.cardUsers.add(cardUser);
   }
 
+  public void addComment(Comment comment) {
+    this.comments.add(comment);
+    comment.setCard(this);
+  }
+
+  public void removeCardUser(CardUser cardUser) {
+    this.cardUsers.remove(cardUser);
+  }
+
+
   public void clearCardUsers() {
     this.cardUsers.clear();
+  }
+  public void setBoardColumn(BoardColumn boardColumn) {
+    this.boardColumn = boardColumn;
+  }
+
+  public void setCardOrder(Integer order) {
+    this.cardOrder = Long.valueOf(order);
   }
 }

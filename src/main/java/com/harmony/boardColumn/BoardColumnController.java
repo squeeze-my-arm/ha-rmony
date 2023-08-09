@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class BoardColumnController {
 
-    private final BoardColumnRepository boardColumnRepository;
     private final BoardColumnServiceImpl boardColumnService;
     private final BoardService boardService;
 

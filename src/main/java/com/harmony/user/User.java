@@ -4,6 +4,7 @@ import com.harmony.boardUser.BoardUser;
 import com.harmony.cardUser.CardUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 
 // lombok
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 // jpa
 @Entity
@@ -37,11 +39,14 @@ public class User {
 
     @Column(name = "introduction")
     private String introduction;
+
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
+
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CardUser> cardUsers = new LinkedHashSet<>();

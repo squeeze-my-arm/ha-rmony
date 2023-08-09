@@ -28,13 +28,10 @@ public class Board extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id", nullable = false, updatable = false)
     private Long id;
-
     @Column(name = "board_title", nullable = false)
     private String boardTitle;
-
     @Column(name = "board_color", nullable = false)
     private String boardColor;
-
     @Column(name = "board_desc")
     private String boardDesc;
     /**
@@ -43,8 +40,10 @@ public class Board extends Timestamped {
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
+
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
+
     @OrderBy("boardColumnOrder ASC")
     private List<BoardColumn> boardColumnList = new LinkedList<>();
 
@@ -57,12 +56,9 @@ public class Board extends Timestamped {
         this.boardColor = boardColor;
         this.boardDesc = boardDesc;
     }
-
     /**
      * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
      */
-
-
     /**
      * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
      */
@@ -71,7 +67,6 @@ public class Board extends Timestamped {
         if (boardRequestDto.getBoardColor() != null) this.boardColor = boardRequestDto.getBoardColor();
         if (boardRequestDto.getBoardDesc() != null) this.boardDesc = boardRequestDto.getBoardDesc();
     }
-
     public Integer getLastBoardColumnOrder() {
         if (boardColumnList.isEmpty()) {
             return 0;
@@ -79,7 +74,6 @@ public class Board extends Timestamped {
             return boardColumnList.get(boardColumnList.size() - 1).getBoardColumnOrder();
         }
     }
-
     public void addColumnList(BoardColumn boardColumn) {
         this.boardColumnList.add(boardColumn);
     }

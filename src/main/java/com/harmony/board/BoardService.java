@@ -44,8 +44,8 @@ public class BoardService {
   @Transactional
   public BoardResponseDto updateBoard(Board board, BoardRequestDto boardRequestDto, User user) {
     board.update(boardRequestDto);
-        
-    return new BoardResponseDto(board);
+    Board savedBoard = boardRepository.save(board);
+    return new BoardResponseDto(savedBoard);
   }
 
   @Transactional

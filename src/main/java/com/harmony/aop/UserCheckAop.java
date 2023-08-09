@@ -4,6 +4,8 @@ import com.harmony.board.Board;
 import com.harmony.boardUser.BoardUser;
 import com.harmony.boardUser.BoardUserEnum;
 import com.harmony.boardUser.BoardUserRepository;
+import com.harmony.comment.Comment;
+import com.harmony.common.ApiResponseDto;
 import com.harmony.security.UserDetailsImpl;
 import com.harmony.user.User;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -34,6 +38,12 @@ public class UserCheckAop {
     @Pointcut("execution(* com.harmony.board.BoardService.deleteBoard(..))")
     private void deleteBoard() {
     }
+
+    @Pointcut("execution(* com.harmony.comment.CommentService.updateComment(..))")
+    private void updateComment() {}
+
+    @Pointcut("execution(* com.harmony.comment.CommentService.deleteComment(..))")
+    private void deleteComment() {}
 
     @Around("updateBoard() || deleteBoard()")
     public Object executeBoardRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -60,6 +70,7 @@ public class UserCheckAop {
         // 핵심기능 수행
         return joinPoint.proceed();
     }
+
 
     //로그인한 유저가 보드유저로 등록됐는지 확인
     @Around("@annotation(com.harmony.aop.BoardUserCheck)")
@@ -97,6 +108,27 @@ public class UserCheckAop {
         }
         log.info("AOP executeUserCheck 통과");
         // 핵심기능 수행
+
+    @Around("updateComment() || deleteComment()")
+    public Object executeCommentRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+        // Comment를 찾음
+        Comment comment = (Comment) joinPoint.getArgs()[1];
+
+        // 로그인한 기록
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인 한 회원의 정보
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        User loginUser = userDetails.getUser();
+
+        if (auth.getPrincipal().getClass() == UserDetailsImpl.class) {
+            if (!(comment.getUser().equals(loginUser))) {
+                log.warn("작성자만 수정/삭제할 수 있습니다");
+                return ResponseEntity.badRequest().body(new ApiResponseDto("작성자만 수정/삭제할 수 있습니다", HttpStatus.BAD_REQUEST.value()));
+            }
+        }
+
+
         return joinPoint.proceed();
     }
 
