@@ -8,6 +8,7 @@ import com.harmony.comment.Comment;
 import com.harmony.common.ApiResponseDto;
 import com.harmony.security.UserDetailsImpl;
 import com.harmony.user.User;
+import java.util.concurrent.RejectedExecutionException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,8 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j(topic = "UserCheckAop")
 @Aspect
@@ -45,7 +44,7 @@ public class UserCheckAop {
     private void deleteComment() {}
 
     @Around("updateBoard() || deleteBoard()")
-    public Object executePostRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object executeBoardRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         // Board 받아옴
         Board board = (Board) joinPoint.getArgs()[0];
 
@@ -60,7 +59,7 @@ public class UserCheckAop {
 
         if (auth.getPrincipal().getClass() == UserDetailsImpl.class) {
             // board를 create한 사람과 login한 user가 같은지 비교
-            if (!(boardUser.getUser().equals(loginUser))) {
+            if (!(boardUser.getUser().getUsername().equals(loginUser.getUsername()))) {
                 log.warn("작성자만 Board 를 수정/삭제 할 수 있습니다.");
                 throw new RejectedExecutionException();
             }
@@ -91,4 +90,5 @@ public class UserCheckAop {
 
         return joinPoint.proceed();
     }
+
 }

@@ -1,5 +1,6 @@
 package com.harmony.board;
 
+import com.harmony.boardColumn.BoardColumn;
 import com.harmony.boardUser.BoardUser;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
@@ -8,8 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 // lombok
 @Getter
@@ -37,9 +37,12 @@ public class Board extends Timestamped {
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true) // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
+    @OrderBy("boardColumnOrder ASC")
+    private List<BoardColumn> boardColumnList = new LinkedList<>();
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
@@ -62,5 +65,17 @@ public class Board extends Timestamped {
         if (boardRequestDto.getBoardTitle() != null) this.boardTitle = boardRequestDto.getBoardTitle();
         if (boardRequestDto.getBoardColor() != null) this.boardColor = boardRequestDto.getBoardColor();
         if (boardRequestDto.getBoardDesc() != null) this.boardDesc = boardRequestDto.getBoardDesc();
+    }
+
+    public Integer getLastBoardColumnOrder() {
+        if (boardColumnList.isEmpty()) {
+            return 0;
+        } else {
+            return boardColumnList.get(boardColumnList.size() - 1).getBoardColumnOrder();
+        }
+    }
+
+    public void addColumnList(BoardColumn boardColumn) {
+        this.boardColumnList.add(boardColumn);
     }
 }
