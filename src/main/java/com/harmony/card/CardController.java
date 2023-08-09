@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class CardController {
-
     private final CardService cardService;
 
     //카드 생성 body 에 ""없이 그냥 cardName 에 들어갈 값 입력하면 된다.
@@ -72,6 +71,7 @@ public class CardController {
             return ResponseEntity.badRequest().body(new ApiResponseDto("이동 실패", HttpStatus.BAD_REQUEST.value()));
         }
     }
+
 
 
 }

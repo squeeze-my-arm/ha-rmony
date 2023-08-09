@@ -64,7 +64,6 @@ public class Card extends Timestamped {
    * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
    */
 
-
   /**
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
@@ -73,6 +72,7 @@ public class Card extends Timestamped {
   private BoardColumn boardColumn;
 
   @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @Builder.Default
   private Set<CardUser> cardUsers = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)   // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
@@ -117,6 +117,7 @@ public class Card extends Timestamped {
   public void removeCardUser(CardUser cardUser) {
     this.cardUsers.remove(cardUser);
   }
+
 
   public void clearCardUsers() {
     this.cardUsers.clear();

@@ -6,6 +6,9 @@ import com.harmony.boardColumn.BoardColumn;
 import com.harmony.boardColumn.BoardColumnRepository;
 
 import com.harmony.aop.BoardUserCheck;
+import com.harmony.boardColumn.BoardColumn;
+import com.harmony.boardColumn.BoardColumnRepository;
+import com.harmony.boardUser.BoardUserRepository;
 import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
 import com.harmony.user.User;
@@ -15,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.concurrent.RejectedExecutionException;
 import java.util.List;
 
 @Service
@@ -25,6 +28,7 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final CardUserRepository cardUserRepository;
+    private final BoardColumnRepository boardColumnRepository;
     private final UserRepository userRepository;;
     private final BoardColumnRepository boardColumnRepository;
 
@@ -100,21 +104,29 @@ public class CardService {
     public CardResponseDto updateCard(Long boardId, Long cardId, CardRequestDto requestDto,
                                       User user) {
         Card card = findCard(cardId);
-        card.updateCard(requestDto);
+
+
         //프론트에서 입력받아온 name 들, 기존 목록 비우고 새 목록의 걸 모두 추가
         if (!requestDto.getCardUserNames().isEmpty()) {
+            //카드에 있는 카드유저 목록 비우기
             card.clearCardUsers();
-            cardUserRepository.deleteAllByCard(card);
-            log.info("삭제 확인");
+            //유저에 있는 카드 유저 목록 중 이 카드의 카드유저만 제거
+            user.getCardUsers().removeIf(cu -> cu.getCard().getId().equals(cardId));
             //카드유저(card id가 이거인 카드유저 모두 삭제)
+            deleteCardUser(card);
+
+            log.info("삭제 확인");
+
+            //새로운 목록의 것들 모두 등록
             for (String name : requestDto.getCardUserNames()) {
                 User requestUser = userRepository.findByUsername(name)
                         .orElseThrow(() -> new IllegalArgumentException("해당 아이디를 가진 유저가 없습니다."));
-                createCardUser(card, requestUser);
-                //새로운 목록의 것들 모두 등록
+                createCardUser(boardId, card, requestUser);
             }
             log.info("생성 반복 확인");
         }
+        card.updateCard(requestDto);
+        cardUserRepository.deleteAllByCard(card);
         return new CardResponseDto(card);
     }
 
@@ -139,13 +151,22 @@ public class CardService {
 
     //카드유저 생성
     @Transactional
-    public void createCardUser(Card card, User user) {
+    public void createCardUser(Long boardId, Card card, User user) {
+        if (!boardUserRepository.existsByUserAndBoard_Id(user, boardId)) {
+            throw new RejectedExecutionException("해당 유저는 보드에 등록되어있지 않습니다.");
+        }
         CardUser cardUser = new CardUser(card, user);
 
         card.addCardUser(cardUser);
         cardUserRepository.save(cardUser);
     }
-
+  
+    //특정 카드를 가진 카드유저 삭제
+    @Transactional
+    public void deleteCardUser(Card card) {
+        cardUserRepository.deleteAllByCard(card);
+    }
+  
     // 카드 찾기
     public Card findCard(Long cardid) {
         return cardRepository.findById(cardid).orElseThrow(IllegalArgumentException::new);
@@ -154,5 +175,6 @@ public class CardService {
     // 컬럼 찾기
     public BoardColumn findBoardColumn(Long columnid) {
         return boardColumnRepository.findById(columnid).orElseThrow(IllegalArgumentException::new);
+
     }
 }
