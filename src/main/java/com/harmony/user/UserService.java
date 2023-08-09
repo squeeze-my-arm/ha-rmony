@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,13 +24,21 @@ public class UserService {
 
   private final JwtUtil jwtUtil;
 
-  public void signUp(SignupRequestDto signupRequestDto) {
-    String username = signupRequestDto.getUsername();
-    String password = passwordEncoder.encode(signupRequestDto.getPassword());
-    String nickname = signupRequestDto.getNickname();
 
-    User user = new User(username, password, nickname);
+    public void signUp(SignupRequestDto signupRequestDto) throws SQLIntegrityConstraintViolationException {
+        String username = signupRequestDto.getUsername();
+        String password = passwordEncoder.encode(signupRequestDto.getPassword());
+        String nickname = signupRequestDto.getNickname();
 
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("중복된 username 입니다");
+        }
+
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new SQLIntegrityConstraintViolationException("중복된 nickname 입니다");
+        }
+
+        User user = new User(username, password, nickname);
     userRepository.save(user);
   }
 
@@ -50,6 +60,7 @@ public class UserService {
   public UserResponseDto updateUser(Long userId, UserUpdateRequestDto updateRequestDto,
       User loginUser) {
     User user = findUserById(userId);
+
 
     user.updateUser(updateRequestDto.getUsername(),
         passwordEncoder.encode(updateRequestDto.getPassword()),

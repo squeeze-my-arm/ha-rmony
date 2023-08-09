@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -21,20 +23,30 @@ public class UserController {
 
   private final UserService userService;
 
-  // 회원가입
-  @PostMapping("/signup")
-  public ResponseEntity<String> signUp(@RequestBody SignupRequestDto signupRequestDto) {
-    userService.signUp(signupRequestDto);
-    return ResponseEntity.ok().body("회원가입 성공");
-  }
+    // 회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody SignupRequestDto signupRequestDto) {
+        try {
+            userService.signUp(signupRequestDto);
+            return ResponseEntity.ok().body("회원가입 성공");
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            return ResponseEntity.badRequest().body("{\"message\": \"" + ex.getMessage() + "\"}");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"" + e.getMessage() + "\"}");
+        }
 
-  // 로그인
-  @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto,
-      HttpServletResponse res) {
-    userService.login(loginRequestDto, res);
-    return ResponseEntity.ok().body("로그인 성공");
-  }
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res) {
+        userService.login(loginRequestDto, res);
+        try {
+            return ResponseEntity.ok().body("로그인 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
   // 로그아웃
 
