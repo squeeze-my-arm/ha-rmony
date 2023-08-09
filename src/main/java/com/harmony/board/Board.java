@@ -9,7 +9,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 // lombok
 @Getter
@@ -37,12 +40,14 @@ public class Board extends Timestamped {
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true) // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
     @OrderBy("boardColumnOrder ASC")
     private List<BoardColumn> boardColumnList = new LinkedList<>();
+
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */

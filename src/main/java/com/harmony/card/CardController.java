@@ -21,7 +21,7 @@ public class CardController {
   private final CardService cardService;
 
   //카드 생성 body 에 ""없이 그냥 cardName 에 들어갈 값 입력하면 된다.
-  @PostMapping("/boards/{boardId}/columns/{columnId}/cards")
+  @PostMapping("/boards/{boardId}/board-columns/{columnId}/cards")
   public ResponseEntity<CardResponseDto> createCard(@PathVariable Long boardId,
       @PathVariable Long columnId, @RequestBody String cardName,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -30,8 +30,8 @@ public class CardController {
     return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
-  //카드 수정
-  @PatchMapping("/boards/{boardId}/columns/cards/{cardId}")
+  //카드 수정(컬럼 이동 제외)
+  @PatchMapping("/boards/{boardId}/board-columns/cards/{cardId}")
   public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long boardId,
       @PathVariable Long cardId,
       @RequestBody CardRequestDto requestDto,
@@ -43,16 +43,10 @@ public class CardController {
   }
 
   //카드 삭제
-  @DeleteMapping("boards/{boardId}/columns/cards/{cardId}")
+  @DeleteMapping("boards/{boardId}/board-columns/cards/{cardId}")
   public ResponseEntity<String> deleteCard(@PathVariable Long boardId, @PathVariable Long cardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     cardService.deleteCard(boardId, cardId, userDetails.getUser());
     return ResponseEntity.ok("card 삭제 성공");
   }
-
-  //카드 유저 등록
-
-  //카드 유저 삭제
-
-
 }

@@ -1,6 +1,5 @@
 package com.harmony.card;
 
-import com.harmony.column.Columns;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,6 +17,5 @@ public class CardRequestDto {
   private LocalDate deadline;
   private Long cardOrder;
   private Set<String> cardUserNames = new LinkedHashSet<>();
-  private Columns column;
 
 }

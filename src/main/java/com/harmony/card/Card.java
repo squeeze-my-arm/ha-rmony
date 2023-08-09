@@ -1,7 +1,7 @@
 package com.harmony.card;
 
+import com.harmony.boardColumn.BoardColumn;
 import com.harmony.cardUser.CardUser;
-import com.harmony.column.Columns;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,11 +58,12 @@ public class Card extends Timestamped {
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
   @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Builder.Default
   private Set<CardUser> cardUsers = new LinkedHashSet<>();
 
   @ManyToOne
-  @JoinColumn(name = "column_id")
-  private Columns column;
+  @JoinColumn(name = "columns_id")
+  private BoardColumn boardColumn;
 
   /**
    * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
@@ -85,9 +86,6 @@ public class Card extends Timestamped {
     if (requestDto.getDesc() != null) {
       this.description = requestDto.getDesc();
     }
-    if (requestDto.getColumn() != null) {
-      this.column = requestDto.getColumn();
-    }
     if (requestDto.getCardOrder() != null) {
       this.cardOrder = requestDto.getCardOrder();
     }
@@ -95,10 +93,6 @@ public class Card extends Timestamped {
 
   public void addCardUser(CardUser cardUser) {
     this.cardUsers.add(cardUser);
-  }
-
-  public void removeCardUser(CardUser cardUser) {
-    this.cardUsers.remove(cardUser);
   }
 
   public void clearCardUsers() {
