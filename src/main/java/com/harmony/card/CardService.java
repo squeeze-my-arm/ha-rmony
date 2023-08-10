@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 @Service
@@ -27,7 +25,6 @@ public class CardService {
     private final BoardColumnRepository boardColumnRepository;
     private final UserRepository userRepository;
     private final BoardUserRepository boardUserRepository;
-
 
     public CardResponseDto getOneCard(Long cardid) {
         log.info("조회 하기");

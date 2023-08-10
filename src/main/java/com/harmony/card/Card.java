@@ -1,17 +1,14 @@
 package com.harmony.card;
 
 import com.harmony.boardColumn.BoardColumn;
-import com.harmony.cardUser.CardUser;
 import com.harmony.comment.Comment;
+import com.harmony.cardUser.CardUser;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -60,8 +57,8 @@ public class Card extends Timestamped {
     @Builder.Default
     private Set<CardUser> cardUsers = new LinkedHashSet<>();
 
+  // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
     @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
     @Column(name = "comments")
     @Builder.Default
     List<Comment> comments = new ArrayList<>();
