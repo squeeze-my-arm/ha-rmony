@@ -40,10 +40,12 @@ public class UserCheckAop {
     }
 
     @Pointcut("execution(* com.harmony.comment.CommentService.updateComment(..))")
-    private void updateComment() {}
+    private void updateComment() {
+    }
 
     @Pointcut("execution(* com.harmony.comment.CommentService.deleteComment(..))")
-    private void deleteComment() {}
+    private void deleteComment() {
+    }
 
     @Around("updateBoard() || deleteBoard()")
     public Object executeBoardRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -102,12 +104,14 @@ public class UserCheckAop {
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         User loginUser = userDetails.getUser();
         //로그인한 유저가 수정할 유저의 아이디와 일치하나?
-        Long pathUserId = (Long) joinPoint.getArgs()[0];
-        if (!loginUser.getId().equals(pathUserId)) {
+        User pathUserId = (User) joinPoint.getArgs()[0];
+        if (!loginUser.getUsername().equals(pathUserId.getUsername())) {
             throw new RejectedExecutionException("본인의 유저 정보가 아닙니다. 수정 할 수 없습니다.");
         }
         log.info("AOP executeUserCheck 통과");
         // 핵심기능 수행
+        return joinPoint.proceed();
+    }
 
     @Around("updateComment() || deleteComment()")
     public Object executeCommentRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -122,7 +126,7 @@ public class UserCheckAop {
         User loginUser = userDetails.getUser();
 
         if (auth.getPrincipal().getClass() == UserDetailsImpl.class) {
-            if (!(comment.getUser().equals(loginUser))) {
+            if (!(comment.getUser().getUsername().equals(loginUser.getUsername()))) {
                 log.warn("작성자만 수정/삭제할 수 있습니다");
                 return ResponseEntity.badRequest().body(new ApiResponseDto("작성자만 수정/삭제할 수 있습니다", HttpStatus.BAD_REQUEST.value()));
             }
@@ -131,5 +135,4 @@ public class UserCheckAop {
 
         return joinPoint.proceed();
     }
-
 }
