@@ -57,11 +57,11 @@ public class CardResponseDto extends ApiResponseDto {
         this.deadline = card.getDeadline();
         this.cardOrder = card.getCardOrder();
         this.createdAt = card.getCreatedAt();
-        if (card.getCardUsers() != null) {
-            for (CardUser cu : card.getCardUsers()) {
-                this.cardUsernames.add(cu.getUser().getUsername());
-            }
-        }
+//        if (card.getCardUsers() != null) {
+//            for (CardUser cu : card.getCardUsers()) {
+//                this.cardUsernames.add(cu.getUser().getUsername());
+//            }
+//        }
     }
 
 }

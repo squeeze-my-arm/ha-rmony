@@ -34,7 +34,7 @@ public class CardController {
                                                       @PathVariable Long cardId,
                                                       @RequestBody CardRequestDto requestDto,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+        log.info(requestDto.getDeadline());
         CardResponseDto result = cardService.updateCard(boardId, cardId, requestDto,
                 userDetails.getUser());
         return ResponseEntity.ok(result);
