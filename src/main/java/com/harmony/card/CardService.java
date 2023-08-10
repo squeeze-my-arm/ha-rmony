@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 @Service
@@ -26,18 +28,18 @@ public class CardService {
     private final UserRepository userRepository;
     private final BoardUserRepository boardUserRepository;
 
-    public CardResponseDto getOneCard(Long cardid) {
+    public CardResponseDto getOneCard(Long cardId) {
         log.info("조회 하기");
-        Card card = findCard(cardid);
+        Card card = findCard(cardId);
         log.info(card.getCardname());
         log.info("카드의 댓글 조회");
         return new CardResponseDto(card);
     }
 
     @Transactional
-    public void changeCardOrder(Long cardid, CardOrderRequestDto cardOrderRequestDto) {
+    public void changeCardOrder(Long cardId, CardOrderRequestDto cardOrderRequestDto) {
         // 이동하는 카드 찾기
-        Card card = findCard(cardid);
+        Card card = findCard(cardId);
         log.info("cardId : " + card.getId().toString());
 
         // 전달받는 index는 0부터 시작하는 값을 기준으로 받아야 함
@@ -52,12 +54,12 @@ public class CardService {
         if (oldcolumn.equals(newcolumn)) {
             log.info("컬럼 변경 X");
 
-            log.info("이전 순서: " + String.valueOf(oldcolumn.getCards().indexOf(card)));
+            log.info("이전 순서: " + oldcolumn.getCards().indexOf(card));
             // 1. 카드가 해당 컬럼 안에서 순서만 바뀌는 경우
             // => 원래 카드에 저장된 column의 id와 cardOrderRequestDto 에서 가져온 column의 id 값이 일치
             oldcolumn.changeCardOrder(card, cardOrderRequestDto.getCardOrder());
 
-            log.info("이후 순서: " + String.valueOf(oldcolumn.getCards().indexOf(card)));
+            log.info("이후 순서: " + oldcolumn.getCards().indexOf(card));
 
             for (int i = 0; i < oldcolumn.getCards().size(); i++) {
                 log.info(oldcolumn.getCards().get(i).getCardname() + ", index: " + i);
@@ -162,8 +164,8 @@ public class CardService {
     }
 
     // 카드 찾기
-    public Card findCard(Long cardid) {
-        return cardRepository.findById(cardid).orElseThrow(IllegalArgumentException::new);
+    public Card findCard(Long cardId) {
+        return cardRepository.findById(cardId).orElseThrow(IllegalArgumentException::new);
     }
 
     // 컬럼 찾기

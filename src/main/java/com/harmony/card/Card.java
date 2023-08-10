@@ -1,14 +1,17 @@
 package com.harmony.card;
 
 import com.harmony.boardColumn.BoardColumn;
-import com.harmony.comment.Comment;
 import com.harmony.cardUser.CardUser;
+import com.harmony.comment.Comment;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,7 +30,7 @@ public class Card extends Timestamped {
     @Column(name = "card_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "card_name", nullable = false, unique = true)
+    @Column(name = "card_name", nullable = false)
     private String cardname;
 
     @Column(name = "card_desc")
@@ -57,7 +60,7 @@ public class Card extends Timestamped {
     @Builder.Default
     private Set<CardUser> cardUsers = new LinkedHashSet<>();
 
-  // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
+    // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
     @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @Column(name = "comments")
     @Builder.Default
