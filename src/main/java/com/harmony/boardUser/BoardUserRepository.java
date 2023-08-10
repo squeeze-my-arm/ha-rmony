@@ -2,6 +2,7 @@ package com.harmony.boardUser;
 
 import com.harmony.board.Board;
 import com.harmony.user.User;
+import com.harmony.user.UserResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface BoardUserRepository extends JpaRepository<BoardUser, Long> {
     BoardUser findByBoardAndRole(Board board, BoardUserEnum boardUserEnum);
 
     Optional<BoardUser> findByUserAndBoard(User user, Board board);
+
+    List<BoardUser> findByBoard_Id(Long boardid);
 }

@@ -23,6 +23,8 @@ public class CardResponseDto extends ApiResponseDto {
     private LocalDateTime createdAt;
     private LocalDate deadline;
     private Long cardOrder;
+    private String columnName;
+    private Long boardId;
     // 담당자 (책임자)
     // private String cardUser;
     private List<CommentResponseDto> commentList = new ArrayList<>();
@@ -46,6 +48,8 @@ public class CardResponseDto extends ApiResponseDto {
 //    }
 
     public CardResponseDto(Card card) {
+        this.boardId = card.getBoardColumn().getBoard().getId();
+        this.columnName = card.getBoardColumn().getBoardColumnName();
         this.cardId = card.getId();
         this.cardName = card.getCardname();
         this.desc = card.getDescription();

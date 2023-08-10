@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
+
+    <title>카드</title>
+    <style>
+        * {
+            font-family: 'Orbit', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center; /* 가로 가운데 정렬 추가 */
+            align-items: center; /* 세로 가운데 정렬 추가 */
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 카드 전체 속성 */
+        .card {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 90%;
+            width: 80%;
+        }
+
+        /* 카드 상단부 - 제목과 설명*/
+
+        .card-title {
+            font-size: 24px;
+            width: auto;
+            box-sizing: border-box;
+            margin: 10px 0;
+        }
+
+        .edit-title {
+            font-size: 24px;
+            margin: 10px 0;
+            background-color: transparent;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+        }
+
+        .card-title2 {
+            font-size: 18px;
+            margin: 0 0 10px;
+        }
+
+        .card-description-wrapper {
+            width: 100%;
+        }
+
+        .card-description-wrapper > p {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            box-sizing: border-box; /* 수정한 부분 */
+        }
+
+        .card-description-wrapper > textarea {
+            background-color: transparent;
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            box-sizing: border-box; /* 수정한 부분 */
+            outline: none;
+        }
+
+        /* 카드 중반부 - user 설정 */
+
+        .user-selection {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .user-input-wrapper{
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .add-user-btn{
+            width: 10%;
+            margin-left: 2%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .user-selection input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            box-sizing: border-box; /* 수정한 부분 */
+            border: 1px solid #ccc;
+        }
+
+        .user-list {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 90%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-list-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .user-list-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .selected-users {
+            margin-top: 10px;
+        }
+
+        .selected-user {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 카드 하반부 - 댓글 작성 및 조회 */
+
+        .comment-section {
+            width: 100%;
+            margin-top: 20px; /* 추가한 부분 */
+        }
+
+        .comment-section > h2 {
+            margin-top: 0px;
+        }
+
+        .comment-submit-section{
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 10px;
+        }
+
+        .comment-input {
+            width: 90%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        .add-comment-btn {
+            width: 10%;
+            margin-left: 2%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-section {
+            width: 100%;
+            margin-top: 20px;
+            overflow-y: auto; /* 스크롤 생성 */
+        }
+
+        .comment-list {
+            max-height: 33vh;
+            overflow-y: auto;
+        }
+
+        .comment-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .comment-list::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .comment-list::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background-color: #007bff;
+        }
+
+        .comment-list::-webkit-scrollbar-button {
+            width: 0;
+            height: 0;
+        }
+
+        .comment_one {
+            height: 10vh;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .comment_one > div:nth-child(1) {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 7%;
+        }
+
+        .comment_one > div:nth-child(2) {
+            display: flex; /* Flexbox 사용 */
+            flex-direction: column; /* 가로로 길게 정렬 */
+            width: 83%;
+        }
+
+        .comment_one > div:nth-child(3) {
+            display: flex; /* Flexbox 사용 */
+            flex-direction: column; /* 가로로 길게 정렬 */
+            justify-content: space-between;
+            width: 10%;
+        }
+
+        .comment_one > div > img {
+            border-radius: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            margin: auto;
+        }
+
+        .comment_one > div > p {
+            width: 90%;
+            margin: auto 0 auto 10px;
+        }
+
+        .updateBtn, .deleteBtn {
+            margin-left: 2%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-form{
+            width: 100%;
+            display: flex;
+        }
+
+        #updatecomment {
+            margin-left: 10px;
+            margin-right: 20px;
+            width: 90%;
+        }
+
+        .edit-form-button{
+            display: flex; /* Flexbox 사용 */
+            flex-direction: column; /* 가로로 길게 정렬 */
+            justify-content: space-between;
+            width: 10%;
+        }
+
+        .submitBtn, .cancelBtn {
+            margin-left: 2%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+<div class="card">
+
+    <h1 id="card-title" th:class="${card.boardId}" class="card-title" th:text="${card.cardName}" onclick="enableEditMode2()">Card Title</h1>
+    <input id="edit-title"  class="edit-title" style="display:none;"></input>
+    <h4 class="card-title2" th:text="${card.columnName}">in column</h4>
+
+    <div class="card-description-wrapper">
+        <p id="card-description" th:class="${card.boardId}" th:text="${card.desc}" onclick="enableEditMode()"></p>
+        <textarea id="edit-description" style="display:none;"></textarea>
+    </div>
+
+    <h1 class="card-title">Card User</h1>
+
+    <div class="selected-users-wrapper">
+        <div class="selected-users" id="selectedUsers"></div>
+    </div>
+
+    <div class="user-selection">
+        <div class="user-input-wrapper">
+            <input class="user-input" type="text" placeholder="사용자 추가하기">
+            <button class="add-user-btn">유저 추가</button>
+        </div>
+        <div class="user-list" id="userList">
+            <div  class="user-list-item">User 1</div>
+            <div class="user-list-item">User 2</div>
+            <div class="user-list-item">User 3</div>
+            <div class="user-list-item">User 4</div>
+            <div class="user-list-item">User 5</div>
+        </div>
+    </div>
+
+    <div class="comment-section">
+        <h2>Comments</h2>
+        <div class="comment-submit-section">
+            <textarea class="comment-input" placeholder="댓글 작성하기..." id="createcomment"></textarea>
+            <button class="add-comment-btn" onclick="comment()">댓글 작성</button>
+        </div>
+        <div class="comment-section">
+            <div class="comment-list" id="commentList">
+                <div th:each="comment : ${comments}" class="comment">
+                    <div class="comment_one">
+                        <div class="comment_head">
+                            <img src="https://i.pinimg.com/236x/03/bf/77/03bf77898801f69e678f4721a522f57d.jpg">
+                        </div>
+                        <div class="comment_body">
+                            <p class="comment-author" th:text="${comment.username}">작성자</p>
+                            <p class="comment-date" th:text="${comment.createdAt}">날짜</p>
+                            <p class="comment-content" th:text="${comment.commentContent}">댓글 내용</p>
+                        </div>
+                        <div class="comment_bottom">
+                            <button class="updateBtn">수정</button>
+                            <button class="deleteBtn" th:id="${comment.id}">삭제</button>
+                        </div>
+
+                        <div class="edit-form" style="display: none">
+                            <input id="updatecomment" th:placeholder="${comment.commentContent}"/>
+                            <div class="edit-form-button">
+                                <button class="submitBtn" th:id="${comment.id}">저장</button>
+                                <button class="cancelBtn">취소</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--한 댓글 종료-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    const userInput = document.querySelector('.user-input');
+    const userList = document.getElementById('userList');
+    const selectedUsers = document.getElementById('selectedUsers');
+
+
+    /*<h1 id="card-title" th:class="${card.boardId}" class="card-title" th:text="${card.cardName}" onclick="enableEditMode2()">Card Title</h1>
+    <textarea id="edit-title" style="display:none;"></textarea>*/
+
+    const cardTitle = document.getElementById('card-title');
+    const editTitle = document.getElementById('edit-title');
+
+    cardTitle.addEventListener('click', enableEditMode2);
+
+    function enableEditMode2() {
+        cardTitle.style.display = 'none';
+        editTitle.style.display = 'block';
+        editTitle.value = cardTitle.textContent;
+        editTitle.focus();
+    }
+
+
+    editTitle.addEventListener('blur', saveChanges2);
+    editTitle.addEventListener('keydown', checkEnterKey2);
+
+    function saveChanges2() {
+        editTitle.style.display = 'block';
+        editTitle.style.display = 'none';
+
+        const newTitle = editTitle.value;
+
+        // id는 cardid값임
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+        console.log(id);
+
+        // 클래스 이름 가져오기
+        const className = cardDescription.className;
+        console.log(className); // 클래스 이름 출력
+
+        $.ajax({
+            type:"PATCH",
+            url: `/api/boards/${className}/columns/cards/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify({cardName: newTitle}),
+            success: function(response, status, xhr) {
+                console.log("PATCH 요청이 성공했습니다.");
+                if (xhr.status === 200) {
+                    window.location.href = `http://localhost:8080/api/cards/${id}`;
+                } else {
+                    // 다른 상태 코드에 따라 처리
+                    Swal.fire({
+                        icon: 'error',
+                        title: '누구세요?'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            },
+
+            error: function(xhr, status, error) {
+                // 요청이 실패한 경우 처리할 로직을 작성합니다.
+                console.log("PATCH 요청이 실패했습니다.");
+                console.log(xhr.responseText);
+                Swal.fire({
+                    icon: 'error',                         // Alert 타입
+                    title: '회원만 작성 가능합니다'        // Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `http://localhost:8080/api/cards/${id}`;
+                    }
+                });
+            }
+        });
+        cardTitle.textContent = newTitle; // 수정 내용을 <p> 태그에 반영
+    }
+
+    function checkEnterKey2(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveChanges2();
+        }
+    }
+
+
+    const cardDescription = document.getElementById('card-description');
+    const editDescription = document.getElementById('edit-description');
+
+    cardDescription.addEventListener('click', enableEditMode);
+
+    function enableEditMode() {
+        cardDescription.style.display = 'none';
+        editDescription.style.display = 'block';
+        editDescription.value = cardDescription.textContent;
+        editDescription.focus();
+    }
+
+    editDescription.addEventListener('blur', saveChanges);
+    editDescription.addEventListener('keydown', checkEnterKey);
+
+    function saveChanges() {
+        cardDescription.style.display = 'block';
+        editDescription.style.display = 'none';
+
+        const newDescription = editDescription.value;
+
+        // id는 cardid값임
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+        console.log(id);
+
+        // 클래스 이름 가져오기
+        const className = cardDescription.className;
+        console.log(className); // 클래스 이름 출력
+
+        $.ajax({
+            type:"PATCH",
+            url: `/api/boards/${className}/columns/cards/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify({desc: newDescription}),
+            success: function(response, status, xhr) {
+                console.log("PATCH 요청이 성공했습니다.");
+                if (xhr.status === 200) {
+                    window.location.href = `http://localhost:8080/api/cards/${id}`;
+                } else {
+                    // 다른 상태 코드에 따라 처리
+                    Swal.fire({
+                        icon: 'error',
+                        title: '누구세요?'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            },
+
+            error: function(xhr, status, error) {
+                // 요청이 실패한 경우 처리할 로직을 작성합니다.
+                console.log("PATCH 요청이 실패했습니다.");
+                console.log(xhr.responseText);
+                Swal.fire({
+                    icon: 'error',                         // Alert 타입
+                    title: '회원만 작성 가능합니다'        // Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `http://localhost:8080/api/cards/${id}`;
+                    }
+                });
+            }
+        });
+        cardDescription.textContent = newDescription; // 수정 내용을 <p> 태그에 반영
+    }
+
+    function checkEnterKey(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            saveChanges();
+        }
+    }
+
+    userInput.addEventListener('focus', function() {
+        userList.style.display = 'block';
+    });
+
+    userInput.addEventListener('blur', function() {
+        setTimeout(() => {
+            userList.style.display = 'none';
+        }, 200);
+    });
+
+    userList.addEventListener('click', function(event) {
+        if (event.target.classList.contains('user-list-item')) {
+            const selectedUser = document.createElement('div');
+            selectedUser.className = 'selected-user';
+            selectedUser.textContent = event.target.textContent;
+            selectedUser.addEventListener('click', function() {
+                selectedUser.remove();
+            });
+            selectedUsers.appendChild(selectedUser);
+            userInput.value = '';
+        }
+    });
+
+    window.addEventListener('click', function(event) {
+        if (!event.target.matches('.user-input')) {
+            userList.style.display = 'none';
+        }
+    });
+
+    // 댓글 작성하기
+    function comment() {
+        let commentcontent = $('#createcomment').val();
+        console.log("commentcontent");
+
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+
+        $.ajax({
+            type:"POST",
+            url: `/api/cards/${id}/comments`,
+            contentType: "application/json",
+            data: JSON.stringify({commentContent: commentcontent}),
+            success: function(response, status, xhr) {
+                // 요청이 성공한 경우 처리할 로직을 작성합니다.
+                console.log("POST 요청이 성공했습니다.");
+
+                // 서버 응답이 성공적으로 왔을 때 처리
+                if (xhr.status === 200) {
+                    // 서버의 상태 코드가 200(성공)인 경우
+                    Swal.fire({
+                        icon: 'success',                         // Alert 타입
+                        title: '작성 완료!'        // Alert 제목
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                } else {
+                    // 다른 상태 코드에 따라 처리
+                    Swal.fire({
+                        icon: 'error',
+                        title: '회원만 작성 가능합니다'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                // 요청이 실패한 경우 처리할 로직을 작성합니다.
+                console.log("POST 요청이 실패했습니다.");
+                console.log(xhr.responseText);
+                Swal.fire({
+                    icon: 'error',                         // Alert 타입
+                    title: '회원만 작성 가능합니다'        // Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `http://localhost:8080/api/cards/${id}`;
+                    }
+                });
+            }
+        });
+
+    }
+
+    // 댓글 수정창 오픈 버튼
+    const updateBtns = document.querySelectorAll('.updateBtn');
+    updateBtns.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const commentOne = button.closest('.comment_one');
+            const commentHead = commentOne.querySelector('.comment_head');
+            const commentBody = commentOne.querySelector('.comment_body');
+            const commentBottom = commentOne.querySelector('.comment_bottom');
+
+            const editForm = commentOne.querySelector('.edit-form');
+
+            // 댓글 내용 부분 숨김
+            commentBody.style.display = 'none';
+            commentBottom.style.display = 'none';
+
+            // 수정 폼 부분 표시
+            editForm.style.display = 'flex';
+        });
+    });
+
+    // 댓글 수정 취소 버튼
+    const cancelBtns = document.querySelectorAll('.cancelBtn');
+    cancelBtns.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const commentOne = button.closest('.comment_one');
+            const commentHead = commentOne.querySelector('.comment_head');
+            const commentBody = commentOne.querySelector('.comment_body');
+            const commentBottom = commentOne.querySelector('.comment_bottom');
+
+            const editForm = commentOne.querySelector('.edit-form');
+
+            // 댓글 내용 부분 표시
+            commentBody.style.display = 'flex';
+            commentBottom.style.display = 'flex';
+
+            // 수정 폼 부분 숨김
+            editForm.style.display = 'none';
+        });
+    });
+
+    // 댓글 수정 버튼
+    const submitBtns = document.querySelectorAll('.submitBtn');
+    submitBtns.forEach(button => {
+        button.addEventListener('click', function () {
+            const form = button.closest('.edit-form');
+            const updatecomment = form.querySelector('#updatecomment');
+            const value = updatecomment.value;
+
+            // id는 cardid값
+            let url = window.location.href;
+            let id = url.replace("http://localhost:8080/api/cards/", "");
+            console.log("cardid: ",id);
+
+            let commentId = button.id; // comment.id 값을 가져옴
+            console.log("commentid: ", commentId);
+
+            console.log("commentContent: ", value);
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/cards/${id}/comments/${commentId}`,
+                contentType: "application/json",
+                data: JSON.stringify({commentContent: value}),
+                success: function(response, status, xhr) {
+
+                    // 요청이 성공한 경우 처리할 로직을 작성합니다.
+                    console.log("PUT 요청이 성공했습니다.");
+
+                    // 서버 응답이 성공적으로 왔을 때 처리
+                    if (xhr.status === 200) {
+                        // 서버의 상태 코드가 200(성공)인 경우
+                        Swal.fire({
+                            icon: 'success',                         // Alert 타입
+                            title: '수정 완료!'        // Alert 제목
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `http://localhost:8080/api/cards/${id}`;
+                            }
+                        });
+                    } else {
+                        // 다른 상태 코드에 따라 처리
+                        Swal.fire({
+                            icon: 'error',                         // Alert 타입
+                            title: '작성자만 수정 가능합니다.'        // Alert 제목
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `http://localhost:8080/api/cards/${id}`;
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // 요청이 실패한 경우 처리할 로직을 작성합니다.
+                    console.log("POST 요청이 실패했습니다.");
+                    console.log(xhr.responseText);
+                    Swal.fire({
+                        icon: 'error',                         // Alert 타입
+                        title: '작성자만 수정 가능합니다'        // Alert 제목
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            });
+
+        })
+    });
+
+    // 댓글 삭제 버튼
+    const deleteBtns = document.querySelectorAll('.deleteBtn');
+    deleteBtns.forEach(button => {
+        button.addEventListener('click', function () {
+            // id는 cardid값임
+            let url = window.location.href;
+            let id = url.replace("http://localhost:8080/api/cards/", "");
+            console.log(id);
+
+            let commentId = button.id; // comment.id 값을 가져옴
+            console.log(commentId);
+
+            $.ajax({
+                type: "DELETE",
+                url: `/api/cards/${id}/comments/${commentId}`,
+                contentType: "application/json",
+                success: function(response, status, xhr) {
+                    if (xhr.status === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제 완료!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `http://localhost:8080/api/cards/${id}`;
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '작성자만 삭제 가능합니다.'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `http://localhost:8080/api/cards/${id}`;
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("DELETE 요청이 실패했습니다.");
+                    console.log(xhr.responseText);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '작성자만 삭제 가능합니다'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            });
+
+        })
+    });
+
+</script>
+
+</html>
