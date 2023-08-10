@@ -2,6 +2,7 @@ package com.harmony.user;
 
 import com.harmony.boardUser.BoardUser;
 import com.harmony.cardUser.CardUser;
+import com.harmony.comment.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -44,12 +45,15 @@ public class User {
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
 
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CardUser> cardUsers = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private Set<Comment> comments = new LinkedHashSet<>();
 
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
