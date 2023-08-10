@@ -35,7 +35,7 @@ public class Card extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id", nullable = false, updatable = false)
     private Long id;
-    @Column(name = "card_name", nullable = false, unique = true)
+    @Column(name = "card_name", nullable = false)
     private String cardname;
     @Column(name = "card_desc")
     private String description;

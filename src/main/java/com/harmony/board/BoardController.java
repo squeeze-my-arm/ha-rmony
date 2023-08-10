@@ -23,12 +23,12 @@ public class BoardController {
     }
 
     // 보드 상세 조회
-    @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Board board = boardService.findBoard(boardId);
-        BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
-        return ResponseEntity.ok().body(result);
-    }
+//    @GetMapping("/boards/{boardId}")
+//    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        Board board = boardService.findBoard(boardId);
+//        BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
+//        return ResponseEntity.ok().body(result);
+//    }
 
     // 보드 생성
     @PostMapping("/boards")

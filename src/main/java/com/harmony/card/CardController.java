@@ -41,7 +41,7 @@ public class CardController {
     }
 
     //카드 삭제
-    @DeleteMapping("boards/{boardId}/columns/cards/{cardId}")
+    @DeleteMapping("/boards/{boardId}/columns/cards/{cardId}")
     public ResponseEntity<String> deleteCard(@PathVariable Long boardId, @PathVariable Long cardId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.deleteCard(boardId, cardId, userDetails.getUser());

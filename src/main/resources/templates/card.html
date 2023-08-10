@@ -15,6 +15,10 @@
 
     <title>카드</title>
     <style>
+        :root {
+            --primary-color: #91C788;
+        }
+
         * {
             font-family: 'Orbit', sans-serif;
         }
@@ -69,7 +73,7 @@
         }
 
         .card-buttons button {
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             border: none;
@@ -127,7 +131,7 @@
             width: 10%;
             margin-left: 2%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -171,7 +175,7 @@
 
         .selected-user {
             display: inline-block;
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             margin-right: 5px;
@@ -208,7 +212,7 @@
         .add-comment-btn {
             width: 10%;
             margin-left: 2%;
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             border: none;
@@ -237,7 +241,7 @@
 
         .comment-list::-webkit-scrollbar-thumb {
             border-radius: 5px;
-            background-color: #007bff;
+            background-color: var(--primary-color);
         }
 
         .comment-list::-webkit-scrollbar-button {
@@ -289,7 +293,7 @@
 
         .updateBtn, .deleteBtn {
             margin-left: 2%;
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             border: none;
@@ -317,7 +321,7 @@
 
         .submitBtn, .cancelBtn {
             margin-left: 2%;
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             border: none;
@@ -344,7 +348,7 @@
         }
 
         #showDatePicker{
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             border: none;
@@ -364,7 +368,7 @@
         }
 
         #chageColor{
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
             padding: 5px 10px;
             border: none;
@@ -382,8 +386,8 @@
         <input id="edit-title"  class="edit-title" style="display:none;"/>
         <div class="card-buttons">
             <button class="colorBtn" onclick="toggleColorPalette()">색상 선택</button>
-            <button class="deleteBtn">카드 삭제</button>
-            <button class="closeBtn">X</button>
+            <button class="carddeleteBtn" th:onclick="'deleteCard(\'' + ${card.boardId} + '\')'">카드 삭제</button>
+            <button class="closeBtn" th:onclick="'redirectToBoard(\'' + ${card.boardId} + '\')'">X</button>
         </div>
     </div>
 
@@ -470,6 +474,62 @@
 </div>
 </body>
 <script>
+
+    function deleteCard(boardId) {
+        // id는 cardid값임
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+
+        console.log(id);
+        console.log("boardId", boardId);
+        console.log("cardId", id);
+
+        Swal.fire({
+            title: '정말 삭제하시겠습니까?',
+            text: '다시 되돌릴 수 없습니다.',
+            icon: 'warning',
+
+            showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+            confirmButtonColor: '#d33', // confrim 버튼 색깔 지정
+            cancelButtonColor: '#3085d6', // cancel 버튼 색깔 지정
+            confirmButtonText: '삭제', // confirm 버튼 텍스트 지정
+            cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+            reverseButtons: false, // 버튼 순서 거꾸로
+
+        }).then(result => {
+            // 만약 Promise리턴을 받으면,
+            if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
+                $.ajax({
+                    type:"DELETE",
+                    url:`/api/boards/${boardId}/columns/cards/${id}`,
+                    contentType:"application/json",
+                    success: function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '삭제가 완료되었습니다'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `http://localhost:8080/api/boards/${boardId}`;
+                            }
+                        });
+                    },
+                    error: function () {
+                        window.location.href = `http://localhost:8080/api/boards/${boardId}`;
+                    }
+                })
+            } else {
+
+            }
+        });
+
+    }
+    function redirectToBoard(boardId) {
+        console.log(boardId);
+        var url = '/api/boards/' + boardId;
+        window.location.href = url;
+    }
+
     function toggleColorPalette() {
         const colorPalette = document.getElementById("colorPalette");
         colorPalette.style.display = colorPalette.style.display === "none" ? "block" : "none";

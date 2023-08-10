@@ -87,7 +87,7 @@ public class CardService {
     public CardResponseDto createCard(Long boardId, Long columnId, String cardName, User user) {
         BoardColumn column = boardColumnRepository.findById(columnId)
                 .orElseThrow(() -> new IllegalArgumentException("컬럼이 존재하지 않습니다."));
-        Card card = Card.builder().cardname(cardName).boardColumn(column).color("BLACK").build();
+        Card card = Card.builder().cardname(cardName).boardColumn(column).color("#FFFFFF").build();
         card.setCardOrder(column.getCards().size() + 1);
 
         cardRepository.save(card);
