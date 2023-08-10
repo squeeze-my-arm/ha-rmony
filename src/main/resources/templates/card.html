@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,6 +60,23 @@
             outline: none;
         }
 
+        .card-title-section {
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            justify-content: space-between; /* 각 요소 사이의 간격을 최대한 늘림 */
+            margin-bottom: 10px;
+            height: 10%;
+        }
+
+        .card-buttons button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         .card-title2 {
             font-size: 18px;
             margin: 0 0 10px;
@@ -69,7 +88,7 @@
 
         .card-description-wrapper > p {
             width: 100%;
-            height: 100px;
+            height: 50px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -80,7 +99,7 @@
         .card-description-wrapper > textarea {
             background-color: transparent;
             width: 100%;
-            height: 100px;
+            height: 50px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -173,6 +192,7 @@
 
         .comment-submit-section{
             display: flex;
+            height: 6vh;
             flex-direction: row;
             margin-bottom: 10px;
         }
@@ -203,7 +223,7 @@
         }
 
         .comment-list {
-            max-height: 33vh;
+            max-height: 18vh;
             overflow-y: auto;
         }
 
@@ -305,13 +325,73 @@
             cursor: pointer;
         }
 
+        /* 달력 */
+        #datepickerContainer {
+            position: relative;
+        }
+
+        #datepicker {
+            position: absolute;
+        }
+
+        .date-section {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .date-section > p {
+            margin: 0 0 0 10px;
+        }
+
+        #showDatePicker{
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 배경색 변경 */
+        .card-buttons{
+            width: 18%;
+        }
+
+        #colorPalette {
+            display: flex;
+            flex-direction: row;
+            float: right;
+        }
+
+        #chageColor{
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-<div class="card">
+<body>
+<div class="card" th:style="'background-color: ' + ${card.color}">
 
-    <h1 id="card-title" th:class="${card.boardId}" class="card-title" th:text="${card.cardName}" onclick="enableEditMode2()">Card Title</h1>
-    <input id="edit-title"  class="edit-title" style="display:none;"></input>
+    <div class="card-title-section">
+        <h1 id="card-title" th:class="${card.boardId}" class="card-title" th:text="${card.cardName}" onclick="enableEditMode2()">Card Title</h1>
+        <input id="edit-title"  class="edit-title" style="display:none;"/>
+        <div class="card-buttons">
+            <button class="colorBtn" onclick="toggleColorPalette()">색상 선택</button>
+            <button class="deleteBtn">카드 삭제</button>
+            <button class="closeBtn">X</button>
+        </div>
+    </div>
+
+    <div id="colorPalette" style="display:none;">
+        <input type="color" id="colorPicker">
+        <button id="chageColor" onclick="changeBackgroundColor()">배경색 변경</button>
+    </div>
+
     <h4 class="card-title2" th:text="${card.columnName}">in column</h4>
 
     <div class="card-description-wrapper">
@@ -322,21 +402,33 @@
     <h1 class="card-title">Card User</h1>
 
     <div class="selected-users-wrapper">
-        <div class="selected-users" id="selectedUsers"></div>
+        <div class="selected-users" id="selectedUsers">
+            <div th:each="user : ${boardusers}" th:if="${user.selected}" class="selected-user">
+                <span th:text="${user.username}"></span>
+            </div>
+        </div>
     </div>
 
     <div class="user-selection">
         <div class="user-input-wrapper">
             <input class="user-input" type="text" placeholder="사용자 추가하기">
-            <button class="add-user-btn">유저 추가</button>
+            <button class="add-user-btn" onclick="sendUser()">유저 추가</button>
         </div>
         <div class="user-list" id="userList">
-            <div  class="user-list-item">User 1</div>
-            <div class="user-list-item">User 2</div>
-            <div class="user-list-item">User 3</div>
-            <div class="user-list-item">User 4</div>
-            <div class="user-list-item">User 5</div>
+            <div th:each="user : ${boardusers}" class="user-list-item">
+                <span th:text="${user.username}"></span> - <span th:text="${user.nickname}"></span>
+            </div>
         </div>
+    </div>
+
+    <h1 class="card-title">DeadLine</h1>
+
+    <div class="date-section">
+        <button id="showDatePicker">날짜 선택</button>
+        <p id="selectedDateText" th:text="${card.deadline}"></p>
+    </div>
+    <div id="datepickerContainer" style="display: none;">
+        <div id="datepicker"></div>
     </div>
 
     <div class="comment-section">
@@ -377,15 +469,137 @@
     </div>
 </div>
 </body>
-
 <script>
-    const userInput = document.querySelector('.user-input');
-    const userList = document.getElementById('userList');
-    const selectedUsers = document.getElementById('selectedUsers');
+    function toggleColorPalette() {
+        const colorPalette = document.getElementById("colorPalette");
+        colorPalette.style.display = colorPalette.style.display === "none" ? "block" : "none";
+    }
+
+    function changeBackgroundColor() {
+        const selectedColor = document.getElementById("colorPicker").value;
+        const cardElement = document.querySelector(".card");
+        cardElement.style.backgroundColor = selectedColor;
+        sendColorToServer(selectedColor);
+    }
+
+    function hideColorPalette() {
+        const colorPalette = document.getElementById("colorPalette");
+        colorPalette.style.display = "none";
+    }
+
+    function sendColorToServer(color) {
+        console.log(color);
+        // id는 cardid값임
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+        console.log(id);
+
+        // 클래스 이름 가져오기
+        const className = cardTitle.className;
+        console.log(className); // 클래스 이름 출력
+
+        $.ajax({
+            type:"PATCH",
+            url: `/api/boards/${className}/columns/cards/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify({color: color}),
+            success: function(response, status, xhr) {
+                console.log("PATCH 요청이 성공했습니다.");
+                if (xhr.status === 200) {
+                    window.location.href = `http://localhost:8080/api/cards/${id}`;
+                } else {
+                    // 다른 상태 코드에 따라 처리
+                    Swal.fire({
+                        icon: 'error',
+                        title: '누구세요?'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            },
+
+            error: function(xhr, status, error) {
+                // 요청이 실패한 경우 처리할 로직을 작성합니다.
+                console.log("PATCH 요청이 실패했습니다.");
+                console.log(xhr.responseText);
+                Swal.fire({
+                    icon: 'error',                         // Alert 타입
+                    title: '회원만 작성 가능합니다'        // Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `http://localhost:8080/api/cards/${id}`;
+                    }
+                });
+            }
+        });
+    }
 
 
-    /*<h1 id="card-title" th:class="${card.boardId}" class="card-title" th:text="${card.cardName}" onclick="enableEditMode2()">Card Title</h1>
-    <textarea id="edit-title" style="display:none;"></textarea>*/
+    $(document).ready(function() {
+        $("#showDatePicker").click(function() {
+            $("#datepickerContainer").show();
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd", // 년-월-일 형식
+                onSelect: function(dateText) {
+                    $("#selectedDateText").text(dateText);
+                    $("#datepicker").hide();
+                    sendDataToServer(dateText);
+                }
+            });
+        });
+    });
+
+    function sendDataToServer(date) {
+        // id는 cardid값임
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+        console.log(id);
+
+        // 클래스 이름 가져오기
+        const className = cardTitle.className;
+        console.log(className); // 클래스 이름 출력
+
+        console.log(date);
+
+        $.ajax({
+            type:"PATCH",
+            url: `/api/boards/${className}/columns/cards/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify({deadline: date}),
+            success: function(response, status, xhr) {
+                console.log("PATCH 요청이 성공했습니다.");
+                if (xhr.status === 200) {
+                    window.location.href = `http://localhost:8080/api/cards/${id}`;
+                } else {
+                    // 다른 상태 코드에 따라 처리
+                    Swal.fire({
+                        icon: 'error',
+                        title: '누구세요?'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `http://localhost:8080/api/cards/${id}`;
+                        }
+                    });
+                }
+            },
+
+            error: function(xhr, status, error) {
+                // 요청이 실패한 경우 처리할 로직을 작성합니다.
+                console.log("PATCH 요청이 실패했습니다.");
+                console.log(xhr.responseText);
+                Swal.fire({
+                    icon: 'error',                         // Alert 타입
+                    title: '회원만 작성 가능합니다'        // Alert 제목
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `http://localhost:8080/api/cards/${id}`;
+                    }
+                });
+            }
+        });
+    }
 
     const cardTitle = document.getElementById('card-title');
     const editTitle = document.getElementById('edit-title');
@@ -398,7 +612,6 @@
         editTitle.value = cardTitle.textContent;
         editTitle.focus();
     }
-
 
     editTitle.addEventListener('blur', saveChanges2);
     editTitle.addEventListener('keydown', checkEnterKey2);
@@ -415,7 +628,7 @@
         console.log(id);
 
         // 클래스 이름 가져오기
-        const className = cardDescription.className;
+        const className = cardTitle.className;
         console.log(className); // 클래스 이름 출력
 
         $.ajax({
@@ -463,7 +676,6 @@
             saveChanges2();
         }
     }
-
 
     const cardDescription = document.getElementById('card-description');
     const editDescription = document.getElementById('edit-description');
@@ -541,6 +753,18 @@
         }
     }
 
+    const userInput = document.querySelector('.user-input');
+    const userList = document.getElementById('userList');
+    const selectedUsers = document.getElementById('selectedUsers');
+
+    const userBtns = document.querySelectorAll('.selected-user');
+
+    userBtns.forEach(button => {
+        button.addEventListener('click', function () {
+            button.remove();
+        })
+    });
+
     userInput.addEventListener('focus', function() {
         userList.style.display = 'block';
     });
@@ -555,7 +779,7 @@
         if (event.target.classList.contains('user-list-item')) {
             const selectedUser = document.createElement('div');
             selectedUser.className = 'selected-user';
-            selectedUser.textContent = event.target.textContent;
+            selectedUser.textContent = event.target.querySelector('span:first-child').textContent; // 첫 번째 span 태그 안의 텍스트
             selectedUser.addEventListener('click', function() {
                 selectedUser.remove();
             });
@@ -569,6 +793,39 @@
             userList.style.display = 'none';
         }
     });
+
+    function sendUser() {
+        // id는 cardid값임
+        let url = window.location.href;
+        let id = url.replace("http://localhost:8080/api/cards/", "");
+        console.log(id);
+
+        // 클래스 이름 가져오기
+        const className = cardDescription.className;
+        console.log(className); // 클래스 이름 출력
+
+        const selectedUsers = document.querySelectorAll('.selected-user');
+        const selectedUserNames = Array.from(selectedUsers).map(user => user.textContent);
+
+        console.log(selectedUserNames); // 선택된 사용자들의 username 값이 담긴 배열
+        selectedUsers.forEach(user => {
+            console.log(user.textContent);
+        });
+
+        // AJAX 요청을 통해 서버로 데이터 전송
+        $.ajax({
+            type:"PATCH",
+            url: `/api/boards/${className}/columns/cards/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify({ cardUserNames: selectedUserNames }),
+            success: function(response) {
+                // 성공 처리 로직
+            },
+            error: function(error) {
+                // 에러 처리 로직
+            }
+        });
+    }
 
     // 댓글 작성하기
     function comment() {
@@ -793,7 +1050,6 @@
 
         })
     });
-
 </script>
-
+</body>
 </html>

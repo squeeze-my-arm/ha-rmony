@@ -126,7 +126,7 @@ public class UserCheckAop {
         User loginUser = userDetails.getUser();
 
         if (auth.getPrincipal().getClass() == UserDetailsImpl.class) {
-            if (!(comment.getUser().getUsername().equals(loginUser.getUsername()))) {
+            if (!(comment.getCommentUsername().equals(loginUser.getUsername()))) {
                 log.warn("작성자만 수정/삭제할 수 있습니다");
                 return ResponseEntity.badRequest().body(new ApiResponseDto("작성자만 수정/삭제할 수 있습니다", HttpStatus.BAD_REQUEST.value()));
             }

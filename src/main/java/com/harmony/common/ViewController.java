@@ -3,10 +3,14 @@ package com.harmony.common;
 
 import com.harmony.board.Board;
 import com.harmony.board.BoardRepository;
+import com.harmony.boardUser.BoardUser;
 import com.harmony.boardUser.BoardUserRepository;
 import com.harmony.card.Card;
 import com.harmony.card.CardResponseDto;
 import com.harmony.card.CardService;
+import com.harmony.cardUser.CardUser;
+import com.harmony.cardUser.CardUserRepository;
+import com.harmony.cardUser.CardUserResponseDto;
 import com.harmony.comment.CommentRepository;
 import com.harmony.comment.CommentResponseDto;
 import com.harmony.user.UserResponseDto;
@@ -28,6 +32,7 @@ public class ViewController {
     private final CommentRepository commentRepository;
     private final BoardUserRepository boardUserRepository;
     private final BoardRepository boardRepository;
+    private final CardUserRepository cardUserRepository;
 
     @GetMapping("/")
     public String mainPage() {
@@ -50,10 +55,12 @@ public class ViewController {
 
         // ++ 추가하기
         // card에 있는 user 목록들 + 리스트에 보여줄 board user 목록들
-        List<UserResponseDto> users = boardUserRepository.findByBoard_Id(card.getBoardColumn().getBoard().getId())
-                                                         .stream().map(UserResponseDto::new).toList();
-        log.info("username: " + users.get(0).getUsername());
-        model.addAttribute("boardusers", users);
+        List<BoardUser> boardUser = boardUserRepository.findByBoard_Id(card.getBoardColumn().getBoard().getId()).stream().toList();
+        List<CardUser> cardUsers = cardUserRepository.findByCard_Id(card.getId()).stream().toList();
+
+        List<CardUserResponseDto> boardusers = cardService.findUsers(boardUser, cardUsers);
+        log.info("username: " + boardUser.get(0).getUsername());
+        model.addAttribute("boardusers", boardusers);
 
         // card에 있는 댓글 정보도 같이 가져가자
         List<CommentResponseDto> commentResponseDtoList = commentRepository.findAllByCard(card).stream().map(CommentResponseDto::new).toList();
