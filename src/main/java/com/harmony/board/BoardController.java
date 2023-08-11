@@ -2,14 +2,17 @@ package com.harmony.board;
 
 import com.harmony.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -20,8 +23,16 @@ public class BoardController {
     // 보드 전체 조회
     @GetMapping("/boards")
     public String getBoardList(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        List<BoardResponseDto> result = boardService.getBoardList(userDetails.getUser());
-        model.addAttribute("user", userDetails.getUser().getNickname());
+        List<BoardResponseDto> result = new ArrayList<>();
+        String nickname = "";
+
+        if (userDetails != null) {
+            result = boardService.getBoardList(userDetails.getUser());
+            nickname = userDetails.getUser().getNickname();
+        }
+
+        log.info(nickname);
+        model.addAttribute("user", nickname);
         model.addAttribute("boardList", result);
         return "index";
     }
