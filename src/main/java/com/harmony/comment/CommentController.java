@@ -4,6 +4,7 @@ package com.harmony.comment;
 import com.harmony.common.ApiResponseDto;
 import com.harmony.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 // lombok
 @RequiredArgsConstructor
-
+@Slf4j
 // spring web
 @RestController
 @RequestMapping("/api/cards")
@@ -31,6 +32,7 @@ public class CommentController {
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long cardid, @PathVariable Long commentid,
                                                             @RequestBody CommentRequestDto commentRequestDto,
                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("댓글 수정 시도");
         Comment comment = commentService.findComment(commentid);
         CommentResponseDto commentResponseDto = commentService.updateComment(cardid, comment, commentRequestDto);
         return ResponseEntity.ok().body(commentResponseDto);
@@ -40,6 +42,7 @@ public class CommentController {
     @DeleteMapping("/{cardid}/comments/{commentid}")
     public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable Long cardid, @PathVariable Long commentid,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("댓글 삭제 시도");
         Comment comment = commentService.findComment(commentid);
         ApiResponseDto apiResponseDto = commentService.deleteComment(cardid, comment);
         return ResponseEntity.ok().body(apiResponseDto);

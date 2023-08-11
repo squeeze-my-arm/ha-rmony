@@ -28,6 +28,12 @@ public class Comment extends Timestamped {
 
     @Column(name = "comment_content")
     private String commentContent;
+
+    @Column(name = "comment_username")
+    private String commentUsername;
+
+    @Column(name = "comment_nickname")
+    private String commentNickname;
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
@@ -45,6 +51,8 @@ public class Comment extends Timestamped {
         this.commentContent = commentRequestDto.getCommentContent();
         this.card = card;
         this.user = user;
+        this.commentUsername = user.getUsername();
+        this.commentNickname = user.getNickname();
     }
 
     /**

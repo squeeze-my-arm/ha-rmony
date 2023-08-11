@@ -1,8 +1,7 @@
 package com.harmony.card;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,8 +18,8 @@ public class CardRequestDto {
   private String cardName;
   private String desc;
   private String color;
-  private LocalDate deadline;
+  private String deadline;
   private Long cardOrder;
-  private Set<String> cardUserNames = new LinkedHashSet<>();
+  private List<String> cardUserNames = new ArrayList<>();
 
 }
