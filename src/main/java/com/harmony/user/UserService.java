@@ -69,13 +69,13 @@ public class UserService {
     @UserCheck
     @Transactional
     public void deleteUser(User user, User loginUser) {
-        
+
         userRepository.delete(user);
     }
 
 
     public User findUser(String username) {
-        return userRepository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("가입된 회원이 아닙니다."));
     }
 
     public User findUserById(Long id) {
