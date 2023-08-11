@@ -1,7 +1,6 @@
 package com.harmony.common;
 
 
-import com.harmony.board.Board;
 import com.harmony.board.BoardRepository;
 import com.harmony.board.BoardResponseDto;
 import com.harmony.boardColumn.BoardColumnRepository;
@@ -14,12 +13,12 @@ import com.harmony.cardUser.CardUserRepository;
 import com.harmony.cardUser.CardUserResponseDto;
 import com.harmony.comment.CommentRepository;
 import com.harmony.comment.CommentResponseDto;
-import com.harmony.security.UserDetailsImpl;
-import com.harmony.user.UserResponseDto;
+import com.harmony.security.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +38,7 @@ public class ViewController {
     private final BoardRepository boardRepository;
     private final CardUserRepository cardUserRepository;
     private final BoardColumnRepository boardColumnRepository;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/")
     public String mainPage() {
@@ -46,16 +46,20 @@ public class ViewController {
     }
 
     @GetMapping("/api/users/login-page")
-    public String loginPage() {
+    public String loginPage(HttpServletRequest request, HttpServletResponse response) {
+        // 해당 쿠키 이름으로 생성된 쿠키를 찾아 제거
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (jwtUtil.BEARER_PREFIX.equals(cookie.getName())) {
+                    cookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 쿠키 제거
+                    cookie.setPath("/"); // 도메인 전체에 걸쳐 쿠키를 삭제하도록 설정
+                    response.addCookie(cookie);
+                }
+            }
+        }
         return "loginsignup";
     }
-
-//    @GetMapping("/boards/{boardId}")
-//    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        Board board = boardService.findBoard(boardId);
-//        BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
-//        return ResponseEntity.ok().body(result);
-//    }
 
     @GetMapping("/api/boards/{boardid}")
     public String boardPage(@PathVariable Long boardid, Model model) {
