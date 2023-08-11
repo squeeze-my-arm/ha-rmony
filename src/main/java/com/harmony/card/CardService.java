@@ -41,7 +41,7 @@ public class CardService {
         // 이동하는 카드 찾기
         Card card = findCard(cardid);
         log.info("cardId : " + card.getId().toString());
-        
+
         // 전달받는 index는 0부터 시작하는 값을 기준으로 받아야 함
         // 카드의 order는 0부터 시작하는 것으로 설정
 
@@ -61,7 +61,7 @@ public class CardService {
 
             log.info("이후 순서: " + String.valueOf(oldcolumn.getCards().indexOf(card)));
 
-            for (int i=0; i<oldcolumn.getCards().size(); i++) {
+            for (int i = 0; i < oldcolumn.getCards().size(); i++) {
                 log.info(oldcolumn.getCards().get(i).getCardname() + ", index: " + i);
                 oldcolumn.getCards().get(i).setCardOrder(i);
             }
@@ -85,7 +85,7 @@ public class CardService {
         BoardColumn column = boardColumnRepository.findById(columnId)
                 .orElseThrow(() -> new IllegalArgumentException("컬럼이 존재하지 않습니다."));
         Card card = Card.builder().cardname(cardName).boardColumn(column).color("BLACK").build();
-        card.setCardOrder(column.getCards().size()+1);
+        card.setCardOrder(column.getCards().size() + 1);
 
         cardRepository.save(card);
 
@@ -137,7 +137,7 @@ public class CardService {
 
         // 카드 order 재정렬하기
         List<Card> cards = boardColumn.getCards();
-        for (int i=0; i<cards.size(); i++) {
+        for (int i = 0; i < cards.size(); i++) {
             cards.get(i).setCardOrder(i);
             cardRepository.save(cards.get(i));
         }
@@ -156,13 +156,13 @@ public class CardService {
         card.addCardUser(cardUser);
         cardUserRepository.save(cardUser);
     }
-  
+
     //특정 카드를 가진 카드유저 삭제
     @Transactional
     public void deleteCardUser(Card card) {
         cardUserRepository.deleteAllByCard(card);
     }
-  
+
     // 카드 찾기
     public Card findCard(Long cardid) {
         return cardRepository.findById(cardid).orElseThrow(IllegalArgumentException::new);
