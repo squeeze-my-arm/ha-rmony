@@ -645,7 +645,7 @@
     column_containers.forEach(column_container => {
         column_container.addEventListener("dragover", e => {
             e.preventDefault();
-            const afterElement = getDragAfterElementX(column_container, e.clientX);
+            const afterElement = getDragAfterElementXY(column_container, e.clientX, e.clientY);
             const draggable = document.querySelector(".dragging");
             // if (afterElement === undefined) {
             //     column_container.appendChild(draggable);
@@ -689,7 +689,26 @@
         });
     });
 
-    function getDragAfterElementX(container, x) {
+    // function getDragAfterElementX(container, x) {
+    //     const draggableElements = [
+    //         ...container.querySelectorAll(".column-list-wrapper:not(.dragging)"),
+    //     ];
+    //
+    //     return draggableElements.reduce(
+    //         (closest, child) => {
+    //             const box = child.getBoundingClientRect();
+    //             const offset = x - box.left - box.width / 2;
+    //             if (offset < 0 && offset > closest.offset) {
+    //                 return {offset: offset, element: child};
+    //             } else {
+    //                 return closest;
+    //             }
+    //         },
+    //         {offset: Number.NEGATIVE_INFINITY},
+    //     ).element;
+    // }
+
+    function getDragAfterElementXY(container, x, y) {
         const draggableElements = [
             ...container.querySelectorAll(".column-list-wrapper:not(.dragging)"),
         ];
@@ -697,14 +716,15 @@
         return draggableElements.reduce(
             (closest, child) => {
                 const box = child.getBoundingClientRect();
-                const offset = x - box.left - box.width / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return {offset: offset, element: child};
+                const offsetX = x - box.left - box.width / 2;
+                const offsetY = y - box.top - box.height / 2;
+                if (offsetX < 0 && offsetX > closest.offsetX && offsetY < 0 && offsetY > closest.offsetY) {
+                    return {offsetX: offsetX, offsetY: offsetY, element: child};
                 } else {
                     return closest;
                 }
             },
-            {offset: Number.NEGATIVE_INFINITY},
+            {offsetX: Number.NEGATIVE_INFINITY, offsetY: Number.NEGATIVE_INFINITY},
         ).element;
     }
 
