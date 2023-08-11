@@ -2,21 +2,22 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!--부트스트랩 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <title>보드 상세 페이지</title>
     <style>
@@ -38,7 +39,7 @@
         }
 
         .top-container {
-            height: 10vh;
+            height: 13vh;
             width: 94%;
             margin: auto;
             display: flex;
@@ -76,16 +77,35 @@
 
         /* 수정 부분 종료 - 보드 제목 */
 
+        /* 수정 부분 - 보드 상단 버튼 */
+
         .invite-btn-container {
+            display: flex;
             width: 20%;
             height: 100%;
         }
 
-        .invite-btn-container button {
+        .invite-btn-container button:nth-child(1) {
             margin: 1.3rem 0 0 0;
             width: 13rem;
             height: 3rem;
         }
+
+        .invite-btn-container button:nth-child(2) {
+            background-color: transparent;
+            border: none;
+            margin: 1.3rem 0 0 1.3rem;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .invite-btn-container button:nth-child(2):hover {
+            border-radius: 10px;
+            background-color: white;
+            border: none;
+        }
+
+        /* 수정 부분 종료 - 보드 상단 버튼 */
 
         .content-container {
             margin: 1rem auto 0 auto;
@@ -226,11 +246,11 @@
             cursor: pointer;
         }
 
-        .add-board-column-btn-box{
+        .add-board-column-btn-box {
             cursor: pointer;
         }
 
-        .delete-column{
+        .delete-column {
             background-color: #ffffff;
             border: none;
         }
@@ -240,12 +260,15 @@
 <div class="body-container" th:style="'background-color:' + ${board.boardColor}">
     <div class="top-container">
         <div class="board-title-container">
-            <h1 id="board-title" class="board-title" th:text="${board.boardTitle}">보드 이름</h1>
-            <input class="board-edit" th:id="${board.boardId}" style="display: none;">
-            <p th:text="${board.boardDesc}"></p>
+            <h1 class="board-title" id="board-title" th:text="${board.boardTitle}">보드 이름</h1>
+            <input class="board-edit" style="display: none;" th:id="${board.boardId}">
+            <p th:text="${board.boardDesc}">보드 설명</p>
         </div>
         <div class="invite-btn-container">
-            <button type="button" class="btn btn-outline-success" th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"> 회원 초대하기</button>
+            <button class="btn btn-outline-success" th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"
+                    type="button"> 회원 초대하기
+            </button>
+            <button type="button" class="gotomain" id="redirectButton">X</button>
         </div>
     </div>
     <div class="content-container">
@@ -256,15 +279,17 @@
                     <!--서버쪽에서 컬럼마다 ID 값과 Name을 갖고와서 매칭시키는 작업 필요 - text:name, id:id -->
                     <!--실제 입력 액션을 취하고 나서는 서버쪽으로 id를 같이 보내주어야 하기 때문 -->
                     <h2 class="column-title" th:text="${column.boardColumnName}">보드컬럼명1</h2>
-                    <input class="column-edit" th:id="${column.boardId}" style="display: none;">
+                    <input class="column-edit" th:id="${column.columnId}" style="display: none;">
                     <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button> <!-- X 버튼 추가 -->
                 </div>
                 <!-- 카드수만큼 카드 생성 -->
                 <div class="list-cards">
-                    <a class="list-card" draggable="true" th:each="card: ${column.getCardsName()}" th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}">
-                        <div class="list-card-detail" >
+                    <a class="list-card" draggable="true" th:each="card: ${column.getCardsName()}"
+                       th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}">
+                        <div class="list-card-detail">
                             <!-- 카드 내 내용들 아이콘으로 표시하거나 실제로 text로 보여줘야 함 -->
-                            <span class="list-card-title" th:id="${card.cardId}" th:text="${card.cardName}">카드 제목 1-1</span>
+                            <span class="list-card-title" th:id="${card.cardId}"
+                                  th:text="${card.cardName}">카드 제목 1-1</span>
                         </div>
                     </a>
                 </div>
@@ -284,9 +309,9 @@
                     <span class="icon-add">Add BoardColumn</span>
                 </div>
                 <!-- 숨어있는 input 위 span 클릭 시 등장-->
-                <input class="board-column-name-input" type="text"
+                <input autocomplete="off" class="board-column-name-input"
                        id="board_column_name"
-                       placeholder="Enter 보드컬럼 title" autocomplete="off">
+                       placeholder="Enter 보드컬럼 title" type="text">
 
                 <div class="board-column-control">
                     <img src="../static/icons/plus-icon-36.png">
@@ -299,24 +324,83 @@
 </div>
 </body>
 <script>
+    // 버튼 요소 가져오기
+    const button = document.getElementById('redirectButton');
+
+    // 버튼 클릭 이벤트 리스너 등록
+    button.addEventListener('click', () => {
+        window.location.href = 'http://localhost:8080/api/boards';
+    });
 
     // 보드 사용자 초대를 누르면 나오는 팝업창
     function inviteBoardUser(boardId) {
-        console.log(boardId);
-        (async () => {
-            const { value: getName } =
-                await Swal.fire({
-                        title: '초대할 사용자 아이디',
-                        text: '이메일 형태로 입력해주세요',
-                        input: 'text',
-                        inputPlaceholder: '사용자 아이디 입력..'
-                      })
-            // 이후 처리되는 내용.
-            if (getName) {
-                console.log(getName);
-                // getName으로 값을 잘 가져오니 email을 보내는 서버와 연결하면 될것 같습니다 !
-            }
-        })()
+        Swal.fire({
+            title: '초대할 사용자 아이디',
+            text: '이메일 형태로 입력해주세요',
+            input: 'text',
+            inputPlaceholder: '사용자 아이디 입력..',
+            showCancelButton: true,
+            confirmButtonText: '초대하기',
+            cancelButtonText: '취소',
+            preConfirm: (username) => {
+                return new Promise((resolve, reject) => {
+                    // 서버에 초대 요청 전송
+                    $.ajax({
+                        url: '/api/invited/' + boardId,
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            username: username
+                        }),
+                        success: function (data) {
+                            console.log(data);
+                            // 초대 성공 토스트 메시지 표시
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: '초대 성공',
+                                text: data.responseText,
+                            });
+                            resolve();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr);
+                            console.log(status);
+                            console.error(error);
+                            // 초대 실패 토스트 메시지 표시
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'error',
+                                title: '초대 실패',
+                                text: xhr.responseText,
+                            });
+                            reject();
+                        }
+                    });
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading() // 모달 바깥 클릭 시 닫히지 않도록 설정
+        });
     }
 
     // 각 컬럼을 지우는 함수
@@ -344,9 +428,9 @@
             // 만약 Promise리턴을 받으면,
             if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
                 $.ajax({
-                    type:"DELETE",
-                    url:`/api/board-columns/${columnId}`,
-                    contentType:"application/json",
+                    type: "DELETE",
+                    url: `/api/board-columns/${columnId}`,
+                    contentType: "application/json",
                     success: function () {
                         Swal.fire({
                             icon: 'success',
@@ -447,7 +531,7 @@
                     window.location.href = `http://localhost:8080/api/boards/${id}`
                 },
                 error: function () {
-                    alert ("Error!");
+                    alert("Error!");
                     window.location.href = `http://localhost:8080/api/boards/${id}`
                 }
             })
@@ -526,7 +610,7 @@
             // 카드 생성을 알리는 서버쪽 코드 추가
             // 반드시 새로고침하기 (아니면 카드 id가 안생김)
             $.ajax({
-                type:"POST",
+                type: "POST",
                 url: `/api/boards/${boardid}/columns/${id}/cards`,
                 contentType: "application/json",
                 data: "새 카드",
@@ -540,6 +624,8 @@
 
         });
     });
+
+
     // 컬럼 내 카드 순서 바꾸기 드래그 앤 드롭 이벤트 새로 만든 것도 되도록 -완료
     const draggables = document.querySelectorAll(".list-card");
     const containers = document.querySelectorAll(".list-cards");
@@ -634,5 +720,6 @@
             {offset: Number.NEGATIVE_INFINITY},
         ).element;
     }
+
 </script>
 </html>
