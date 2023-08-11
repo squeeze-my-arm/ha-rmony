@@ -1,10 +1,553 @@
-<!DOCTYPE html>
-<html lang="en">
+<html data-bs-theme="light" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Ha-rmony</title>
+
+    <link href="https://getbootstrap.kr/docs/5.3/examples/album/" rel="canonical">
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script crossorigin="anonymous"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .btn-bd-primary {
+            --bd-violet-bg: #712cf9;
+            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+            --bs-btn-font-weight: 600;
+            --bs-btn-color: var(--bs-white);
+            --bs-btn-bg: var(--bd-violet-bg);
+            --bs-btn-border-color: var(--bd-violet-bg);
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #6528e0;
+            --bs-btn-hover-border-color: #6528e0;
+            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+            --bs-btn-active-color: var(--bs-btn-hover-color);
+            --bs-btn-active-bg: #5a23c8;
+            --bs-btn-active-border-color: #5a23c8;
+        }
+
+        .bd-mode-toggle {
+            z-index: 1500;
+        }
+    </style>
+
+
 </head>
+
 <body>
-  <h1>하-ㄹ모니</h1>
+<header data-bs-theme="dark">
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <strong>Ha-rmony</strong>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">[[${user}]] 's workspace</h1>
+            </div>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="d-flex justify-content-end" style="margin-bottom: 20px;">
+                <!-- Button trigger modal -->
+                <button class="btn btn-secondary" data-bs-target="#exampleModal" data-bs-toggle="modal"
+                        type="button">
+                    Add Board
+                </button>
+                <form class="upload__form" enctype="multipart/form-data" id="uploadForm">
+                    <!-- Modal -->
+                    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal"
+                         tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create board</h1>
+                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                            type="button"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="formGroupExampleInput">Board Title</label>
+                                        <input class="form-control" id="formGroupExampleInput"
+                                               placeholder="👋 Board title is required" type="text">
+                                    </div>
+                                    <label class="form-label" for="exampleColorInput">Background</label>
+                                    <input class="form-control form-control-color" id="exampleColorInput"
+                                           title="Choose your color" type="color" value="#563d7c">
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close
+                                    </button>
+                                    <button class="btn btn-primary" type="submit">Start with a template</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <text style="font-size: 25px;">My Board</text>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <!--Board 부분-->
+                <div class="col" th:each="board : ${boardList}" th:id="${board.getBoardId()}">
+                    <input th:id="'board'+${board.getBoardId()}" type="hidden">
+                    <div class="card shadow-sm">
+                        <a class="card-svg-link" style="cursor: pointer;"
+                           th:href="'/api/boards/'+${board.getBoardId()}">
+                            <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
+                                 focusable="false" height="225" preserveAspectRatio="xMidYMid slice" role="img"
+                                 width="100%" xmlns="http://www.w3.org/2000/svg">
+                                <title>Placeholder</title>
+                                <rect height="100%" th:fill="${board.getBoardColor()}" width="100%"></rect>
+                                <text class="boardTitleText" dy=".3em" x="50%" y="50%">
+                                    [[${board.getBoardTitle()}]]
+                                </text>
+                            </svg>
+                        </a>
+                        <div class="card text-end">
+                            <div class="card-body">
+                                <button class="btn btn-sm btn-outline-secondary"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#staticBackdrop'+${board.getBoardId()}"
+                                        type="button">Delete
+                                </button>
+                                <!-- Modal -->
+                                <div aria-hidden="true" aria-labelledby="staticBackdropLabel"
+                                     class="modal fade"
+                                     data-bs-backdrop="static" data-bs-keyboard="false"
+                                     tabindex="-1"
+                                     th:id="'staticBackdrop'+${board.getBoardId()}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                                                    [[${board.getBoardTitle}]]</h1>
+                                                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                        type="button"></button>
+                                            </div>
+                                            <div class="model-body">
+                                                정말 삭제하시겠습니까?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-primary"
+                                                        th:onclick="'deleteBoard('+${board.getBoardId()}+')'"
+                                                        type="button">Delete Board
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-sm btn-outline-secondary editBoards"
+                                        data-bs-toggle="modal"
+                                        th:data-bs-target="'#staticBackdropEdit'+${board.getBoardId()}"
+                                        type="button">Edit
+                                </button>
+                                <input class="findEditBoardId" th:value="${board.getBoardId()}" type="hidden">
+                                <form class="edit__form" enctype="multipart/form-data"
+                                      th:id="'editForm'+${board.getBoardId()}">
+                                    <!-- Modal -->
+                                    <div aria-hidden="true" aria-labelledby="staticBackdropEditLabel" class="modal fade"
+                                         data-bs-backdrop="static"
+                                         data-bs-keyboard="false" tabindex="-1"
+                                         th:id="'staticBackdropEdit'+${board.getBoardId()}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="staticBackdropEditLabel"
+                                                        th:value="${board.getBoardTitle()}">
+                                                        [[${board.getBoardTitle()}]]</h1>
+                                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                            type="button"></button>
+                                                </div>
+                                                <div class="modal-body text-start">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="formGroupExampleInputEdit">Board
+                                                            Title</label>
+                                                        <input class="form-control" id="formGroupExampleInputEdit"
+                                                               placeholder="👋 Board title is required"
+                                                               th:value="${board.getBoardTitle()}"
+                                                               type="text">
+                                                    </div>
+                                                    <label class="form-label"
+                                                           for="exampleColorInputEdit">Background</label>
+                                                    <input class="form-control form-control-color"
+                                                           id="exampleColorInputEdit"
+                                                           th:value="${board.getBoardColor()}" title="Choose your color"
+                                                           type="color">
+                                                    <br>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="formGroupExampleInputDescEdit">Board
+                                                            Description</label>
+                                                        <input class="form-control" id="formGroupExampleInputDescEdit"
+                                                               placeholder="👋 Description your Board"
+                                                               th:value="${board.getBoardDesc()}"
+                                                               type="text">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" data-bs-dismiss="modal"
+                                                            type="button">
+                                                        Close
+                                                    </button>
+                                                    <button class="btn btn-primary"
+                                                            type="submit">Edit
+                                                        Board
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <text style="font-size: 25px;">Guest Board</text>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const boardColors = [
+            /*[# th:each="board : ${boardList}"]*/
+            [[${board.getBoardColor()}]],
+            /*[/]*/
+        ];
+        /*]]>*/
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".boardTitleText").each(function (index) {
+                const boardColor = boardColors[index];
+                const textColor = getBrightness(boardColor);
+                $(this).attr("fill", textColor);
+            });
+        });
+    </script>
+    <script>
+        // 배경색의 밝기 계산 함수
+        function getBrightness(hexColor) {
+            console.log("getBrightness 들어옴" + hexColor);
+            const c = hexColor.substring(1)      // 색상 앞의 # 제거
+            const rgb = parseInt(c, 16)   // rrggbb를 10진수로 변환
+            const r = (rgb >> 16) & 0xff  // red 추출
+            const g = (rgb >> 8) & 0xff  // green 추출
+            const b = (rgb >> 0) & 0xff  // blue 추출
+            const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b // per ITU-R BT.709
+            // 색상 선택
+            return luma < 127.5 ? "#FFFFFF" : "#000000" // 글자색이
+        }
+
+        // 보드 추가시 페이지 로딩 없이 추가시켜주기 위함
+        function addNewBoard(boardId, boardTitle, boardColor) {
+            const textColor = getBrightness(boardColor);
+            const newBoardHtml =
+                `
+                    <div class="col" id="${boardId}">
+                      <input id="board+${boardId}" type="hidden">
+                      <div class="card shadow-sm">
+                        <a class="card-svg-link" href="/api/boards/${boardId}" style="cursor: pointer;">
+                          <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top" focusable="false" height="225"
+                            preserveAspectRatio="xMidYMid slice" role="img" width="100%" xmlns="http://www.w3.org/2000/svg">
+                            <title>Placeholder</title>
+                            <rect fill="${boardColor}" height="100%" width="100%"></rect>
+                            <text class="boardTitleText" dy=".3em" fill="${textColor}" x="50%" y="50%">${boardTitle}</text>
+                          </svg>
+                        </a>
+                        <div class="card text-end">
+                          <div class="card-body">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="modal"
+                              data-bs-target="#staticBackdrop${boardId}">Delete</button>
+                            <!-- Modal -->
+                            <div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade" data-bs-backdrop="static"
+                              data-bs-keyboard="false" tabindex="-1" id="staticBackdrop${boardId}">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                                      ${boardTitle}</h1>
+                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                                  </div>
+                                  <div class="model-body">
+                                    정말 삭제하시겠습니까?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                                      Close
+                                    </button>
+                                    <button class="btn btn-primary" onclick="deleteBoard(${boardId})" type="button">Delete Board
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <button class="btn btn-sm btn-outline-secondary editBoards" data-bs-toggle="modal"
+                              data-bs-target="#staticBackdropEdit${boardId}" type="button">Edit
+                            </button>
+                            <input type="hidden" class="findEditBoardId" value="${boardId}">
+                                <form class="edit__form" enctype="multipart/form-data"
+                                      id="editForm${boardId}">
+                                <!-- Modal -->
+                                <div aria-hidden="true" aria-labelledby="staticBackdropEditLabel" class="modal fade" data-bs-backdrop="static"
+                              data-bs-keyboard="false" id="staticBackdropEdit${boardId}" tabindex="-1">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropEditLabel" value="${boardTitle}">${boardTitle}</h1>
+                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                                  </div>
+                                  <div class="modal-body text-start">
+                                    <div class="mb-3">
+                                      <label class="form-label" for="formGroupExampleInputEdit">Board
+                                        Title</label>
+                                      <input class="form-control" id="formGroupExampleInputEdit" placeholder="👋 Board title is required"
+                                        type="text" value="${boardTitle}">
+                                    </div>
+                                    <label class="form-label" for="exampleColorInputEdit">Background</label>
+                                    <input class="form-control form-control-color" id="exampleColorInputEdit" value="${boardColor}"
+                                      title="Choose your color" type="color">
+                                    <br>
+                                    <div class="mb-3">
+                                      <label class="form-label" for="formGroupExampleInputDescEdit">Board
+                                        Description</label>
+                                      <input class="form-control" id="formGroupExampleInputDescEdit" placeholder="👋 Description your Board"
+                                        type="text">
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                                      Close
+                                    </button>
+                                    <button class="btn btn-primary" type="submit">Edit Board</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                `;
+            $('.row-cols-1.row-cols-sm-2.row-cols-md-3.g-3').append(newBoardHtml);
+            console.log("추가");
+        }
+
+
+        function updateBoard(boardId) {
+            console.log(boardId + "update");
+            const title = $('#staticBackdropEdit' + boardId + ' #formGroupExampleInputEdit').val();
+            const color = $('#staticBackdropEdit' + boardId + ' #exampleColorInputEdit').val();
+            const desc = $('#staticBackdropEdit' + boardId + ' #formGroupExampleInputDescEdit').val();
+
+            $.ajax({
+                type: "PATCH",
+                url: "/api/boards/" + boardId,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    boardTitle: title,
+                    boardColor: color,
+                    boardDesc: desc
+                }),
+                success: function (data) {
+                    console.log(data);
+                    const successMessage = $('<div class="alert alert-success">edit successful!</div>');
+
+                    $('#staticBackdropEdit' + boardId + ' .modal-body').append(successMessage);
+
+                    // 수정된 내용으로 화면 업데이트
+                    updateBoardOnScreen(boardId, title, color, desc);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert('Upload failed or an error occurred');
+                }
+            });
+
+        }
+
+        $(document).ready(function () {
+            // 동적으로 추가된 요소에 대한 이벤트 위임
+            $(document).on('click', '.editBoards', function () {
+                const boardId = $(this).siblings('.findEditBoardId').val();
+                const editFormId = '#editForm' + boardId;
+                const editForm = $(editFormId);
+                console.log("$(document).on('click', '.editBoards', function () { : " + boardId);
+
+                // "수정" 버튼 클릭 시에만 이벤트 리스너를 추가하도록 설정
+                editForm.on('submit', function (e) {
+                    e.preventDefault();
+                    console.log("e.preventDefault(); " + boardId);
+                    updateBoard(boardId);
+                });
+
+                // "수정" 폼 닫힐 때 이벤트 리스너 해제
+                $('#staticBackdropEdit' + boardId).on('hidden.bs.modal', function () {
+                    editForm.off('submit');
+                });
+            });
+
+            // "Add Board" 모달 폼 제출 시 이벤트 리스너 추가
+            $('#uploadForm').on('submit', function (event) {
+                event.preventDefault();
+
+                const title = $('#formGroupExampleInput').val();
+                const color = $('#exampleColorInput').val();
+
+                $.ajax({
+                    url: '/api/boards',
+                    type: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        boardTitle: title,
+                        boardColor: color
+                    }),
+                    success: function (data) {
+                        console.log(data);
+                        const successMessage = $('<div class="alert alert-success">create successful!</div>');
+
+                        $('#exampleModal .modal-body').append(successMessage);
+
+                        // 새로운 보드를 화면에 추가하는 함수 호출
+                        addNewBoard(data.boardId, title, color);
+
+                        setTimeout(function () {
+                            $('#exampleModal').modal('hide');
+                            successMessage.remove();
+                        }, 1000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        alert('Upload failed or an error occurred');
+                    }
+                });
+            });
+        });
+
+        function deleteBoard(boardId) {
+            $.ajax({
+                type: "DELETE",
+                url: "/api/boards/" + boardId,
+                contentType: "application/json",
+                success: function (data) {
+                    console.log(data);
+                    // 모달 닫기
+                    $('#staticBackdrop' + boardId).modal('hide');
+                    // 삭제한 보드의 요소 제거
+                    $('#' + boardId).remove();
+
+                    const successMessage = $('<div class="alert alert-success">delete successful!</div>');
+                    $('#staticBackdrop' + boardId + ' .modal-footer').append(successMessage);
+
+                    setTimeout(function () {
+                        successMessage.remove();
+                    }, 1000);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert('Upload failed or an error occurred');
+                }
+            })
+        }
+
+        // 수정된 내용으로 화면 업데이트 함수
+        function updateBoardOnScreen(boardId, title, color, desc) {
+            const successMessageSelector = `#staticBackdropEdit${boardId} .alert-success`;
+            $(successMessageSelector).remove(); // 이전의 successMessage 엘리먼트 제거
+
+            const successMessage = $('<div class="alert alert-success">수정 성공!</div>');
+            $('#staticBackdropEdit' + boardId + ' .modal-body').append(successMessage);
+
+            const editedBoard = $('#' + boardId);
+            editedBoard.find('.boardTitleText').text(title);
+            editedBoard.find('rect').attr('fill', color);
+            editedBoard.find('text').attr('fill', getBrightness(color));
+            editedBoard.find('h1').text(title);
+
+            setTimeout(function () {
+                $('#staticBackdropEdit' + boardId).modal('hide');
+                successMessage.remove();
+            }, 1000);
+        }
+    </script>
+</main>
 </body>
 </html>

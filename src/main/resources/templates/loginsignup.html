@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
-    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
     </style>
 </head>
 <body>
-<div id="container" class="container">
+<div class="container" id="container">
     <!-- FORM SECTION -->
     <div class="row">
         <!-- SIGN UP -->
@@ -30,19 +30,19 @@
                 <div class="form sign-up">
                     <div class="input-group">
                         <i class='bx bxs-user'></i>
-                        <input id="signupusername" type="text" placeholder="Username">
+                        <input id="signupusername" placeholder="Username" type="text">
                     </div>
                     <div class="input-group">
                         <i class='bx bx-mail-send'></i>
-                        <input id="signupnickname" type="text" placeholder="Nickname">
+                        <input id="signupnickname" placeholder="Nickname" type="text">
                     </div>
                     <div class="input-group">
                         <i class='bx bxs-lock-alt'></i>
-                        <input id="signuppassword" type="password" placeholder="Password">
+                        <input id="signuppassword" placeholder="Password" type="password">
                     </div>
                     <div class="input-group">
                         <i class='bx bxs-lock-alt'></i>
-                        <input id="signupconfirmpassword" type="password" placeholder="Confirm password">
+                        <input id="signupconfirmpassword" placeholder="Confirm password" type="password">
                     </div>
                     <button onclick="signup()">
                         회원가입
@@ -51,7 +51,7 @@
                   <span>
                     이미 계정이 있으신가요 ?
                   </span>
-                        <b onclick="toggle()" class="pointer">
+                        <b class="pointer" onclick="toggle()">
                             로그인 하러가기
                         </b>
                     </p>
@@ -67,20 +67,20 @@
                 <div class="form sign-in">
                     <div class="input-group">
                         <i class='bx bxs-user'></i>
-                        <input id="loginusername" type="text" placeholder="Username">
+                        <input id="loginusername" placeholder="Username" type="text">
                     </div>
                     <div class="input-group">
                         <i class='bx bxs-lock-alt'></i>
-                        <input id="loginpassword" type="password" placeholder="Password">
+                        <input id="loginpassword" placeholder="Password" type="password">
                     </div>
-                    <button onclick="login()" >
+                    <button onclick="login()">
                         로그인
                     </button>
                     <p>
                   <span>
                     계정이 없으신가요?
                   </span>
-                        <b onclick="toggle()" class="pointer">
+                        <b class="pointer" onclick="toggle()">
                             회원가입 하러가기
                         </b>
                     </p>
@@ -182,7 +182,7 @@
                         icon: 'success',
                         title: '로그인 성공'
                     }).then(() => {
-                        window.location.href = "http://localhost:8080/";
+                        window.location.href = "http://localhost:8080/api/boards";
                     });
                 } else {
                     Swal.fire({
