@@ -29,7 +29,6 @@ public class Comment extends Timestamped {
     @Column(name = "comment_content")
     private String commentContent;
 
-
     @Column(name = "comment_username")
     private String commentUsername;
 

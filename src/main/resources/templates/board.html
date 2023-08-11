@@ -264,8 +264,8 @@
             <p th:text="${board.boardDesc}">보드 설명</p>
         </div>
         <div class="invite-btn-container">
-            <button type="button" class="btn btn-outline-success"
-                    th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"> 회원 초대하기
+            <button class="btn btn-outline-success" th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"
+                    type="button"> 회원 초대하기
             </button>
             <button type="button" class="gotomain" id="redirectButton">X</button>
         </div>
@@ -278,6 +278,8 @@
                     <!--서버쪽에서 컬럼마다 ID 값과 Name을 갖고와서 매칭시키는 작업 필요 - text:name, id:id -->
                     <!--실제 입력 액션을 취하고 나서는 서버쪽으로 id를 같이 보내주어야 하기 때문 -->
                     <h2 class="column-title" th:text="${column.boardColumnName}">보드컬럼명1</h2>
+                    <input class="column-edit" th:id="${column.columnId}" style="display: none;">
+                    <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button> <!-- X 버튼 추가 -->
                     <input class="column-edit" th:id="${column.columnId}" style="display: none;">
                     <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button>
                     <!-- X 버튼 추가 -->
@@ -324,7 +326,6 @@
 </div>
 </body>
 <script>
-
     // 버튼 요소 가져오기
     const button = document.getElementById('redirectButton');
 
@@ -333,23 +334,76 @@
         window.location.href = 'http://localhost:8080/api/boards';
     });
 
+
     // 보드 사용자 초대를 누르면 나오는 팝업창
     function inviteBoardUser(boardId) {
-        console.log(boardId);
-        (async () => {
-            const {value: getName} =
-                await Swal.fire({
-                    title: '초대할 사용자 아이디',
-                    text: '이메일 형태로 입력해주세요',
-                    input: 'text',
-                    inputPlaceholder: '사용자 아이디 입력..'
-                })
-            // 이후 처리되는 내용.
-            if (getName) {
-                console.log(getName);
-                // getName으로 값을 잘 가져오니 email을 보내는 서버와 연결하면 될것 같습니다 !
-            }
-        })()
+        Swal.fire({
+            title: '초대할 사용자 아이디',
+            text: '이메일 형태로 입력해주세요',
+            input: 'text',
+            inputPlaceholder: '사용자 아이디 입력..',
+            showCancelButton: true,
+            confirmButtonText: '초대하기',
+            cancelButtonText: '취소',
+            preConfirm: (username) => {
+                return new Promise((resolve, reject) => {
+                    // 서버에 초대 요청 전송
+                    $.ajax({
+                        url: '/api/invited/' + boardId,
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            username: username
+                        }),
+                        success: function (data) {
+                            console.log(data);
+                            // 초대 성공 토스트 메시지 표시
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: '초대 성공',
+                                text: data.responseText,
+                            });
+                            resolve();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr);
+                            console.log(status);
+                            console.error(error);
+                            // 초대 실패 토스트 메시지 표시
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'error',
+                                title: '초대 실패',
+                                text: xhr.responseText,
+                            });
+                            reject();
+                        }
+                    });
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading() // 모달 바깥 클릭 시 닫히지 않도록 설정
+        });
     }
 
     // 각 컬럼을 지우는 함수

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,7 +56,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/").permitAll() // 메인 페이지 요청
                         .requestMatchers("/api/users/**").permitAll() // "/api/user/" 로 시작하는 요청 모두 접근 허가
                         .requestMatchers("/api/boardUser/join/**").permitAll()
-                        // OAuth 로그인
+                        .requestMatchers(HttpMethod.GET, "/api/boards").permitAll()
                         .anyRequest().authenticated()
         );
 
