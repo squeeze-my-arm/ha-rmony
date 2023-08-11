@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!--부트스트랩 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+            crossorigin="anonymous"></script>
+
+    <title>테스트</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #3d4e56fa;
+            display: flex;
+        }
+
+        button {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 8px;
+            margin: 12px;
+            cursor: move;
+            font-size: 30px;
+            background: #eaeaea4f;
+        }
+
+        .container {
+            margin: 10px;
+            padding: 10px;
+            background-color: #b5c1dc57;
+            border-radius: 8px;
+        }
+
+        .draggable.dragging {
+            opacity: 0.5;
+        }
+    </style>
+
+<body>
+<div class="container">
+    <button class="draggable" draggable="true">🦊</button>
+    <button class="draggable" draggable="true">🐸</button>
+</div>
+<div class="container">
+    <button class="draggable" draggable="true">🐶</button>
+    <button class="draggable" draggable="true">🐱</button>
+</div>
+<script>
+    let draggables = document.querySelectorAll(".draggable");
+    const containers = document.querySelectorAll(".container");
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener("dragstart", () => {
+            draggable.classList.add("dragging");
+        });
+
+        draggable.addEventListener("dragend", () => {
+            draggable.classList.remove("dragging");
+        });
+    });
+
+    containers.forEach(container => {
+        container.addEventListener("dragover", e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(container, e.clientX);
+            const draggable = document.querySelector(".dragging");
+            if (afterElement === undefined) {
+                container.appendChild(draggable);
+            } else {
+                container.insertBefore(draggable, afterElement);
+            }
+        });
+    });
+
+    function getDragAfterElement(container, x) {
+        const draggableElements = [
+            ...container.querySelectorAll(".draggable:not(.dragging)"),
+        ];
+
+        return draggableElements.reduce(
+            (closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = x - box.left - box.width / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return {offset: offset, element: child};
+                } else {
+                    return closest;
+                }
+            },
+            {offset: Number.NEGATIVE_INFINITY},
+        ).element;
+    }
+
+</script>
+<p id="drag" draggable="true">드래그해보세요.</p>
+<br>
+<div id="drop">여기에 드롭하세요</div>
+<script>
+
+    document.getElementById('drag').ondragstart = function (e) {
+        console.log('드래그 시작');
+        e.dataTransfer.setData('data', this.innerHTML);
+        e.dataTransfer.dropEffect = 'copy';
+    };
+    var drop = document.getElementById('drop');
+    drop.ondragover = function (e) {
+        e.preventDefault(); // 필수
+        console.log('무언가 위에 올려져 있습니다');
+        e.dataTransfer.dropEffect = 'move';
+    };
+    drop.ondrop = function (e) {
+        console.log('무언가 드롭되었습니다.');
+        alert(e.dataTransfer.getData('data'));
+    }
+</script>
+</body>
+
+</html>

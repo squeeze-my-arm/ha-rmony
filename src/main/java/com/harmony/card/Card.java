@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,12 +23,6 @@ import java.util.Set;
 @Entity
 @Table(name = "cards")
 public class Card extends Timestamped {
-
-
-    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
-    @Column(name = "comments")
-    List<Comment> comments = new ArrayList<>();
     /**
      * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
      */
@@ -35,25 +30,39 @@ public class Card extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id", nullable = false, updatable = false)
     private Long id;
+
     @Column(name = "card_name", nullable = false)
     private String cardname;
+
     @Column(name = "card_desc")
     private String description;
+
     @Column(name = "card_color", nullable = false)
     private String color;
+
     @Column(name = "deadline")
     private LocalDate deadline;
+
+    @Column(name = "card_order")
+    private Long cardOrder;
+
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
-    @Column(name = "card_order")
-    private Long cardOrder;
+  
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
     @ManyToOne
     @JoinColumn(name = "column_id")
     private BoardColumn boardColumn;
+
+    // 카드가 삭제되면 해당 카드에 존재하는 댓글도 함께 삭제
+    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @Column(name = "comments")
+    @Builder.Default
+    List<Comment> comments = new ArrayList<>();
+
     @OneToMany(mappedBy = "card", orphanRemoval = true)
     @Builder.Default
     private Set<CardUser> cardUsers = new LinkedHashSet<>();
@@ -73,6 +82,7 @@ public class Card extends Timestamped {
             this.color = requestDto.getColor();
         }
         if (requestDto.getDeadline() != null) {
+
             this.deadline = LocalDate.parse(requestDto.getDeadline(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
         if (requestDto.getDesc() != null) {
