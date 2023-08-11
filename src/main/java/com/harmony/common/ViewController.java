@@ -37,12 +37,9 @@ public class ViewController {
     private final CardRepository cardRepository;
 
     private final CardService cardService;
-    private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
     private final BoardUserRepository boardUserRepository;
-    private final BoardRepository boardRepository;
     private final CardUserRepository cardUserRepository;
-    private final BoardColumnRepository boardColumnRepository;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/")
