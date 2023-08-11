@@ -23,16 +23,16 @@ public class BoardController {
         List<BoardResponseDto> result = boardService.getBoardList(userDetails.getUser());
         model.addAttribute("user", userDetails.getUser().getNickname());
         model.addAttribute("boardList", result);
-        return "boardMain";
+        return "index";
     }
 
-    @ResponseBody
     // 보드 상세 조회
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         Board board = boardService.findBoard(boardId);
         BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
-        return ResponseEntity.ok().body(result);
+        model.addAttribute("board", board);
+        return "boardMain";
     }
 
     @ResponseBody

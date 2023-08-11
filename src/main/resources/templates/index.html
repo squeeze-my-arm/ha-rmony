@@ -161,7 +161,8 @@
                 <div class="col" th:each="board : ${boardList}" th:id="${board.getBoardId()}">
                     <input th:id="'board'+${board.getBoardId()}" type="hidden">
                     <div class="card shadow-sm">
-                        <a class="card-svg-link" href="your-link-here" style="cursor: pointer;">
+                        <a class="card-svg-link" style="cursor: pointer;"
+                           th:href="'/api/boards/'+${board.getBoardId()}">
                             <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
                                  focusable="false" height="225" preserveAspectRatio="xMidYMid slice" role="img"
                                  width="100%" xmlns="http://www.w3.org/2000/svg">
@@ -322,7 +323,7 @@
                     <div class="col" id="${boardId}">
                       <input id="board+${boardId}" type="hidden">
                       <div class="card shadow-sm">
-                        <a class="card-svg-link" href="your-link-here" style="cursor: pointer;">
+                        <a class="card-svg-link" href="/api/boards/${boardId}" style="cursor: pointer;">
                           <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top" focusable="false" height="225"
                             preserveAspectRatio="xMidYMid slice" role="img" width="100%" xmlns="http://www.w3.org/2000/svg">
                             <title>Placeholder</title>
