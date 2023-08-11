@@ -20,6 +20,7 @@
 
     <title>보드 상세 페이지</title>
     <style>
+
         html, body {
             font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
             text-decoration: none;
@@ -32,7 +33,7 @@
             margin: 15px auto 0 auto;
             width: 94%;
             height: 95%;
-            background-color: mediumturquoise;
+            background-color: #9ed2be;
             border-radius: 40px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -113,7 +114,7 @@
 
         .list-content {
             border-radius: 12px;
-            background-color: steelblue;
+            background-color: #7eaa92;
             box-shadow: 0 1px 1px;
             box-sizing: border-box;
             display: flex;
@@ -170,8 +171,8 @@
             width: 18%;
             border-radius: 0.8rem;
             border: 1px solid black;
-            background-color: white;
-            opacity: 0.3;
+            background-color: #c8e4b2;
+            opacity: 0.5;
         }
 
         .board-column-name-input {
@@ -198,7 +199,7 @@
             display: inline-block;
             border-radius: 10px;
             border: 1px solid black;
-            background-color: #57B894;
+            background-color: #9e9fa5;
         }
 
         .list-cards {
@@ -222,17 +223,25 @@
 
         a {
             text-decoration: none;
-            color: #9FADBC;
+            color: #252B48;
             cursor: pointer;
         }
 
-        .add-board-column-btn-box{
+        .add-board-column-btn-box {
             cursor: pointer;
         }
 
-        .delete-column{
+        .delete-column {
             background-color: #ffffff;
             border: none;
+        }
+
+        input {
+            border: white 1px solid;
+        }
+
+        .draggable {
+            cursor: move;
         }
     </style>
 </head>
@@ -242,36 +251,42 @@
         <div class="board-title-container">
             <h1 id="board-title" class="board-title" th:text="${board.boardTitle}">보드 이름</h1>
             <input class="board-edit" th:id="${board.boardId}" style="display: none;">
-            <p th:text="${board.boardDesc}"></p>
+            <p th:text="${board.boardDesc}">보드 설명</p>
         </div>
         <div class="invite-btn-container">
-            <button type="button" class="btn btn-outline-success" th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"> 회원 초대하기</button>
+            <button type="button" class="btn btn-outline-success"
+                    th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"> 회원 초대하기
+            </button>
+            <button type="button" class="gotomain" id="redirectButton">X</button>
         </div>
     </div>
     <div class="content-container">
-        <div class="column-list-wrapper" th:each="column : ${columns}">
-            <div class="list-content">
+        <div class="column-list-wrapper" th:each="column : ${columns}" th:id="${column.columnId}" draggable="true">
+            <div class="list-content" th:id="${column.columnId}">
                 <div class="column-title-box">
                     <!--TODO 수연님께 클릭해서 입력창 활성화 외부클릭해서 비활성화 카피해오기 -->
                     <!--서버쪽에서 컬럼마다 ID 값과 Name을 갖고와서 매칭시키는 작업 필요 - text:name, id:id -->
                     <!--실제 입력 액션을 취하고 나서는 서버쪽으로 id를 같이 보내주어야 하기 때문 -->
                     <h2 class="column-title" th:text="${column.boardColumnName}">보드컬럼명1</h2>
-                    <input class="column-edit" th:id="${column.boardId}" style="display: none;">
-                    <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button> <!-- X 버튼 추가 -->
+                    <input class="column-edit" th:id="${column.columnId}" style="display: none;">
+                    <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button>
+                    <!-- X 버튼 추가 -->
                 </div>
                 <!-- 카드수만큼 카드 생성 -->
                 <div class="list-cards">
-                    <a class="list-card" draggable="true" th:each="card: ${column.getCardsName()}" th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}">
-                        <div class="list-card-detail" >
+                    <a class="list-card" draggable="true" th:id="${card.cardId}"
+                       th:each="card: ${column.getCardsName()}" th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}">
+                        <div class="list-card-detail">
                             <!-- 카드 내 내용들 아이콘으로 표시하거나 실제로 text로 보여줘야 함 -->
-                            <span class="list-card-title" th:id="${card.cardId}" th:text="${card.cardName}">카드 제목 1-1</span>
+                            <span class="list-card-title" th:id="${card.cardId}"
+                                  th:text="${card.cardName}">카드 제목 1-1</span>
                         </div>
                     </a>
                 </div>
                 <div class="card-components">
                     <!-- TODO 클릭했을 때 입력창과 추가 확인버튼, 취소버튼이 있는 div 로 변경-->
                     <a class="create-card-composer">
-                        <span class="icon-add"><img src="../static/icons/plus-icon-36.png"></span>
+                        <span class="icon-add"><img src="/icons/plus-icon-36.png"></span>
                         <span class="add-a-card" th:id="${column.columnId}">Add a Card"</span>
                     </a>
                 </div>
@@ -280,7 +295,7 @@
         <div class="column-list-wrapper-column-add">
             <div class="add-board-column-box">
                 <div class="add-board-column-btn-box">
-                    <img src="../static/icons/plus-icon-36.png">
+                    <img src="/icons/plus-icon-36.png">
                     <span class="icon-add">Add BoardColumn</span>
                 </div>
                 <!-- 숨어있는 input 위 span 클릭 시 등장-->
@@ -289,9 +304,9 @@
                        placeholder="Enter 보드컬럼 title" autocomplete="off">
 
                 <div class="board-column-control">
-                    <img src="../static/icons/plus-icon-36.png">
+                    <img src="/icons/plus-icon-36.png">
                     <input class="add-execute-btn" type="submit" value="Add 보드컬럼">
-                    <a class="icon-close"><img src="../static/icons/cancel-button.png"></a>
+                    <a class="icon-close"><img src="/icons/cancel-button.png"></a>
                 </div>
             </div>
         </div>
@@ -304,13 +319,13 @@
     function inviteBoardUser(boardId) {
         console.log(boardId);
         (async () => {
-            const { value: getName } =
+            const {value: getName} =
                 await Swal.fire({
-                        title: '초대할 사용자 아이디',
-                        text: '이메일 형태로 입력해주세요',
-                        input: 'text',
-                        inputPlaceholder: '사용자 아이디 입력..'
-                      })
+                    title: '초대할 사용자 아이디',
+                    text: '이메일 형태로 입력해주세요',
+                    input: 'text',
+                    inputPlaceholder: '사용자 아이디 입력..'
+                })
             // 이후 처리되는 내용.
             if (getName) {
                 console.log(getName);
@@ -344,9 +359,9 @@
             // 만약 Promise리턴을 받으면,
             if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
                 $.ajax({
-                    type:"DELETE",
-                    url:`/api/board-columns/${columnId}`,
-                    contentType:"application/json",
+                    type: "DELETE",
+                    url: `/api/board-columns/${columnId}`,
+                    contentType: "application/json",
                     success: function () {
                         Swal.fire({
                             icon: 'success',
@@ -447,7 +462,7 @@
                     window.location.href = `http://localhost:8080/api/boards/${id}`
                 },
                 error: function () {
-                    alert ("Error!");
+                    alert("Error!");
                     window.location.href = `http://localhost:8080/api/boards/${id}`
                 }
             })
@@ -526,7 +541,7 @@
             // 카드 생성을 알리는 서버쪽 코드 추가
             // 반드시 새로고침하기 (아니면 카드 id가 안생김)
             $.ajax({
-                type:"POST",
+                type: "POST",
                 url: `/api/boards/${boardid}/columns/${id}/cards`,
                 contentType: "application/json",
                 data: "새 카드",
@@ -540,6 +555,158 @@
 
         });
     });
+    const draggables = document.querySelectorAll(".list-card");
+    const containers = document.querySelectorAll(".list-cards");
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener("dragstart", () => {
+            event.stopImmediatePropagation();
+            draggable.classList.add("dragging");
+        });
+        draggable.addEventListener("dragend", () => {
+            event.stopImmediatePropagation();
+            draggable.classList.remove("dragging");
+
+            // 드래그 앤 드롭 정보 출력
+            const cardId = draggable.id;
+            const parentContainerId = draggable.parentNode.parentNode.id;
+            const cardIndex = [...draggable.parentNode.children].indexOf(draggable);
+
+            console.log("Card ID:", cardId);
+            console.log("Parent Container ID:", parentContainerId);
+            console.log("Card Index:", cardIndex);
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/cards/${cardId}/orders`,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    columnId: parentContainerId,
+                    cardOrder: cardIndex
+                }),
+                success: function () {
+
+                },
+                error: function () {
+                    alert("Error");
+                }
+            })
+        });
+    });
+
+    containers.forEach(container => {
+        container.addEventListener("dragover", e => {
+            event.stopImmediatePropagation();
+            e.preventDefault();
+            const afterElement = getDragAfterElementY(container, e.clientY);
+            const draggable = document.querySelector(".dragging");
+            if (afterElement === undefined) {
+                container.appendChild(draggable);
+            } else {
+                container.insertBefore(draggable, afterElement);
+            }
+        });
+    });
+
+    function getDragAfterElementY(container, y) {
+        const draggableElements = [
+            ...container.querySelectorAll(".list-card:not(.dragging)"),
+        ];
+        return draggableElements.reduce(
+            (closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                // console.log(offset);
+                if (offset < 0 && offset > closest.offset) {
+                    return {offset: offset, element: child};
+                } else {
+                    return closest;
+                }
+            },
+            {offset: Number.NEGATIVE_INFINITY},
+        ).element;
+    }
+
+    // 보드 컬럼 순서 바꾸기 드래그 앤 드롭 이벤트
+    // 보드 컬럼 순서 변경 ->board-column board order 변경
+    const column_draggables = document.querySelectorAll(".column-list-wrapper");
+    const column_containers = document.querySelectorAll(".content-container");
+    column_draggables.forEach(column_draggable => {
+
+        column_draggable.addEventListener("dragstart", () => {
+            column_draggable.classList.add("dragging");
+        });
+
+        column_draggable.addEventListener("dragend", () => {
+            column_draggable.classList.remove("dragging");
+        });
+    });
+
+    column_containers.forEach(column_container => {
+        column_container.addEventListener("dragover", e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElementX(column_container, e.clientX);
+            const draggable = document.querySelector(".dragging");
+            // if (afterElement === undefined) {
+            //     column_container.appendChild(draggable);
+            // } else {
+            //     column_container.insertBefore(draggable, afterElement);
+            // }
+            column_container.insertBefore(draggable, afterElement);
+        });
+
+        column_container.addEventListener("drop", e => {
+            e.preventDefault();
+
+            const draggingContainer = document.querySelector(".dragging");
+            const columnIndex = [...column_container.children].indexOf(draggingContainer) + 1;
+
+            let url = window.location.href;
+            let id = url.replace("http://localhost:8080/api/boards/", "");
+            console.log(id);
+            // 드래그 앤 드롭된 .column-list-wrapper의 ID 값 출력
+            const columnId = draggingContainer.id;
+            console.log("Dropped at position:", columnIndex);
+            console.log("Column ID:", columnId);
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/board-columns/${columnId}`,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    boardId: id,
+                    boardColumnOrder: columnIndex
+                }),
+                // success: function () {
+                //     window.location.href = `http://localhost:8080/api/boards/${id}`
+                // },
+                error: function () {
+                    alert("Error!");
+                    window.location.href = `http://localhost:8080/api/boards/${id}`
+                }
+            })
+
+        });
+    });
+
+    function getDragAfterElementX(container, x) {
+        const draggableElements = [
+            ...container.querySelectorAll(".column-list-wrapper:not(.dragging)"),
+        ];
+
+        return draggableElements.reduce(
+            (closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = x - box.left - box.width / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return {offset: offset, element: child};
+                } else {
+                    return closest;
+                }
+            },
+            {offset: Number.NEGATIVE_INFINITY},
+        ).element;
+    }
 
 </script>
 </html>
