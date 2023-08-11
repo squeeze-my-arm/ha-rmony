@@ -29,7 +29,7 @@ public class SocialController {
         jwtUtil.addJwtToCookie(token, response);
         log.info(token);
 
-        return "redirect:/";
+        return "redirect:/api/boards";
     }
 
 }
