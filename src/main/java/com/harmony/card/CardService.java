@@ -28,7 +28,6 @@ public class CardService {
     private final UserRepository userRepository;
     private final BoardUserRepository boardUserRepository;
 
-
     public CardResponseDto getOneCard(Long cardid) {
         log.info("조회 하기");
         Card card = findCard(cardid);

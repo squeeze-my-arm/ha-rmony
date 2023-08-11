@@ -28,22 +28,23 @@ public class Board extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id", nullable = false, updatable = false)
     private Long id;
+
     @Column(name = "board_title", nullable = false)
     private String boardTitle;
+
     @Column(name = "board_color", nullable = false)
     private String boardColor;
+
     @Column(name = "board_desc")
     private String boardDesc;
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
     private Set<BoardUser> boardUsers = new LinkedHashSet<>();
-
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     // CascadeType = ALL(persist + REMOVE) 이면 안되고, REMOVE 여야 함
-
     @OrderBy("boardColumnOrder ASC")
     private List<BoardColumn> boardColumnList = new LinkedList<>();
 
@@ -67,6 +68,7 @@ public class Board extends Timestamped {
         if (boardRequestDto.getBoardColor() != null) this.boardColor = boardRequestDto.getBoardColor();
         if (boardRequestDto.getBoardDesc() != null) this.boardDesc = boardRequestDto.getBoardDesc();
     }
+
     public Integer getLastBoardColumnOrder() {
         if (boardColumnList.isEmpty()) {
             return 0;
@@ -74,6 +76,7 @@ public class Board extends Timestamped {
             return boardColumnList.get(boardColumnList.size() - 1).getBoardColumnOrder();
         }
     }
+
     public void addColumnList(BoardColumn boardColumn) {
         this.boardColumnList.add(boardColumn);
     }
