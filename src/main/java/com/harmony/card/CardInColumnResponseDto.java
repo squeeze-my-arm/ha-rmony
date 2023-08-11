@@ -12,5 +12,4 @@ public class CardInColumnResponseDto {
         this.cardId = card.getId();
         this.cardName = card.getCardname();
     }
-
 }

@@ -20,6 +20,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardUserRepository boardUserRepository;
 
+
     public List<BoardResponseDto> getBoardList(User user) {
         List<Long> idList = boardUserRepository.findAllByUser(user).stream().map(BoardUser::getBoard).map(Board::getId).toList();
         log.info("id 목록 뽑아오기");
