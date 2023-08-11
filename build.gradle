@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+
     //유효성 검사 설정
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 

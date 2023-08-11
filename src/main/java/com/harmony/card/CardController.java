@@ -34,14 +34,14 @@ public class CardController {
                                                       @PathVariable Long cardId,
                                                       @RequestBody CardRequestDto requestDto,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+        log.info(requestDto.getDeadline());
         CardResponseDto result = cardService.updateCard(boardId, cardId, requestDto,
                 userDetails.getUser());
         return ResponseEntity.ok(result);
     }
 
     //카드 삭제
-    @DeleteMapping("boards/{boardId}/columns/cards/{cardId}")
+    @DeleteMapping("/boards/{boardId}/columns/cards/{cardId}")
     public ResponseEntity<String> deleteCard(@PathVariable Long boardId, @PathVariable Long cardId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.deleteCard(boardId, cardId, userDetails.getUser());
@@ -49,17 +49,17 @@ public class CardController {
     }
 
     // 카드 상세 조회
-    @GetMapping("/cards/{cardid}")
-    public ResponseEntity<ApiResponseDto> getOneCard(@PathVariable Long cardid) {
-        try {
-            log.info("조회 시도");
-            CardResponseDto cardResponseDto = cardService.getOneCard(cardid);
-            log.info("조회 완료");
-            return ResponseEntity.ok().body(cardResponseDto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto("카드가 존재하지 않습니다", HttpStatus.BAD_REQUEST.value()));
-        }
-    }
+//    @GetMapping("/cards/{cardid}")
+//    public ResponseEntity<ApiResponseDto> getOneCard(@PathVariable Long cardid) {
+//        try {
+//            log.info("조회 시도");
+//            CardResponseDto cardResponseDto = cardService.getOneCard(cardid);
+//            log.info("조회 완료");
+//            return ResponseEntity.ok().body(cardResponseDto);
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(new ApiResponseDto("카드가 존재하지 않습니다", HttpStatus.BAD_REQUEST.value()));
+//        }
+//    }
 
     // 카드 이동
     @PutMapping("/cards/{cardid}/orders")

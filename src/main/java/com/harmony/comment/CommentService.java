@@ -53,12 +53,12 @@ public class CommentService {
     public ApiResponseDto deleteComment(Long cardid, Comment comment) {
         // 카드 존재 확인
         Card card = cardService.findCard(cardid);
-        
-        // 댓글 삭제
-        commentRepository.delete(comment);
 
         // 카드에 있는 댓글도 삭제
         card.getComments().remove(comment);
+        
+        // 댓글 삭제
+        commentRepository.delete(comment);
 
         // 상태코드와 메시지 반환
         return new ApiResponseDto("댓글 삭제 완료", HttpStatus.OK.value());

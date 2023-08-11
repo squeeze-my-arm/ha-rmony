@@ -4,6 +4,7 @@ import com.harmony.board.Board;
 import com.harmony.card.Card;
 import com.harmony.common.Timestamped;
 import jakarta.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,14 +22,18 @@ public class BoardColumn extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false, updatable = false)
     public Board board;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "columns_id", nullable = false, updatable = false)
     private Long id;
+
     @Column(name = "board_column_name", nullable = false)
     private String boardColumnName;
+
     @Column(name = "column_order", nullable = false)
     private Integer boardColumnOrder;
+
     @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Card> cards = new LinkedList<>();
 
