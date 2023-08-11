@@ -4,16 +4,18 @@ package com.harmony.card;
 import com.harmony.aop.BoardUserCheck;
 import com.harmony.boardColumn.BoardColumn;
 import com.harmony.boardColumn.BoardColumnRepository;
+import com.harmony.boardUser.BoardUser;
 import com.harmony.boardUser.BoardUserRepository;
 import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
+import com.harmony.cardUser.CardUserResponseDto;
 import com.harmony.user.User;
 import com.harmony.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -84,7 +86,8 @@ public class CardService {
     public CardResponseDto createCard(Long boardId, Long columnId, String cardName, User user) {
         BoardColumn column = boardColumnRepository.findById(columnId)
                 .orElseThrow(() -> new IllegalArgumentException("컬럼이 존재하지 않습니다."));
-        Card card = Card.builder().cardname(cardName).boardColumn(column).color("BLACK").build();
+        Card card = Card.builder().cardname(cardName).boardColumn(column).color("#FFFFFF").build();
+
         card.setCardOrder(column.getCards().size() + 1);
 
         cardRepository.save(card);
@@ -100,7 +103,11 @@ public class CardService {
     public CardResponseDto updateCard(Long boardId, Long cardId, CardRequestDto requestDto,
                                       User user) {
         Card card = findCard(cardId);
+        for (String s : requestDto.getCardUserNames()) {
+            log.info("username: " + s);
+        }
 
+        cardUserRepository.deleteAllByCard(card);
 
         //프론트에서 입력받아온 name 들, 기존 목록 비우고 새 목록의 걸 모두 추가
         if (!requestDto.getCardUserNames().isEmpty()) {
@@ -111,18 +118,20 @@ public class CardService {
             //카드유저(card id가 이거인 카드유저 모두 삭제)
             deleteCardUser(card);
 
+
             log.info("삭제 확인");
 
             //새로운 목록의 것들 모두 등록
             for (String name : requestDto.getCardUserNames()) {
                 User requestUser = userRepository.findByUsername(name)
                         .orElseThrow(() -> new IllegalArgumentException("해당 아이디를 가진 유저가 없습니다."));
+                log.info(user.getUsername());
                 createCardUser(boardId, card, requestUser);
             }
             log.info("생성 반복 확인");
         }
+
         card.updateCard(requestDto);
-        cardUserRepository.deleteAllByCard(card);
         return new CardResponseDto(card);
     }
 
@@ -145,19 +154,23 @@ public class CardService {
         cardRepository.delete(findCard(cardId));
     }
 
-    //카드유저 생성
+    // 카드 유저 생성
     @Transactional
     public void createCardUser(Long boardId, Card card, User user) {
         if (!boardUserRepository.existsByUserAndBoard_Id(user, boardId)) {
             throw new RejectedExecutionException("해당 유저는 보드에 등록되어있지 않습니다.");
         }
         CardUser cardUser = new CardUser(card, user);
-
+        log.info(cardUser.getUsername());
+        log.info(cardUser.getNickname());
         card.addCardUser(cardUser);
         cardUserRepository.save(cardUser);
+        log.info("카드 유저 생성 및 저장");
     }
 
+
     //특정 카드를 가진 카드유저 삭제
+
     @Transactional
     public void deleteCardUser(Card card) {
         cardUserRepository.deleteAllByCard(card);
@@ -172,5 +185,25 @@ public class CardService {
     public BoardColumn findBoardColumn(Long columnid) {
         return boardColumnRepository.findById(columnid).orElseThrow(IllegalArgumentException::new);
 
+    }
+
+    // 사용자 찾기
+    public List<CardUserResponseDto> findUsers(List<BoardUser> boardUser, List<CardUser> cardUsers) {
+        List<CardUserResponseDto> cardUserResponseDtos = new ArrayList<>();
+
+        for (BoardUser user: boardUser) {
+            Boolean selected = false;
+            if (cardUsers.size()>0) {
+                for (CardUser cardUser: cardUsers) {
+                    // unique 값인 username으로 비교함
+                    if (user.getUsername().equals(cardUser.getUsername())) {
+                        selected = true;
+                    }
+                }
+            }
+            cardUserResponseDtos.add(new CardUserResponseDto(user, selected));
+        }
+
+        return cardUserResponseDtos;
     }
 }

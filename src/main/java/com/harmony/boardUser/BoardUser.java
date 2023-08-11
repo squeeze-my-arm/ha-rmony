@@ -26,6 +26,12 @@ public class BoardUser {
     @Enumerated(value = EnumType.STRING)
     private BoardUserEnum role;
 
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "nickname")
+    private String nickname;
+
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
@@ -41,6 +47,8 @@ public class BoardUser {
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
     public BoardUser(Board board, User user, BoardUserEnum role) {
+        this.username = user.getUsername();
+        this.nickname = user.getNickname();
         this.board = board;
         this.user = user;
         this.role = role;

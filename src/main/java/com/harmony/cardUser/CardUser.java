@@ -29,12 +29,21 @@ public class CardUser {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "card_user_id", nullable = false, updatable = false)
   private Long id;
+
+  @Column
+  private String username;
+
+  @Column
+  private String nickname;
+
 /**
  * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
  */
   public CardUser(Card card,User user){
     this.card=card;
     this.user=user;
+    this.username = user.getUsername();
+    this.nickname = user.getNickname();
   }
   /**
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.

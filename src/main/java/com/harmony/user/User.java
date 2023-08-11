@@ -4,10 +4,7 @@ import com.harmony.boardUser.BoardUser;
 import com.harmony.cardUser.CardUser;
 import com.harmony.comment.Comment;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -41,6 +38,9 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
+    @Column(name = "google_id")
+    private String googleId;
+
     /**
      * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
      */
@@ -58,10 +58,18 @@ public class User {
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
      */
+    @Builder
     public User(String username, String password, String nickname) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+    }
+
+    public User(String username, String password, String nickname, String googleId) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.googleId = googleId;
     }
 
     /**
@@ -76,5 +84,10 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.introduction = introduction;
+    }
+
+    public User googleIdupdate(String googleUserInfoId) {
+        this.googleId = googleUserInfoId;
+        return this;
     }
 }
