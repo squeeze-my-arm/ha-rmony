@@ -26,4 +26,10 @@ public class UserResponseDto {
     this.introduction = boardUser.getUser().getIntroduction();
   }
 
+  public UserResponseDto(User user) {
+    this.userId = user.getId();
+    this.username = user.getUsername();
+    this.nickname = user.getNickname();
+    this.introduction = user.getIntroduction();
+  }
 }

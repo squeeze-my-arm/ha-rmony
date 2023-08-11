@@ -1,0 +1,98 @@
+/* mypage.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 좌측 정렬 */
+    padding: 20px; /* 컨테이너의 내부 여백 */
+}
+
+.profile-box {
+    background-color: #e1ffb7; /* 파스텔톤의 진한 녹색 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin-bottom: 30px; /* 하단 여백 추가 */
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    background-color: #ccc; /* For demonstration */
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.nickname {
+    font-size: 18px;
+    color: #8dbf8b; /* 파스텔톤의 진한 녹색 */
+    margin-bottom: 10px;
+}
+
+/* mypage.css */
+
+/* ... 이전 코드 ... */
+
+.edit-container {
+    background-color: #e8ffcc; /* 파스텔톤의 연한 녹색 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.edit-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* 버튼 간격을 최대로 확보 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+
+.button {
+    background-color: #8dbf8b; /* 파스텔톤의 진한 녹색 */
+    color: white;
+    border: none;
+    padding: 10px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.button:hover {
+    background-color: #a8d7a1; /* 파스텔톤의 밝은 녹색 */
+}
+
+.leave-button {
+    background-color: #8dbf8b; /* 파스텔톤의 진한 녹색 */
+    color: white;
+    border: none;
+    padding: 10px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
