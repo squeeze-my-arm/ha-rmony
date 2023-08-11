@@ -8,11 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
-@RestController
+@Controller
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j(topic = "보드 유저")
@@ -22,28 +21,26 @@ public class BoardUserController {
     private final UserDetailsServiceImpl userDetailsService;
 
     // 초대 링크 클릭시 실행되는 controller
-    @PostMapping("/boardUser/join/{boardId}")
-    public ResponseEntity<?> joinUserBoard(@PathVariable Long boardId,
-                                           @RequestBody Map<String, String> invitedUser) {
-        String invitedUsername = invitedUser.get("username");
-        boardUserService.joinUserBoard(boardId, invitedUsername);
+    @GetMapping("/boardUser/join/{boardId}")
+    public String joinUserBoard(@PathVariable Long boardId,
+                                @RequestParam String to) {
+        log.info(to);
+        boardUserService.joinUserBoard(boardId, to);
 
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (userDetails.getUsername().equals(invitedUsername)) {
+            if (userDetails.getUsername().equals(to)) {
                 log.info("참여 완료되었습니다!");
                 // 해당 보드 페이지로 넘어가도록 할 예정
-                return ResponseEntity.ok().body("참여 완료");
+                return "redirect:/api/boards/" + boardId;
             }
         }
-        /*            // 로그인된 사용자의 username과 초대된 사용자의 username이 다를 경우 -> 로그인 페이지로
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(URI.create("/api/users/login"));
-            return new ResponseEntity<>(httpHeaders, HttpStatus.MOVED_PERMANENTLY);*/
+
         log.info("로그인이 필요합니다!");
-        return ResponseEntity.ok().body("로그인필요함ㄴ");
+        return "loginsignup";
     }
 
+    @ResponseBody
     @DeleteMapping("/boardUser/{boardId}")
     public ResponseEntity<String> deleteBoardUser(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         boardUserService.deleteBoardUser(boardId, userDetails.getUser());
