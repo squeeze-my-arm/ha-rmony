@@ -59,11 +59,16 @@ public class UserService {
     @Transactional
     public UserResponseDto updateUser(User user, UserUpdateRequestDto updateRequestDto,
                                       User loginUser) {
-        user.updateUser(updateRequestDto.getUsername(),
-                passwordEncoder.encode(updateRequestDto.getPassword()),
-                updateRequestDto.getNickname(), updateRequestDto.getIntroduction());
-        return new UserResponseDto(user.getId(), user.getUsername(), user.getNickname(),
-                user.getIntroduction());
+        user.updateUser(updateRequestDto,
+                updateRequestDto.getNickname(),
+                updateRequestDto.getIntroduction());
+
+        if (updateRequestDto.getPassword()!=null) {
+            user.updatePassword(passwordEncoder.encode(updateRequestDto.getPassword()));
+        }
+
+        User savedUser = userRepository.save(user);
+        return new UserResponseDto(savedUser);
     }
 
     @UserCheck

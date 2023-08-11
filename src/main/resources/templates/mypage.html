@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/mypage.css">
+    <title>My Page</title>
+</head>
+<body>
+<div class="container">
+    <div class="profile-box">
+        <div class="profile-image"></div>
+        <div class="nickname" th:text="${user.nickname}">Nickname</div>
+        <div class="introduction"  th:text="${user.introduction}">Introduction</div>
+    </div>
+    <div class="edit-container">
+        <div class="input-label">닉네임</div>
+        <input type="text" class="edit-input" placeholder="새 닉네임">
+        <div class="input-label">Introduction</div>
+        <textarea class="edit-input" placeholder="새 소개"></textarea>
+        <div class="button-container">
+            <button class="button" th:id="${user.id}">저장</button>
+            <button class="btn" th:id="${user.id}">비밀번호 변경</button>
+
+        </div>
+    </div>
+    <div class="leave-button-container">
+        <button class="leave-button" th:id="${user.id}">회원탈퇴</button>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 로드 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="/js/mypage.js"></script> <!-- mypage.js 로드 -->
+</body>
+</html>

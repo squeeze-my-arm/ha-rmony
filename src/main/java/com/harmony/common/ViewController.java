@@ -14,12 +14,14 @@ import com.harmony.cardUser.CardUserResponseDto;
 import com.harmony.comment.CommentRepository;
 import com.harmony.comment.CommentResponseDto;
 import com.harmony.security.JwtUtil;
+import com.harmony.security.UserDetailsImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +39,9 @@ public class ViewController {
     private final CardRepository cardRepository;
 
     private final CardService cardService;
-    private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
     private final BoardUserRepository boardUserRepository;
-    private final BoardRepository boardRepository;
     private final CardUserRepository cardUserRepository;
-    private final BoardColumnRepository boardColumnRepository;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/")
@@ -118,4 +117,20 @@ public class ViewController {
         return "card";
     }
 
+    @GetMapping("/api/users/mypage")
+    public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // userDetails 객체에서 현재 사용자의 정보를 가져와서 모델에 추가
+        model.addAttribute("user", userDetails.getUser());
+//        String userId = String.valueOf(userDetails.getUser().getId()); // userId를 문자열로 변환
+//        model.addAttribute("userId", userId);
+//        log.info(userId);
+        return "mypage"; // This should match the name of your HTML file without the .html extension
+    }
+//    @GetMapping("/api/users/mypage")
+//    public String myPage(Model model) {
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String userId = userDetails.getUsername();
+//        model.addAttribute("userId", userId);
+//        return "mypage";
+//    }
 }
