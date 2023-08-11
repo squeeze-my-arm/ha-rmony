@@ -8,6 +8,7 @@ import com.harmony.user.User;
 import com.harmony.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +16,9 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 @Service
 @Slf4j(topic = "이메일 전송")
@@ -27,19 +31,27 @@ public class EmailSenderService {
     private final BoardService boardService;
     private final BoardUserRepository boardUserRepository;
 
-    public void confirmBoardUser(Long boardId, String invitedUserName, User user) throws Exception {
-        User inviteUser = userService.findUser(invitedUserName); // 초대받은 유저
-        log.info(invitedUserName);
-        Board board = boardService.findBoard(boardId);
+    public ResponseEntity<String> confirmBoardUser(Long boardId, String invitedUserName, User user) throws Exception {
+
         try {
-            BoardUser boardUser = findBoardUser(inviteUser, board);
-            // 이미 초대된 사용자가 있을 때
-            // sendEmail 로직을 진행하지 않음
-            log.info("이미 초대된 사용자입니다.");
+            User inviteUser = userService.findUser(invitedUserName); // 초대받은 유저
+            log.info(invitedUserName);
+            Board board = boardService.findBoard(boardId);
+            try {
+                BoardUser boardUser = findBoardUser(inviteUser, board);
+                // 이미 초대된 사용자가 있을 때
+                // sendEmail 로직을 진행하지 않음
+                log.info("이미 초대된 사용자입니다.");
+                return ResponseEntity.badRequest().body("이미 초대된 사용자입니다.");
+            } catch (IllegalArgumentException ex) {
+                // 초대된 사용자가 없을 때
+                sendEmail(board, invitedUserName, user);
+                return ResponseEntity.ok().body("초대 메일을 발송하였습니다.");
+            }
         } catch (IllegalArgumentException ex) {
-            // 초대된 사용자가 없을 때
-            sendEmail(board, invitedUserName, user);
+            return ResponseEntity.badRequest().body("가입되지 않은 사용자입니다.");
         }
+
     }
 
     @Async
@@ -64,13 +76,14 @@ public class EmailSenderService {
         }
     }
 
-    public String setContext(String to, String from, Board board) {
+    public String setContext(String to, String from, Board board) throws UnsupportedEncodingException {
         String msg = "";
         msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">Ha-rmony</h1>";
         msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">";
+        msg += to + "님 반갑습니다!" + "<br>";
         msg += from + "으로부터 " + board.getBoardTitle() + "에 초대되었습니다:)</p>";
         msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
-        msg += "<a href=\"http://localhost8080/api/boardUser/join/" + board.getId() + "\">" + "Board에 참여하기" + "</a>";
+        msg += "<a href=\"http://localhost:8080/api/boardUser/join/" + board.getId() + "?to=" + URLEncoder.encode(to, "UTF-8") + "\">" + "Board에 참여하기" + "</a>";
         msg += "</td></tr></tbody></table></div>";
         return msg;
     }

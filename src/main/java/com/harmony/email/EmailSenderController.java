@@ -22,7 +22,6 @@ public class EmailSenderController {
                                              @RequestBody Map<String, String> invitedUser,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
         log.info(invitedUser.get("username"));
-        emailSenderService.confirmBoardUser(boardId, invitedUser.get("username"), userDetails.getUser());
-        return ResponseEntity.ok().body("이메일 전송 성공");
+        return emailSenderService.confirmBoardUser(boardId, invitedUser.get("username"), userDetails.getUser());
     }
 }
