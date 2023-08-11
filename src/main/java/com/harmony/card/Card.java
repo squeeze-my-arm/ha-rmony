@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Card extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id", nullable = false, updatable = false)
     private Long id;
-    @Column(name = "card_name", nullable = false, unique = true)
+    @Column(name = "card_name", nullable = false)
     private String cardname;
     @Column(name = "card_desc")
     private String description;
@@ -72,7 +73,7 @@ public class Card extends Timestamped {
             this.color = requestDto.getColor();
         }
         if (requestDto.getDeadline() != null) {
-            this.deadline = requestDto.getDeadline();
+            this.deadline = LocalDate.parse(requestDto.getDeadline(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
         if (requestDto.getDesc() != null) {
             this.description = requestDto.getDesc();

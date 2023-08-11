@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,23 +18,21 @@ import java.util.Set;
 @Table(name = "board_column")
 public class BoardColumn extends Timestamped {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "columns_id", nullable = false, updatable = false)
-  private Long id;
 
-    @Column(name="board_column_name", nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "columns_id", nullable = false, updatable = false)
+    private Long id;
+
+    @Column(name = "board_column_name", nullable = false)
     private String boardColumnName;
-
-    @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false, updatable = false)
-    public Board board;
-
-
     @Column(name = "column_order", nullable = false)
     private Integer boardColumnOrder;
     @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Card> cards = new LinkedList<>();
+    @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false, updatable = false)
+    public Board board;
 
     @Builder
     public BoardColumn(Board board, String boardColumnName, Integer boardColumnOrder) {

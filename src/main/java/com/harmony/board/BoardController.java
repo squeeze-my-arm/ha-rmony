@@ -27,13 +27,13 @@ public class BoardController {
     }
 
     // 보드 상세 조회
-    @GetMapping("/boards/{boardId}")
-    public String getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        Board board = boardService.findBoard(boardId);
-        BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
-        model.addAttribute("board", board);
-        return "boardMain";
-    }
+
+//    @GetMapping("/boards/{boardId}")
+//    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        Board board = boardService.findBoard(boardId);
+//        BoardResponseDto result = boardService.getBoard(board, userDetails.getUser());
+//        return ResponseEntity.ok().body(result);
+//    }
 
     @ResponseBody
     // 보드 생성
