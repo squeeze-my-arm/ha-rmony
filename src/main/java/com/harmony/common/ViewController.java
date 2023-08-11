@@ -17,14 +17,12 @@ import com.harmony.security.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
 
 import java.util.List;
 
@@ -37,12 +35,9 @@ public class ViewController {
     private final CardRepository cardRepository;
 
     private final CardService cardService;
-    private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
     private final BoardUserRepository boardUserRepository;
-    private final BoardRepository boardRepository;
     private final CardUserRepository cardUserRepository;
-    private final BoardColumnRepository boardColumnRepository;
     private final JwtUtil jwtUtil;
 
     @GetMapping("/")
@@ -73,17 +68,17 @@ public class ViewController {
         model.addAttribute("board", boardResponseDto);
         // 그리고 컬럼에 대한 정보가 필요함
 
-        List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findByBoardId(boardResponseDto.getBoardId())
-                                                                .stream().map(BoardColumnResponseDto::new).toList();
+        List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(boardResponseDto.getBoardId())
+                .stream().map(BoardColumnResponseDto::new).toList();
 
-        for (BoardColumnResponseDto b: boardColumnResponseDto) {
+        for (BoardColumnResponseDto b : boardColumnResponseDto) {
             b.setCardsName(cardRepository.findByBoardColumn_IdOrderByCardOrder(b.getColumnId()).stream().map(CardInColumnResponseDto::new).toList());
             b.setBoardId(boardid);
         }
 
-        for (BoardColumnResponseDto b: boardColumnResponseDto) {
-            log.info("보드아이디: "+ b.getBoardId() + " | 컬럼 아이디: " + b.getColumnId());
-            for (CardInColumnResponseDto c: b.getCardsName()) {
+        for (BoardColumnResponseDto b : boardColumnResponseDto) {
+            log.info("보드아이디: " + b.getBoardId() + " | 컬럼 아이디: " + b.getColumnId());
+            for (CardInColumnResponseDto c : b.getCardsName()) {
                 log.info("카드아이디: " + c.getCardId());
             }
         }
@@ -92,7 +87,7 @@ public class ViewController {
         return "board";
     }
 
-    
+
     @GetMapping("/api/cards/{cardid}")
     public String cardPage(@PathVariable Long cardid, Model model) {
         // 일단 해당 카드에 대한 정보를 찾자
