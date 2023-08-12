@@ -2,21 +2,22 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!--부트스트랩 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- sortable-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
@@ -47,7 +48,7 @@
         }
 
         .board-title-container {
-            width: 80%;
+            width: 70%;
             height: 100%;
         }
 
@@ -82,7 +83,7 @@
 
         .invite-btn-container {
             display: flex;
-            width: 20%;
+            width: 30%;
             height: 100%;
         }
 
@@ -93,6 +94,12 @@
         }
 
         .invite-btn-container button:nth-child(2) {
+            margin: 1.3rem 0 0 1.3rem;
+            width: 13rem;
+            height: 3rem;
+        }
+
+        .invite-btn-container button:nth-child(3) {
             background-color: transparent;
             border: none;
             margin: 1.3rem 0 0 1.3rem;
@@ -100,14 +107,14 @@
             height: 3rem;
         }
 
-        .invite-btn-container button:nth-child(2):hover {
+        .invite-btn-container button:nth-child(3):hover {
             border-radius: 10px;
             background-color: white;
             border: none;
         }
 
         /* 회원 목록 띄우기 */
-        .invite-btn-container button:nth-child(2) {
+        .invite-btn-container button:nth-child(3) {
             background-color: transparent;
             border: none;
             margin: 1.3rem 0 0 1.3rem;
@@ -120,7 +127,7 @@
         }
 
         /* X 버튼 (보드 메인으로 이동하기) */
-        .invite-btn-container button:nth-child(3) {
+        .invite-btn-container button:nth-child(4) {
             background-color: transparent;
             border: none;
             margin: 1.3rem 0 0 1.3rem;
@@ -128,7 +135,7 @@
             height: 3rem;
         }
 
-        .invite-btn-container button:nth-child(3):hover {
+        .invite-btn-container button:nth-child(4):hover {
             border-radius: 10px;
             background-color: white;
             border: none;
@@ -293,13 +300,17 @@
             <input class="board-edit" style="display: none;" th:id="${board.boardId}">
             <p th:text="${board.boardDesc}">보드 설명</p>
         </div>
+
         <div class="invite-btn-container">
+            <button class="btn btn-outline-danger" th:onclick="'deleteBoardUser(\'' + ${board.boardId} + '\')'"
+                    type="button">Board 떠나기
+            </button>
             <button class="btn btn-outline-success" th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"
                     type="button"> 회원 초대하기
             </button>
             <button type="button">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                   aria-expanded="false">
+                <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                   role="button">
                     회원 목록
                 </a>
                 <ul class="dropdown-menu">
@@ -307,25 +318,25 @@
                     </li>
                 </ul>
             </button>
-            <button type="button" class="gotomain" id="redirectButton">X</button>
+            <button class="gotomain" id="redirectButton" type="button">X</button>
         </div>
     </div>
     <div class="content-container">
-        <div class="column-list-wrapper" th:each="column : ${columns}" th:data-column-id="${column.columnId}">
+        <div class="column-list-wrapper" th:data-column-id="${column.columnId}" th:each="column : ${columns}">
             <div class="list-content">
                 <div class="column-title-box">
                     <!--TODO 수연님께 클릭해서 입력창 활성화 외부클릭해서 비활성화 카피해오기 -->
                     <!--서버쪽에서 컬럼마다 ID 값과 Name을 갖고와서 매칭시키는 작업 필요 - text:name, id:id -->
                     <!--실제 입력 액션을 취하고 나서는 서버쪽으로 id를 같이 보내주어야 하기 때문 -->
                     <h2 class="column-title" th:text="${column.boardColumnName}">보드컬럼명1</h2>
-                    <input class="column-edit" th:id="${column.columnId}" style="display: none;">
+                    <input class="column-edit" style="display: none;" th:id="${column.columnId}">
                     <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button>
                     <!-- X 버튼 추가 -->
                 </div>
                 <!-- 카드수만큼 카드 생성 -->
                 <div class="list-cards" th:data-column-id="${column.columnId}">
-                    <a class="list-card" draggable="true" th:each="card: ${column.getCardsName()}"
-                       th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}" th:data-card-id="${card.cardId}">
+                    <a class="list-card" draggable="true" th:data-card-id="${card.cardId}"
+                       th:each="card: ${column.getCardsName()}" th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}">
                         <div class="list-card-detail">
                             <!-- 카드 내 내용들 아이콘으로 표시하거나 실제로 text로 보여줘야 함 -->
                             <span class="list-card-title" th:id="${card.cardId}"
@@ -517,6 +528,70 @@
                             Toast.fire({
                                 icon: 'error',
                                 title: '초대 실패',
+                                text: xhr.responseText,
+                            });
+                            reject();
+                        }
+                    });
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading() // 모달 바깥 클릭 시 닫히지 않도록 설정
+        });
+    }
+
+    // 보드 떠나기 누르기
+    function deleteBoardUser(boardId) {
+        Swal.fire({
+            title: '정말 떠나시겠습니까?',
+            showCancelButton: true,
+            confirmButtonText: '떠나기',
+            cancelButtonText: '취소',
+            preConfirm: (username) => {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '/api/boardUser/' + boardId,
+                        type: 'DELETE',
+                        contentType: "application/json",
+                        success: function (data) {
+                            console.log(data);
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: '안녕히가세요',
+                                text: '이용해주셔서 감사합니다:)',
+                            }).then(() => {
+                                window.location.href = '/api/boards';
+                            });
+                            resolve();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr);
+                            console.log(status);
+                            console.error(error);
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'error',
+                                title: '떠나기 실패',
                                 text: xhr.responseText,
                             });
                             reject();

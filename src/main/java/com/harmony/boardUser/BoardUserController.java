@@ -43,7 +43,7 @@ public class BoardUserController {
     @ResponseBody
     @DeleteMapping("/boardUser/{boardId}")
     public ResponseEntity<String> deleteBoardUser(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        boardUserService.deleteBoardUser(boardId, userDetails.getUser());
-        return ResponseEntity.ok().body("board 삭제 성공");
+
+        return boardUserService.deleteBoardUser(boardId, userDetails.getUser());
     }
 }
