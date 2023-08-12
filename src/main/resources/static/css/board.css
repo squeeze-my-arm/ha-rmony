@@ -2,246 +2,135 @@
     font-family: 'Orbit', sans-serif;
 }
 
-html, body {
-    text-decoration: none;
+body, html {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
     height: 100%;
+}
+
+/* header */
+.align-items-right > p:nth-child(1) {
+    margin: 0px 30px 0px 0px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.align-items-right > p:nth-child(2) {
+    margin: 0px 0px 0px 30px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+align-items-center > strong {
+    font-size: 20px;
+}
+
+.align-items-right > p:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.container1 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 좌측 정렬 */
+    padding: 20px; /* 컨테이너의 내부 여백 */
+}
+
+.container-top{
+    height: 20%;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px; /* 컨테이너의 내부 여백 */
+}
+
+.one{
+    width: 10%;
+    display: flex;
+    justify-content: right;
+
+}
+
+.two {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.two > a {
+    font-size: 17px;
+    margin: 0px 0px 0px 30px;
+    padding: 0px;
+    text-align: start;
+}
+
+.two > a:nth-child(1) {
+    font-size: 20px;
+}
+
+
+/* ... 이전 코드 ... */
+
+.edit-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: transparent;
+    background-color: rgba(200, 200, 200, 0.1);
+    resize: none;
+    box-sizing: border-box; /* 수정한 부분 */
+    outline: none;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* 버튼 간격을 최대로 확보 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+
+.bottom {
+    width: 90%;
+    margin: auto;
+}
+
+.tab-content {
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 비밀번호 변경 */
+
+#home-tab-pane {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: hidden;
-}
-
-
-/* 상단 네이게이션 메뉴 */
-.board-title {
-    font-size: 30px;
-    margin: 1.3rem 1rem 0.3rem 0;
-    font-weight: bold;
-    text-decoration: none;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.board-edit {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 50%;
     background-color: transparent;
-    font-size: 30px;
-    margin: 1.3rem 1rem 0.3rem 0;
-    font-weight: bold;
-    text-decoration: none;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border: none;
-    box-sizing: border-box;
-    resize: none;
-    outline: none;
+    background-color: rgba(200, 200, 200, 0.05);
 }
 
-.board-title-container p {
-    font-size: 20px;
+.tab-content .tab-pane {
+    width: 100%;
 }
 
-.invite-btn-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    width: 60%;
-    height: 100%;
-}
-
-.invite-btn-container button:nth-child(1) {
-    margin: auto 10px;
-    width: 20%;
-    height: 3rem;
-}
-
-.invite-btn-container button:nth-child(2) {
-    margin: auto 10px;
-    width:  20%;
-    height: 3rem;
-}
-
-/* 회원 목록 띄우기 */
-.invite-btn-container button:nth-child(3) {
-    margin: auto 10px;
-    width:  20%;
-    height: 3rem;
-}
-
-/* X 버튼 (보드 메인으로 이동하기) */
-.invite-btn-container button:nth-child(4) {
-    margin: auto 0 auto 10px;
-    width: 3rem;
-    height: 3rem;
-}
-
-.top-container {
-    height: 13vh;
-    width: 94%;
-    margin: auto;
-    display: flex;
-}
-
-.board-title-container {
-    width: 40%;
-    height: 100%;
+#profile-tab-pane{
     display: flex;
     flex-direction: column;
-}
-
-li {
-    list-style: none;
-}
-
-.navbar-expand-lg {
-    width: 100%;
-    height: 15%;
-    margin: 0px;
-}
-
-/* 컬럼 - 카드 */
-
-.body-container {
-    width: 100%;
-    height: 85%;
-    background: transparent;
-}
-
-.content-container {
-    margin: 30px auto 0 auto;
-    min-height: 300px;
-    height: auto;
-    width: 95%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 10px;
-}
-
-/* 컬럼 디자인 */
-
-.column-list-wrapper {
-    margin-left: 0.7rem;
-    box-sizing: border-box;
-    height: 100%;
-    display: inline-block;
-    scroll-margin: 8px;
-    vertical-align: top;
-    white-space: nowrap;
-    width: 18%;
-}
-
-.list-content {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    max-height: 100%;
-    position: relative;
-    white-space: normal;
-    width: 100%;
-}
-
-.column-list-wrapper-column-add {
-    margin-left: 0.7rem;
-    box-sizing: border-box;
-    height: fit-content;
-    display: inline-block;
-    scroll-margin: 8px;
-    vertical-align: top;
-    white-space: nowrap;
-    width: 18%;
-    border: 1px solid black;
-    opacity: 0.5;
-}
-
-.column-title-box {
-    flex: 0 0 auto;
-    min-height: 38px;
-    padding: 8px;
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.column-title {
-    font-size: 20px;
-    margin: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    display: inline-block;
-}
-
-.column-edit {
-    background-color: transparent;
-    margin: 1px;
-    font-size: 20px;
-    display: none;
+    justify-content: center;
+    padding: 20px;
     width: 100%;
     height: 100%;
-    border: none;
-    box-sizing: border-box;
-    resize: none;
-    outline: none;
-}
-
-.board-column-name-input {
-    display: none;
-}
-
-.board-column-control {
-    display: none;
-}
-
-
-.add-board-column-box {
-    width: 60%;
-    margin: 1rem 0 1rem 1rem;
-
-}
-
-
-/* 카드 추가 */
-
-.list-cards {
-    height: fit-content;
-}
-
-.list-card {
-    text-decoration: none;
-    background-color: rgba(200, 200, 200, 0.08);
-    color: black;
-    margin: 10px;
-    width: 90%;
-    height: 2rem;
-    display: inline-block;
-}
-
-.list-card-detail {
-    margin-left: 10px;
-    width: 95%;
-}
-
-.card-components {
-    border-radius: 8px;
-    display: block;
-    flex: 1 0 auto;
-    margin: 10px;
-    position: relative;
-}
-
-a {
-    text-decoration: none;
-    color: #9FADBC;
-    cursor: pointer;
-}
-
-.add-board-column-btn-box {
-    cursor: pointer;
-}
-
-.delete-column {
-    background-color: #ffffff;
-    border: none;
 }
