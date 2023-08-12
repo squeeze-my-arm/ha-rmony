@@ -1,36 +1,21 @@
+* {
+    font-family: 'Orbit', sans-serif;
+}
+
 html, body {
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
     text-decoration: none;
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     overflow: hidden;
 }
 
-.body-container {
-    margin: 15px auto 0 auto;
-    width: 94%;
-    height: 95%;
-    background-color: #9ed2be;
-    border-radius: 40px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-.top-container {
-    height: 13vh;
-    width: 94%;
-    margin: auto;
-    display: flex;
-}
-
-.board-title-container {
-    width: 70%;
-    height: 100%;
-}
-
-/* 수정 부분 */
-
+/* 상단 네이게이션 메뉴 */
 .board-title {
-    font-size: 40px;
+    font-size: 30px;
     margin: 1.3rem 1rem 0.3rem 0;
     font-weight: bold;
     text-decoration: none;
@@ -40,7 +25,7 @@ html, body {
 
 .board-edit {
     background-color: transparent;
-    font-size: 40px;
+    font-size: 30px;
     margin: 1.3rem 1rem 0.3rem 0;
     font-weight: bold;
     text-decoration: none;
@@ -52,86 +37,92 @@ html, body {
     outline: none;
 }
 
-/* 수정 부분 종료 - 보드 제목 */
-
-/* 수정 부분 - 보드 상단 버튼 */
+.board-title-container p {
+    font-size: 20px;
+}
 
 .invite-btn-container {
     display: flex;
-    width: 30%;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 60%;
     height: 100%;
 }
 
 .invite-btn-container button:nth-child(1) {
-    margin: 1.3rem 0 0 0;
-    width: 13rem;
+    margin: auto 10px;
+    width: 20%;
     height: 3rem;
 }
 
 .invite-btn-container button:nth-child(2) {
-    margin: 1.3rem 0 0 1.3rem;
-    width: 13rem;
+    margin: auto 10px;
+    width:  20%;
     height: 3rem;
-}
-
-.invite-btn-container button:nth-child(3) {
-    background-color: transparent;
-    border: none;
-    margin: 1.3rem 0 0 1.3rem;
-    width: 3rem;
-    height: 3rem;
-}
-
-.invite-btn-container button:nth-child(3):hover {
-    border-radius: 10px;
-    background-color: white;
-    border: none;
 }
 
 /* 회원 목록 띄우기 */
 .invite-btn-container button:nth-child(3) {
-    background-color: transparent;
-    border: none;
-    margin: 1.3rem 0 0 1.3rem;
-    width: 13rem;
+    margin: auto 10px;
+    width:  20%;
     height: 3rem;
-}
-
-.nav-link dropdown-toggle {
-    text: "회원 목록";
 }
 
 /* X 버튼 (보드 메인으로 이동하기) */
 .invite-btn-container button:nth-child(4) {
-    background-color: transparent;
-    border: none;
-    margin: 1.3rem 0 0 1.3rem;
+    margin: auto 0 auto 10px;
     width: 3rem;
     height: 3rem;
 }
 
-.invite-btn-container button:nth-child(4):hover {
-    border-radius: 10px;
-    background-color: white;
-    border: none;
+.top-container {
+    height: 13vh;
+    width: 94%;
+    margin: auto;
+    display: flex;
 }
 
-/* 수정 부분 종료 - 보드 상단 버튼 */
+.board-title-container {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+li {
+    list-style: none;
+}
+
+.navbar-expand-lg {
+    width: 100%;
+    height: 15%;
+    margin: 0px;
+}
+
+/* 컬럼 - 카드 */
+
+.body-container {
+    width: 100%;
+    height: 85%;
+    background: transparent;
+}
 
 .content-container {
-    margin: 1rem auto 0 auto;
+    margin: 30px auto 0 auto;
     min-height: 300px;
     height: auto;
-    width: 94%;
+    width: 95%;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 10px;
 }
 
+/* 컬럼 디자인 */
+
 .column-list-wrapper {
     margin-left: 0.7rem;
-
     box-sizing: border-box;
     height: 100%;
     display: inline-block;
@@ -139,23 +130,31 @@ html, body {
     vertical-align: top;
     white-space: nowrap;
     width: 18%;
-
 }
 
 .list-content {
-    border-radius: 12px;
-    background-color: #7eaa92;
-    box-shadow: 0 1px 1px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     max-height: 100%;
     position: relative;
     white-space: normal;
     width: 100%;
 }
 
-/* 수정 부분 */
+.column-list-wrapper-column-add {
+    margin-left: 0.7rem;
+    box-sizing: border-box;
+    height: fit-content;
+    display: inline-block;
+    scroll-margin: 8px;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 18%;
+    border: 1px solid black;
+    opacity: 0.5;
+}
 
 .column-title-box {
     flex: 0 0 auto;
@@ -168,7 +167,7 @@ html, body {
 
 .column-title {
     font-size: 20px;
-    margin: 0;
+    margin: 5px;
     width: 100%;
     box-sizing: border-box;
     display: inline-block;
@@ -176,7 +175,7 @@ html, body {
 
 .column-edit {
     background-color: transparent;
-    margin: 8px 0;
+    margin: 1px;
     font-size: 20px;
     display: none;
     width: 100%;
@@ -185,24 +184,6 @@ html, body {
     box-sizing: border-box;
     resize: none;
     outline: none;
-}
-
-/* 수정 부분 종료 - 컬럼 수정 */
-
-.column-list-wrapper-column-add {
-    margin-left: 0.7rem;
-    box-sizing: border-box;
-    height: fit-content;
-    min-height: 60px;
-    display: inline-block;
-    scroll-margin: 8px;
-    vertical-align: top;
-    white-space: nowrap;
-    width: 18%;
-    border-radius: 0.8rem;
-    border: 1px solid black;
-    background-color: #c8e4b2;
-    opacity: 0.3;
 }
 
 .board-column-name-input {
@@ -220,20 +201,21 @@ html, body {
 
 }
 
-.list-card {
-    text-decoration: none;
-    color: white;
-    margin: 6px 0 6px 10px;
-    width: 90%;
-    height: 2rem;
-    display: inline-block;
-    border-radius: 10px;
-    border: 1px solid black;
-    background-color: #57B894;
-}
+
+/* 카드 추가 */
 
 .list-cards {
     height: fit-content;
+}
+
+.list-card {
+    text-decoration: none;
+    background-color: rgba(200, 200, 200, 0.08);
+    color: black;
+    margin: 10px;
+    width: 90%;
+    height: 2rem;
+    display: inline-block;
 }
 
 .list-card-detail {
@@ -243,12 +225,10 @@ html, body {
 
 .card-components {
     border-radius: 8px;
-    text-decoration: none;
     display: block;
     flex: 1 0 auto;
-    margin: 8px 0 8px 8px;
+    margin: 10px;
     position: relative;
-
 }
 
 a {
