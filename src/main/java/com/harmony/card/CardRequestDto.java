@@ -20,6 +20,6 @@ public class CardRequestDto {
   private String color;
   private String deadline;
   private Long cardOrder;
-  private List<String> cardUserNames = new ArrayList<>();
+
 
 }

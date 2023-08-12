@@ -7,6 +7,7 @@ import com.harmony.boardColumn.BoardColumnRepository;
 import com.harmony.boardColumn.BoardColumnResponseDto;
 import com.harmony.boardUser.BoardUser;
 import com.harmony.boardUser.BoardUserRepository;
+import com.harmony.boardUser.BoardUserResponseDto;
 import com.harmony.card.*;
 import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
@@ -68,9 +69,13 @@ public class ViewController {
         // 일단 보드에 대한 정보가 필요함
         BoardResponseDto boardResponseDto = boardRepository.findById(boardid).map(BoardResponseDto::new).orElseThrow();
         model.addAttribute("board", boardResponseDto);
-        // 그리고 컬럼에 대한 정보가 필요함
 
-        List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findByBoardId(boardResponseDto.getBoardId())
+        // 해당 보드에 참여하고 있는 사용자에 대한 정보
+        List<BoardUserResponseDto> boardUsers = boardUserRepository.findByBoard_Id(boardResponseDto.getBoardId()).stream().map(BoardUserResponseDto::new).toList();
+        model.addAttribute("boardUsers", boardUsers);
+
+        // 그리고 컬럼에 대한 정보가 필요함
+        List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findAllByBoardIdOrderByBoardColumnOrder(boardResponseDto.getBoardId())
                 .stream().map(BoardColumnResponseDto::new).toList();
 
         for (BoardColumnResponseDto b : boardColumnResponseDto) {

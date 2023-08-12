@@ -46,7 +46,7 @@
         <textarea id="edit-description" style="display:none;"></textarea>
     </div>
 
-    <h1 class="card-title">Card User</h1>
+    <h1 class="card-title">담당자</h1>
 
     <div class="selected-users-wrapper">
         <div class="selected-users" id="selectedUsers">
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <h1 class="card-title">DeadLine</h1>
+    <h1 class="card-title">날짜</h1>
 
     <div class="date-section">
         <button id="showDatePicker">날짜 선택</button>
@@ -79,7 +79,7 @@
     </div>
 
     <div class="comment-section">
-        <h2>Comments</h2>
+        <h2>댓글</h2>
         <div class="comment-submit-section">
             <textarea class="comment-input" placeholder="댓글 작성하기..." id="createcomment"></textarea>
             <button class="add-comment-btn" onclick="comment()">댓글 작성</button>
@@ -518,11 +518,28 @@
         // AJAX 요청을 통해 서버로 데이터 전송
         $.ajax({
             type:"PATCH",
-            url: `/api/boards/${className}/columns/cards/${id}`,
+            url: `/api/boards/${className}/cards/${id}`,
             contentType: "application/json",
             data: JSON.stringify({ cardUserNames: selectedUserNames }),
             success: function(response) {
-                // 성공 처리 로직
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: '카드 회원 수정 완료!'
+                }).then(() => {
+                    window.location.href = `http://localhost:8080/api/cards/${id}`;
+                });
             },
             error: function(error) {
                 // 에러 처리 로직
