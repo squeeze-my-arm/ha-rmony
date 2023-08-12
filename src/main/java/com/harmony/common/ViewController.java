@@ -5,15 +5,10 @@ import com.harmony.board.BoardRepository;
 import com.harmony.board.BoardResponseDto;
 import com.harmony.boardColumn.BoardColumnRepository;
 import com.harmony.boardColumn.BoardColumnResponseDto;
-import com.harmony.boardUser.BoardUser;
 import com.harmony.boardUser.BoardUserRepository;
 import com.harmony.boardUser.BoardUserResponseDto;
-import com.harmony.card.*;
-import com.harmony.cardUser.CardUser;
-import com.harmony.cardUser.CardUserRepository;
-import com.harmony.cardUser.CardUserResponseDto;
-import com.harmony.comment.CommentRepository;
-import com.harmony.comment.CommentResponseDto;
+import com.harmony.card.CardInColumnResponseDto;
+import com.harmony.card.CardRepository;
 import com.harmony.security.JwtUtil;
 import com.harmony.security.UserDetailsImpl;
 import jakarta.servlet.http.Cookie;
@@ -33,15 +28,12 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ViewController {
+    //삭제 예정~
     private final BoardRepository boardRepository;
     private final BoardColumnRepository boardColumnRepository;
     private final CardRepository cardRepository;
 
-    private final CardService cardService;
-    private final CommentRepository commentRepository;
     private final BoardUserRepository boardUserRepository;
-    private final CardUserRepository cardUserRepository;
-    private final JwtUtil jwtUtil;
 
     @GetMapping("/")
     public String mainPage() {
@@ -95,46 +87,11 @@ public class ViewController {
         return "board";
     }
 
-
-    @GetMapping("/api/cards/{cardid}")
-    public String cardPage(@PathVariable Long cardid, Model model) {
-        // 일단 해당 카드에 대한 정보를 찾자
-        Card card = cardService.findCard(cardid);
-        // CardResponseDto에 담음
-        CardResponseDto cardResponseDto = new CardResponseDto(card);
-        // model 객체에 card 이름으로 담아서 반환
-        model.addAttribute("card", cardResponseDto);
-
-        // ++ 추가하기
-        // card에 있는 user 목록들 + 리스트에 보여줄 board user 목록들
-        List<BoardUser> boardUser = boardUserRepository.findByBoard_Id(card.getBoardColumn().getBoard().getId()).stream().toList();
-        List<CardUser> cardUsers = cardUserRepository.findByCard_Id(card.getId()).stream().toList();
-
-        List<CardUserResponseDto> boardusers = cardService.findUsers(boardUser, cardUsers);
-        log.info("username: " + boardUser.get(0).getUsername());
-        model.addAttribute("boardusers", boardusers);
-
-        // card에 있는 댓글 정보도 같이 가져가자
-        List<CommentResponseDto> commentResponseDtoList = commentRepository.findAllByCard(card).stream().map(CommentResponseDto::new).toList();
-        model.addAttribute("comments", commentResponseDtoList);
-
-        return "card";
-    }
-
     @GetMapping("/api/users/mypage")
     public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // userDetails 객체에서 현재 사용자의 정보를 가져와서 모델에 추가
         model.addAttribute("user", userDetails.getUser());
-//        String userId = String.valueOf(userDetails.getUser().getId()); // userId를 문자열로 변환
-//        model.addAttribute("userId", userId);
-//        log.info(userId);
-        return "mypage"; // This should match the name of your HTML file without the .html extension
+        return "mypage";
     }
-//    @GetMapping("/api/users/mypage")
-//    public String myPage(Model model) {
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String userId = userDetails.getUsername();
-//        model.addAttribute("userId", userId);
-//        return "mypage";
-//    }
+
 }

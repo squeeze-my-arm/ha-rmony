@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -19,9 +21,9 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     // 댓글 작성
-    public CommentResponseDto createComment(Long cardid, CommentRequestDto commentRequestDto, User user) {
+    public CommentResponseDto createComment(Long cardId, CommentRequestDto commentRequestDto, User user) {
         // 해당 카드 존재 확인
-        Card card = cardService.findCard(cardid);
+        Card card = cardService.findCard(cardId);
 
         // 댓글 생성
         Comment comment = new Comment(commentRequestDto, card, user);
@@ -38,7 +40,7 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long cardid, Comment comment, CommentRequestDto commentRequestDto) {
+    public CommentResponseDto updateComment(Long cardId, Comment comment, CommentRequestDto commentRequestDto) {
         // 댓글 내용 수정
         comment.update(commentRequestDto);
 
@@ -50,13 +52,13 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public ApiResponseDto deleteComment(Long cardid, Comment comment) {
+    public ApiResponseDto deleteComment(Long cardId, Comment comment) {
         // 카드 존재 확인
-        Card card = cardService.findCard(cardid);
+        Card card = cardService.findCard(cardId);
 
         // 카드에 있는 댓글도 삭제
         card.getComments().remove(comment);
-        
+
         // 댓글 삭제
         commentRepository.delete(comment);
 
@@ -65,8 +67,11 @@ public class CommentService {
     }
 
     // 댓글 찾기
-    public Comment findComment(Long commentid) {
-        return commentRepository.findById(commentid).orElseThrow(IllegalArgumentException::new);
+    public Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
     }
 
+    public List<Comment> findAllCommentsByCard(Card card) {
+        return commentRepository.findAllByCard(card);
+    }
 }

@@ -216,8 +216,8 @@
                 text: "회원 정보를 모두 입력해주세요"
             });
         }
-        let email_format = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+);
-        if (!email_format.test(username)) {
+        let email_format = '/^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+)';
+        if (!username.match(email_format)) {
             Swal.fire({
                 icon: 'warning',
                 title: '회원가입 실패',

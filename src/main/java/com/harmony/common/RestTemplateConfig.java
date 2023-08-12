@@ -9,7 +9,6 @@ import java.time.Duration;
 
 @Configuration
 public class RestTemplateConfig {
-
     /* RestTemplate에는 추가적으로 옵션을 설정하는 경우가 많아서
      * 수동으로 Bean 등록을 하는 편이다
      * 수동 Bean 등록을 위해서는 Class에는 @Configuration, 메소드에는 @Bean을 달아주어야 한다 */

@@ -4,7 +4,6 @@ package com.harmony.social;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.harmony.security.JwtUtil;
 import com.harmony.user.User;
 import com.harmony.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,7 @@ public class GoogleService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final RestTemplate restTemplate; // 수동 등록한 Bean
-//    private final JwtUtil jwtUtil;
+    private final RestTemplate restTemplate;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -52,10 +50,6 @@ public class GoogleService {
         // 3. 필요시에 회원가입
         User googleUser = registerGoogleUserIfNeeded(googleUserInfo);
 
-        // 4. JWT 토큰 반환
-//        String createToken = jwtUtil.createToken(googleUser.getUsername());
-//        return createToken;
-        
         // 4. username 반환
         return googleUser.getUsername();
     }
@@ -74,7 +68,7 @@ public class GoogleService {
 
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type","application/x-www-form-urlencoded");
+        headers.add("Content-type", "application/x-www-form-urlencoded");
 
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -82,7 +76,7 @@ public class GoogleService {
         body.add("client_id", clientId);
         body.add("client_secret", secretId);
         body.add("redirect_uri", "http://localhost:8080/api/users/google/callback"); // 애플리케이션 등록시 설정한 redirect_uri
-        body.add("code",code); // 인가 코드
+        body.add("code", code); // 인가 코드
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri) // body 가 있으므로 post 메서드
@@ -127,7 +121,6 @@ public class GoogleService {
 
             System.out.println("User ID: " + userInfo.getId());
             System.out.println("Email: " + userInfo.getEmail());
-//            System.out.println("Picture: " + userInfo.getPicture());
 
         } else {
             System.out.println("Failed to fetch user info");
@@ -158,7 +151,7 @@ public class GoogleService {
                 String password = UUID.randomUUID().toString();
                 String encodedPassword = passwordEncoder.encode(password);
 
-                // email: kakao email
+                // email: google email
                 String username = googleUserInfo.getEmail();
 
                 googleuser = new User(username, encodedPassword, googleUserInfo.getName(), googleUserInfoId);
