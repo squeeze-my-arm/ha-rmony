@@ -173,3 +173,34 @@ function deleteJwtCookie() {
     // 만료일을 예전 날짜로 설정하여 쿠키를 삭제합니다.
     document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
+change();
+
+function change() {
+    const home = document.getElementById('home-tab-pane');
+    const profile  = document.getElementById('profile-tab-pane');
+    const contact = document.getElementById('contact-tab-pane');
+
+    home.style.display = "block";
+    profile.style.display = "none";
+    contact.style.display = "none";
+}
+
+function change2() {
+    const home = document.getElementById('home-tab-pane');
+    const profile  = document.getElementById('profile-tab-pane');
+    const contact = document.getElementById('contact-tab-pane');
+
+    home.style.display = "none";
+    profile.style.display = "block";
+    contact.style.display = "none";
+}
+
+function change3() {
+    const home = document.getElementById('home-tab-pane');
+    const profile  = document.getElementById('profile-tab-pane');
+    const contact = document.getElementById('contact-tab-pane');
+
+    home.style.display = "none";
+    profile.style.display = "none";
+    contact.style.display = "block";
+}

@@ -34,11 +34,8 @@
 
             <a class="navbar-brand d-flex align-items-right">
                 <p id="logout" onclick="logout()">로그아웃</p>
-                <p class="leave-button" id="login" th:id="${user.id}">회원탈퇴</p>
+                <p id="login" th:id="${user.id}" class="leave-button">회원탈퇴</p>
             </a>
-            <!--
-                        <button class="logout-button" onclick="logout()">로그아웃</button>
-                        <button class="leave-button" th:id="${user.id}">회원탈퇴</button> -->
         </div>
     </div>
 </header>
@@ -46,7 +43,7 @@
 
 <div class="container-top">
     <div class="one">
-        <img src="https://i.pinimg.com/236x/03/bf/77/03bf77898801f69e678f4721a522f57d.jpg" alt="Logo" width="70" height="70" class="d-inline-block align-text-top"
+        <img src="https://cdn-icons-png.flaticon.com/128/1077/1077114.png" alt="Logo" width="70" height="70" class="d-inline-block align-text-top"
              style="border-radius: 100px;">
     </div>
 
@@ -59,14 +56,19 @@
 
 <div class="bottom">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
+        <li class="nav-item" role="presentation"  onclick="change()">
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
                 프로필 수정</button>
         </li>
-        <!--
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
-            참여 확인</button>-->
+
+        <li class="nav-item" role="presentation" onclick="change2()">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
+                참여한 카드</button>
+        </li>
+
+        <li class="nav-item" role="presentation" onclick="change3()">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">
+                작성한 댓글</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -78,14 +80,60 @@
                 <div class="input-label">한줄 소개</div>
                 <textarea class="edit-input" placeholder="새 소개"></textarea>
                 <div class="button-container">
-                    <button class="btn btn-sm btn-outline-secondary button save" th:id="${user.id}">저장</button>
-                    <button class="btn btn-sm btn-outline-secondary button update" th:id="${user.id}">비밀번호 변경</button>
+                    <button class="btn btn-sm btn-outline-secondary save" th:id="${user.id}">저장</button>
+                    <button class="btn btn-sm btn-outline-secondary update" th:id="${user.id}">비밀번호 변경</button>
                 </div>
             </div>
         </div>
-        <!-- 두 번째 필드
+
+        <!-- 두 번째 필드  -->
         <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-            카드들</div> -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <!--Board 부분-->
+                <div class="col" th:each="card : ${cards}" th:id="${card.getCardId()}">
+                    <input th:id="'card'+${card.getCardId()}" type="hidden">
+                    <div class="card shadow-sm">
+                        <a class="card-svg-link" style="cursor: pointer;"
+                           th:href="'/api/cards/'+${card.cardId}">
+                            <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
+                                 focusable="false" height="100" preserveAspectRatio="xMidYMid slice" role="img"
+                                 width="100%" xmlns="http://www.w3.org/2000/svg">
+                                <title>Placeholder</title>
+                                <rect height="100%" th:fill="${card.color}" width="100%"></rect>
+
+                            </svg>
+                        </a>
+                        <div class="card text-end">
+                            <div class="card-body">
+                                <text class="boardTitleText" dy=".3em" x="50%" y="50%">
+                                    [[${card.getCardName()}]]
+                                </text>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 세 번째 필드  -->
+        <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+            <div class="comment-section">
+                <div class="comment-list" id="commentList">
+                    <div th:each="comment : ${comments}" class="comment">
+                        <div class="comment_one">
+                            <div class="comment_head">
+                                <img src="https://cdn-icons-png.flaticon.com/128/1077/1077114.png">
+                            </div>
+                            <div class="comment_body">
+                                <p class="comment-date" th:text="${comment.createdAt}">날짜</p>
+                                <p class="comment-content" th:text="${comment.commentContent}">댓글 내용</p>
+                            </div>
+                        </div>
+                        <!--한 댓글 종료-->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script src="/js/mypage.js"></script> <!-- mypage.js 로드 -->
