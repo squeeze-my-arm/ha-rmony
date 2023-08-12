@@ -44,31 +44,32 @@ public class BoardColumnServiceImpl implements BoardColumnService {
         Integer oldOrder = boardColumn.getBoardColumnOrder();
         Integer newOrder = boardColumnRequestDto.getBoardColumnOrder();
 
-        if (newOrder != null && !newOrder.equals(oldOrder)) { //변경이 있을 때
+        if (newOrder != null /* && ! newOrder.equals(oldOrder)*/) { //변경이 있을 때
+            log.info(boardColumnRequestDto.getBoardColumnOrder().toString());
             List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(board.getId());
-            //기존 order
+            // 기존 order
             if (newOrder < oldOrder) {
                 for (BoardColumn column : remainedBoardColumnList) {
 
                     if (column.getBoardColumnOrder() >= newOrder && column.getBoardColumnOrder() < oldOrder) {
                         column.setBoardColumnOrder(column.getBoardColumnOrder() + 1);
                     }
+                    boardColumnRepository.save(column);
                 }
             } else {
                 for (BoardColumn column : remainedBoardColumnList) {
                     if (column.getBoardColumnOrder() <= newOrder && column.getBoardColumnOrder() > oldOrder) {
                         column.setBoardColumnOrder(column.getBoardColumnOrder() - 1);
-
                     }
+                    boardColumnRepository.save(column);
                 }
             }
-            boardColumn.update(boardColumnRequestDto);
             remainedBoardColumnList.sort(Comparator.comparingInt(BoardColumn::getBoardColumnOrder));
             boardColumnRepository.saveAll(remainedBoardColumnList);
-
-
         }
 
+        boardColumn.update(boardColumnRequestDto);
+        boardColumnRepository.save(boardColumn);
 
         return new BoardColumnResponseDto(boardColumn);
     }

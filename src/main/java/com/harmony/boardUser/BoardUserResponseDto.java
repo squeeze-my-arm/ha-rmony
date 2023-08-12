@@ -7,8 +7,7 @@ public class BoardUserResponseDto {
 
     private String username;
 
-    public BoardUserResponseDto(BoardUser boardUser){
+    public BoardUserResponseDto(BoardUser boardUser) {
         this.username = boardUser.getUsername();
     }
-
 }

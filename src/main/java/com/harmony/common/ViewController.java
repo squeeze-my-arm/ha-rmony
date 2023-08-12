@@ -54,7 +54,7 @@ public class ViewController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (jwtUtil.BEARER_PREFIX.equals(cookie.getName())) {
+                if (JwtUtil.BEARER_PREFIX.equals(cookie.getName())) {
                     cookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 쿠키 제거
                     cookie.setPath("/"); // 도메인 전체에 걸쳐 쿠키를 삭제하도록 설정
                     response.addCookie(cookie);

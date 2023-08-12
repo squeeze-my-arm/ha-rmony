@@ -7,7 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -17,6 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
             crossorigin="anonymous"></script>
+    <!-- sortable-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
     <title>보드 상세 페이지</title>
     <style>
@@ -99,6 +101,34 @@
         }
 
         .invite-btn-container button:nth-child(2):hover {
+            border-radius: 10px;
+            background-color: white;
+            border: none;
+        }
+
+        /* 회원 목록 띄우기 */
+        .invite-btn-container button:nth-child(2) {
+            background-color: transparent;
+            border: none;
+            margin: 1.3rem 0 0 1.3rem;
+            width: 13rem;
+            height: 3rem;
+        }
+
+        .nav-link dropdown-toggle {
+            text: "회원 목록";
+        }
+
+        /* X 버튼 (보드 메인으로 이동하기) */
+        .invite-btn-container button:nth-child(3) {
+            background-color: transparent;
+            border: none;
+            margin: 1.3rem 0 0 1.3rem;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .invite-btn-container button:nth-child(3):hover {
             border-radius: 10px;
             background-color: white;
             border: none;
@@ -259,35 +289,43 @@
 <div class="body-container" th:style="'background-color:' + ${board.boardColor}">
     <div class="top-container">
         <div class="board-title-container">
-            <h1 id="board-title" class="board-title" th:text="${board.boardTitle}">보드 이름</h1>
-            <input class="board-edit" th:id="${board.boardId}" style="display: none;">
+            <h1 class="board-title" id="board-title" th:text="${board.boardTitle}">보드 이름</h1>
+            <input class="board-edit" style="display: none;" th:id="${board.boardId}">
             <p th:text="${board.boardDesc}">보드 설명</p>
         </div>
         <div class="invite-btn-container">
             <button class="btn btn-outline-success" th:onclick="'inviteBoardUser(\'' + ${board.boardId} + '\')'"
                     type="button"> 회원 초대하기
             </button>
+            <button type="button">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    회원 목록
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:each=" user : ${boardUsers}" th:text="${user.username}">Action</a>
+                    </li>
+                </ul>
+            </button>
             <button type="button" class="gotomain" id="redirectButton">X</button>
         </div>
     </div>
     <div class="content-container">
-        <div class="column-list-wrapper" th:each="column : ${columns}" th:id="${column.columnId}" draggable="true">
-            <div class="list-content" th:id="${column.columnId}">
+        <div class="column-list-wrapper" th:each="column : ${columns}" th:data-column-id="${column.columnId}">
+            <div class="list-content">
                 <div class="column-title-box">
                     <!--TODO 수연님께 클릭해서 입력창 활성화 외부클릭해서 비활성화 카피해오기 -->
                     <!--서버쪽에서 컬럼마다 ID 값과 Name을 갖고와서 매칭시키는 작업 필요 - text:name, id:id -->
                     <!--실제 입력 액션을 취하고 나서는 서버쪽으로 id를 같이 보내주어야 하기 때문 -->
                     <h2 class="column-title" th:text="${column.boardColumnName}">보드컬럼명1</h2>
                     <input class="column-edit" th:id="${column.columnId}" style="display: none;">
-                    <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button> <!-- X 버튼 추가 -->
-                    <input class="column-edit" th:id="${column.columnId}" style="display: none;">
                     <button class="delete-column" th:onclick="'deleteColumn(\'' + ${column.columnId} + '\')'">X</button>
                     <!-- X 버튼 추가 -->
                 </div>
                 <!-- 카드수만큼 카드 생성 -->
-                <div class="list-cards">
-                    <a class="list-card" draggable="true" th:id="${card.cardId}"
-                       th:each="card: ${column.getCardsName()}" th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}">
+                <div class="list-cards" th:data-column-id="${column.columnId}">
+                    <a class="list-card" draggable="true" th:each="card: ${column.getCardsName()}"
+                       th:href="@{/api/cards/{cardid}(cardid=${card.cardId})}" th:data-card-id="${card.cardId}">
                         <div class="list-card-detail">
                             <!-- 카드 내 내용들 아이콘으로 표시하거나 실제로 text로 보여줘야 함 -->
                             <span class="list-card-title" th:id="${card.cardId}"
@@ -304,6 +342,7 @@
                 </div>
             </div>
         </div>
+
         <div class="column-list-wrapper-column-add">
             <div class="add-board-column-box">
                 <div class="add-board-column-btn-box">
@@ -311,9 +350,9 @@
                     <span class="icon-add">Add BoardColumn</span>
                 </div>
                 <!-- 숨어있는 input 위 span 클릭 시 등장-->
-                <input class="board-column-name-input" type="text"
+                <input autocomplete="off" class="board-column-name-input"
                        id="board_column_name"
-                       placeholder="Enter 보드컬럼 title" autocomplete="off">
+                       placeholder="Enter 보드컬럼 title" type="text">
 
                 <div class="board-column-control">
                     <img src="/icons/plus-icon-36.png">
@@ -322,10 +361,93 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 </body>
 <script>
+    // Sortable.js를 초기화하여 컬럼을 드래그 앤 드롭 가능하게 만듦 ->완성
+    const columnList = document.querySelector(".content-container");
+    var columnSortable = new Sortable(columnList, {
+        group: 'shared',
+        animation: 150,
+        ghostClass: 'ghost',
+        onStart: function (event) {
+            fromColumnId = event.from.querySelector(".ghost").getAttribute("data-column-id");
+            console.log("From Column ID:", fromColumnId);
+        },
+        onEnd: function (event) {
+            const toColumnId = event.to.querySelector(".column-list-wrapper").getAttribute("data-column-id"); // 새로 추가된 부분
+            const newIndex = Array.from(event.to.children).indexOf(event.item) + 1;
+            console.log("To Column ID:", toColumnId); // 새로 추가된 부분
+            console.log("At Index:", newIndex);
+
+            // 서버로 데이터 전송하는 함수 호출 (이 부분을 실제 서버 요청 코드로 대체해야 함)
+            let url = window.location.href;
+            let id = url.replace("http://localhost:8080/api/boards/", "");
+            console.log(id);
+
+            // 여기에 서버 요청 코드를 추가
+            $.ajax({
+                type: "PUT",
+                url: `/api/board-columns/${fromColumnId}`,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    boardId: id,
+                    boardColumnOrder: newIndex
+                }),
+                success: function () {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                    window.location.reload();
+                }
+            })
+        },
+    });
+
+
+    // list-card 요소에 대한 Sortable 초기화
+    const listCardContainers = document.querySelectorAll('.list-cards');
+    listCardContainers.forEach(cardContainer => {
+        new Sortable(cardContainer, {
+            group: 'list-card',
+            animation: 150,
+            onEnd: async (evt) => {
+                console.log('카드 이동');
+                console.log('카드 ID:', evt.item.dataset.cardId);
+                console.log('새 컬럼 ID:', evt.item.parentElement.dataset.columnId);
+                console.log('새 위치:', evt.newIndex);
+
+                var cardId = evt.item.dataset.cardId;
+                var cardcolumnId = evt.item.parentElement.dataset.columnId;
+                var cardnewIndex = evt.newIndex;
+
+                $.ajax({
+                    type: "PUT",
+                    url: `/api/cards/${cardId}/orders`,
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        columnId: cardcolumnId,
+                        cardOrder: cardnewIndex
+                    }),
+                    success: function () {
+                        console.log("success");
+                    }, error: function () {
+                        console.log("error");
+                    }
+
+                })
+            }
+        });
+    });
+
+    // 서버로 데이터 전송하는 함수 (실제 서버 요청 코드로 대체 필요)
+    function sendCardMoveData(cardId, fromColumnId, toColumnId, cardIndex) {
+        // 여기에 서버 요청 코드를 추가
+    }
+
     // 버튼 요소 가져오기
     const button = document.getElementById('redirectButton');
 
@@ -628,155 +750,229 @@
         });
     });
 
-    const draggables = document.querySelectorAll(".list-card");
-    const containers = document.querySelectorAll(".list-cards");
 
-    draggables.forEach(draggable => {
-        draggable.addEventListener("dragstart", () => {
-            event.stopImmediatePropagation();
-            draggable.classList.add("dragging");
+    /*    const columns = document.querySelectorAll(".column");
+
+        columns.forEach((column) => {
+            new Sortable(column, {
+                group: "shared",
+                animation: 150,
+                ghostClass: "blue-background-class"
+            });
         });
-        draggable.addEventListener("dragend", () => {
-            event.stopImmediatePropagation();
-            draggable.classList.remove("dragging");
 
-            // 드래그 앤 드롭 정보 출력
-            const cardId = draggable.id;
-            const parentContainerId = draggable.parentNode.parentNode.id;
-            const cardIndex = [...draggable.parentNode.children].indexOf(draggable);
+        // 컬럼 내 카드 순서 바꾸기 드래그 앤 드롭 이벤트 새로 만든 것도 되도록 -완료
+        const draggables = document.querySelectorAll(".list-card");
+        const containers = document.querySelectorAll(".list-cards");
 
-            console.log("Card ID:", cardId);
-            console.log("Parent Container ID:", parentContainerId);
-            console.log("Card Index:", cardIndex);
+        draggables.forEach(draggable => {
+            draggable.addEventListener("dragstart", (e) => {
+                e.stopImmediatePropagation();
+                console.log("card drag 시작");
+                draggable.classList.add("carddragging");
+            });
+            draggable.addEventListener("dragend", (e) => {
+                e.stopImmediatePropagation();
+                draggable.classList.remove("carddragging");
+            });
 
-            $.ajax({
-                type: "PUT",
-                url: `/api/cards/${cardId}/orders`,
-                contentType: "application/json",
-                data: JSON.stringify({
-                    columnId: parentContainerId,
-                    cardOrder: cardIndex
-                }),
-                success: function () {
+            draggable.addEventListener("drop", e => {
+                e.preventDefault();
+                draggable.classList.remove("dragging");
+                e.stopPropagation();
 
+                const cardId = draggable.id;
+                const parentContainerId = draggable.parentNode.parentNode.id;
+                const cardIndex = [...draggable.parentNode.children].indexOf(draggable);
+
+                console.log("Card ID:", cardId);
+                console.log("Parent Container ID:", parentContainerId);
+                console.log("Card Index:", cardIndex);
+
+                $.ajax({
+                    type: "PUT",
+                    url: `/api/cards/${cardId}/orders`,
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        columnId: parentContainerId,
+                        cardOrder: cardIndex
+                    }),
+                    success: function () {
+                        window.location.reload();
+                    },
+                    error: function () {
+                        window.location.reload();
+                    }
+                })
+
+            });
+        });
+
+        containers.forEach(container => {
+            container.addEventListener("dragover", e => {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                const cardafterElement = getDragCardAfterElementXY(container, e.clientX, e.clientY);
+                const carddraggable = document.querySelector(".carddragging");
+
+                container.insertBefore(carddraggable, cardafterElement);
+
+            });
+        });
+
+        /!*    draggables.forEach(draggable => {
+                draggable.addEventListener("dragstart", e => {
+                    e.stopImmediatePropagation();
+                    draggable.classList.add("dragging");
+                    e.stopPropagation();
+                });
+                draggable.addEventListener("dragend", e => {
+                    e.stopImmediatePropagation();
+                    draggable.classList.remove("dragging");
+                    e.stopPropagation();
+
+                    // 드래그 앤 드롭 정보 출력
+                    const cardId = draggable.id;
+                    const parentContainerId = draggable.parentNode.parentNode.id;
+                    const cardIndex = [...draggable.parentNode.children].indexOf(draggable);
+
+                    console.log("Card ID:", cardId);
+                    console.log("Parent Container ID:", parentContainerId);
+                    console.log("Card Index:", cardIndex);
+
+                    // $.ajax({
+                    //     type: "PUT",
+                    //     url: `/api/cards/${cardId}/orders`,
+                    //     contentType : "application/json",
+                    //     data: JSON.stringify({
+                    //         columnId: parentContainerId,
+                    //         cardOrder: cardIndex
+                    //     }),
+                    //     success: function () {
+                    //         window.location.reload();
+                    //     },
+                    //     error: function () {
+                    //         window.location.reload();
+                    //     }
+                    // })
+                });
+            });*!/
+
+        function getDragAfterElementY(container, y) {
+            const draggableElements = [
+                ...container.querySelectorAll(".list-card:not(.dragging)"),
+            ];
+            return draggableElements.reduce(
+                (closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    // console.log(offset);
+                    if (offset < 0 && offset > closest.offset) {
+                        return {offset: offset, element: child};
+                    } else {
+                        return closest;
+                    }
                 },
-                error: function () {
-                    alert("Error");
-                }
-            })
-        });
-    });
+                {offset: Number.NEGATIVE_INFINITY},
+            ).element;
+        }
 
-    containers.forEach(container => {
-        container.addEventListener("dragover", e => {
-            event.stopImmediatePropagation();
-            e.preventDefault();
-            const afterElement = getDragAfterElementY(container, e.clientY);
-            const draggable = document.querySelector(".dragging");
-            if (afterElement === undefined) {
-                container.appendChild(draggable);
-            } else {
-                container.insertBefore(draggable, afterElement);
-            }
-        });
-    });
+        function getDragCardAfterElementXY(container, x, y) {
+            const draggableElements = [
+                ...container.querySelectorAll(".list-card:not(.carddragging)"),
+            ];
 
-    function getDragAfterElementY(container, y) {
-        const draggableElements = [
-            ...container.querySelectorAll(".list-card:not(.dragging)"),
-        ];
-        return draggableElements.reduce(
-            (closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                // console.log(offset);
-                if (offset < 0 && offset > closest.offset) {
-                    return {offset: offset, element: child};
-                } else {
-                    return closest;
-                }
-            },
-            {offset: Number.NEGATIVE_INFINITY},
-        ).element;
-    }
-
-    // 보드 컬럼 순서 바꾸기 드래그 앤 드롭 이벤트
-    // 보드 컬럼 순서 변경 ->board-column board order 변경
-    const column_draggables = document.querySelectorAll(".column-list-wrapper");
-    const column_containers = document.querySelectorAll(".content-container");
-    column_draggables.forEach(column_draggable => {
-
-        column_draggable.addEventListener("dragstart", () => {
-            column_draggable.classList.add("dragging");
-        });
-
-        column_draggable.addEventListener("dragend", () => {
-            column_draggable.classList.remove("dragging");
-        });
-    });
-
-    column_containers.forEach(column_container => {
-        column_container.addEventListener("dragover", e => {
-            e.preventDefault();
-            const afterElement = getDragAfterElementXY(column_container, e.clientX, e.clientY);
-            const draggable = document.querySelector(".dragging");
-
-            column_container.insertBefore(draggable, afterElement);
-        });
-
-        column_container.addEventListener("drop", e => {
-            e.preventDefault();
-
-            const draggingContainer = document.querySelector(".dragging");
-            const columnIndex = [...column_container.children].indexOf(draggingContainer) + 1;
-
-            let url = window.location.href;
-            let id = url.replace("http://localhost:8080/api/boards/", "");
-            console.log(id);
-            // 드래그 앤 드롭된 .column-list-wrapper의 ID 값 출력
-            const columnId = draggingContainer.id;
-            console.log("Dropped at position:", columnIndex);
-            console.log("Column ID:", columnId);
-
-            $.ajax({
-                type: "PUT",
-                url: `/api/board-columns/${columnId}`,
-                contentType: "application/json",
-                data: JSON.stringify({
-                    boardId: id,
-                    boardColumnOrder: columnIndex
-                }),
-                success: function () {
-                    window.location.href = `http://localhost:8080/api/boards/${id}`
+            return draggableElements.reduce(
+                (closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offsetX = x - box.left - box.width / 2;
+                    const offsetY = y - box.top - box.height / 2;
+                    if (offsetX < 0 && offsetX > closest.offsetX && offsetY < 0 && offsetY > closest.offsetY) {
+                        return {offsetX: offsetX, offsetY: offsetY, element: child};
+                    } else {
+                        return closest;
+                    }
                 },
-                error: function () {
-                    alert("Error!");
-                    window.location.href = `http://localhost:8080/api/boards/${id}`
-                }
-            })
+                {offsetX: Number.NEGATIVE_INFINITY, offsetY: Number.NEGATIVE_INFINITY},
+            ).element;
+        }
 
+        // 보드 컬럼 순서 바꾸기 드래그 앤 드롭 이벤트
+        // 보드 컬럼 순서 변경 ->board-column board order 변경
+        const column_draggables = document.querySelectorAll(".column-list-wrapper");
+        const column_containers = document.querySelectorAll(".content-container");
+        column_draggables.forEach(column_draggable => {
+
+            column_draggable.addEventListener("dragstart", () => {
+                column_draggable.classList.add("dragging");
+            });
+
+            column_draggable.addEventListener("dragend", () => {
+                column_draggable.classList.remove("dragging");
+            });
         });
-    });
 
-    function getDragAfterElementXY(container, x, y) {
-        const draggableElements = [
-            ...container.querySelectorAll(".column-list-wrapper:not(.dragging)"),
-        ];
+        column_containers.forEach(column_container => {
+            column_container.addEventListener("dragover", e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElementXY(column_container, e.clientX, e.clientY);
+                const draggable = document.querySelector(".dragging");
 
-        return draggableElements.reduce(
-            (closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offsetX = x - box.left - box.width / 2;
-                const offsetY = y - box.top - box.height / 2;
-                if (offsetX < 0 && offsetX > closest.offsetX && offsetY < 0 && offsetY > closest.offsetY) {
-                    return {offsetX: offsetX, offsetY: offsetY, element: child};
-                } else {
-                    return closest;
-                }
-            },
-            {offsetX: Number.NEGATIVE_INFINITY, offsetY: Number.NEGATIVE_INFINITY},
-        ).element;
-    }
+                column_container.insertBefore(draggable, afterElement);
+            });
 
+            column_container.addEventListener("drop", e => {
+                e.preventDefault();
+
+                const draggingContainer = document.querySelector(".dragging");
+                const columnIndex = [...column_container.children].indexOf(draggingContainer) + 1;
+
+                let url = window.location.href;
+                let id = url.replace("http://localhost:8080/api/boards/", "");
+                console.log(id);
+                // 드래그 앤 드롭된 .column-list-wrapper의 ID 값 출력
+                const columnId = draggingContainer.id;
+                console.log("Dropped at position:", columnIndex);
+                console.log("Column ID:", columnId);
+
+                $.ajax({
+                    type: "PUT",
+                    url: `/api/board-columns/${columnId}`,
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        boardId: id,
+                        boardColumnOrder: columnIndex
+                    }),
+                    success: function () {
+                        window.location.href = `http://localhost:8080/api/boards/${id}`
+                    },
+                    error: function () {
+                        alert("Error!");
+                        window.location.href = `http://localhost:8080/api/boards/${id}`
+                    }
+                })
+
+            });
+        });
+
+        function getDragAfterElementXY(container, x, y) {
+            const draggableElements = [
+                ...container.querySelectorAll(".column-list-wrapper:not(.dragging)"),
+            ];
+
+            return draggableElements.reduce(
+                (closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offsetX = x - box.left - box.width / 2;
+                    const offsetY = y - box.top - box.height / 2;
+                    if (offsetX < 0 && offsetX > closest.offsetX && offsetY < 0 && offsetY > closest.offsetY) {
+                        return {offsetX: offsetX, offsetY: offsetY, element: child};
+                    } else {
+                        return closest;
+                    }
+                },
+                {offsetX: Number.NEGATIVE_INFINITY, offsetY: Number.NEGATIVE_INFINITY},
+            ).element;
+        }*/
 </script>
 </html>
