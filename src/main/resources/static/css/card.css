@@ -342,6 +342,14 @@ html, body {
 /* 배경색 변경 */
 .card-buttons{
     width: 18%;
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: flex-end; /* 요소들을 오른쪽으로 정렬 */
+    margin-bottom: 10px;
+}
+
+.card-buttons > *:not(:last-child) {
+    margin-right: 10px; /* 요소들 간에 간격을 주는 부분 */
 }
 
 #colorPalette {

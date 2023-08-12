@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
@@ -508,12 +507,25 @@
         console.log(className); // 클래스 이름 출력
 
         const selectedUsers = document.querySelectorAll('.selected-user');
-        const selectedUserNames = Array.from(selectedUsers).map(user => user.textContent);
+        const selectedUserNames = Array.from(selectedUsers).map(user => user.textContent.trim());
 
         console.log(selectedUserNames); // 선택된 사용자들의 username 값이 담긴 배열
-        selectedUsers.forEach(user => {
-            console.log(user.textContent);
-        });
+
+        const existingSelectedUsers = document.querySelectorAll('.selected-users .selected-user');
+        if (existingSelectedUsers.length === 0) {
+            console.log("No existing selected users.");
+        } else {
+            existingSelectedUsers.forEach(user => {
+                const spanElement = user.querySelector('span');
+                if (spanElement) {
+                    const username = spanElement.textContent;
+                    console.log("Existing selected user:", username);
+                } else {
+                    console.log("No username found for this user element.");
+                }
+            });
+        }
+
 
         // AJAX 요청을 통해 서버로 데이터 전송
         $.ajax({
