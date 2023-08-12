@@ -7,7 +7,6 @@ import com.harmony.boardUser.BoardUserRepository;
 import com.harmony.user.User;
 import com.harmony.user.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 @Service
-@Slf4j(topic = "이메일 전송")
 @RequiredArgsConstructor
 public class EmailSenderService {
 
@@ -35,13 +33,11 @@ public class EmailSenderService {
 
         try {
             User inviteUser = userService.findUser(invitedUserName); // 초대받은 유저
-            log.info(invitedUserName);
             Board board = boardService.findBoard(boardId);
             try {
                 BoardUser boardUser = findBoardUser(inviteUser, board);
                 // 이미 초대된 사용자가 있을 때
                 // sendEmail 로직을 진행하지 않음
-                log.info("이미 초대된 사용자입니다.");
                 return ResponseEntity.badRequest().body("이미 초대된 사용자입니다.");
             } catch (IllegalArgumentException ex) {
                 // 초대된 사용자가 없을 때
@@ -69,7 +65,6 @@ public class EmailSenderService {
 
         try {
             javaMailSender.send(messagePreparator);
-            log.info("활성화 메일이 보내졌다");
         } catch (MailException e) {
             e.printStackTrace();
             throw new Exception("메일을 여기로 보내는 중 에러 발생");
