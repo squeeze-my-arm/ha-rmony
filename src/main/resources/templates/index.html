@@ -109,7 +109,7 @@
             align-items: center;
         }
 
-        .heading{
+        .heading {
             margin: 0;
             padding: 0;
             font-size: 14rem;
@@ -123,15 +123,15 @@
             top: 0;
         }
 
-        .heading:first-child{
+        .heading:first-child {
             color: black;
         }
 
-        .heading{
+        .heading {
             transition: transform .3s;
         }
 
-        .frame{
+        .frame {
             position: absolute;
             top: 80vh;
             width: 50%;
@@ -196,9 +196,9 @@
             </a>
 
             <a class="navbar-brand d-flex align-items-right">
-                <p id = "login" onclick="login()">로그인</p>
-                <p id = "mypage" onclick="mypage()">마이페이지</p>
-                <p id = "logout" onclick="logout()">로그아웃</p>
+                <p id="login" onclick="login()">로그인</p>
+                <p id="mypage" onclick="mypage()">마이페이지</p>
+                <p id="logout" onclick="logout()">로그아웃</p>
             </a>
         </div>
     </div>
@@ -302,7 +302,7 @@
                         type="button">
                     Add Board
                 </button>
-                <a class="btn btn-secondary" href="/api/users/mypage">My Page</a>
+
                 <form class="upload__form" enctype="multipart/form-data" id="uploadForm">
                     <!-- Modal -->
                     <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal"
@@ -459,9 +459,6 @@
             </div>
             <br>
             <br>
-            <div style="margin-top: 20px; margin-bottom: 20px;">
-                <text style="font-size: 25px;">Guest Board</text>
-            </div>
         </div>
     </div>
     <script th:inline="javascript">
@@ -740,7 +737,7 @@
 
         headings.forEach((heading, index) => {
             heading.style.top = `${scrollValue * .07 * index}px`;
-            if(firstRun){
+            if (firstRun) {
                 heading.style.transform = `translateY(0px)`;
             }
         });
@@ -748,7 +745,7 @@
         firstRun = false;
     });
 
-    setTimeout(function(){
+    setTimeout(function () {
         headings.forEach((heading, index) => {
             heading.style.transform = `translateY(${index * 8}px)`;
         });

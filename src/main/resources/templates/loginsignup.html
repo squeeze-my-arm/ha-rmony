@@ -5,7 +5,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <script crossorigin="anonymous"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -215,7 +216,16 @@
                 text: "회원 정보를 모두 입력해주세요"
             });
         }
-
+        let email_format = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+);
+        if (!email_format.test(username)) {
+            Swal.fire({
+                icon: 'warning',
+                title: '회원가입 실패',
+                text: "아이디가 이메일 형식에 부합하지 않습니다."
+            });
+            document.getElementById("signupusername").style.color = "red"; // 일치하지 않을 경우 글씨 색을 빨간색으로 변경
+            return;
+        }
         if (password !== confirmpassword) {
             Swal.fire({
                 icon: 'warning',
