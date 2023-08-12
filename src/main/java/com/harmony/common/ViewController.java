@@ -7,6 +7,7 @@ import com.harmony.boardColumn.BoardColumnRepository;
 import com.harmony.boardColumn.BoardColumnResponseDto;
 import com.harmony.boardUser.BoardUser;
 import com.harmony.boardUser.BoardUserRepository;
+import com.harmony.boardUser.BoardUserResponseDto;
 import com.harmony.card.*;
 import com.harmony.cardUser.CardUser;
 import com.harmony.cardUser.CardUserRepository;
@@ -51,7 +52,7 @@ public class ViewController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (jwtUtil.BEARER_PREFIX.equals(cookie.getName())) {
+                if (JwtUtil.BEARER_PREFIX.equals(cookie.getName())) {
                     cookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 쿠키 제거
                     cookie.setPath("/"); // 도메인 전체에 걸쳐 쿠키를 삭제하도록 설정
                     response.addCookie(cookie);
@@ -63,11 +64,15 @@ public class ViewController {
 
     @GetMapping("/api/boards/{boardid}")
     public String boardPage(@PathVariable Long boardid, Model model) {
-        // 일단 보드에 대한 정보가 필요함
+// 일단 보드에 대한 정보가 필요함
         BoardResponseDto boardResponseDto = boardRepository.findById(boardid).map(BoardResponseDto::new).orElseThrow();
         model.addAttribute("board", boardResponseDto);
-        // 그리고 컬럼에 대한 정보가 필요함
 
+        // 해당 보드에 참여하고 있는 사용자에 대한 정보
+        List<BoardUserResponseDto> boardUsers = boardUserRepository.findByBoard_Id(boardResponseDto.getBoardId()).stream().map(BoardUserResponseDto::new).toList();
+        model.addAttribute("boardUsers", boardUsers);
+
+        // 그리고 컬럼에 대한 정보가 필요함
         List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(boardResponseDto.getBoardId())
                 .stream().map(BoardColumnResponseDto::new).toList();
 
