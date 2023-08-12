@@ -96,3 +96,16 @@ body {
     top: 20px;
     right: 20px;
 }
+
+.logout-button {
+    background-color: #8dbf8b; /* 파스텔톤의 진한 녹색 */
+    color: white;
+    border: none;
+    padding: 10px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    position: fixed;
+    top: 20px;
+    right: 80px;
+}

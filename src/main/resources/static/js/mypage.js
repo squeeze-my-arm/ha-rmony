@@ -16,6 +16,7 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 console.log('User updated:', response);
+                window.location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Update failed:', error);
@@ -77,3 +78,14 @@ $('.leave-button').on('click', function() {
     });
 });
 
+function logout() {
+    deleteJwtCookie();
+    alert('로그아웃이 완료되었습니다.');
+    window.location.href = "/";
+}
+
+function deleteJwtCookie() {
+    const cookieName = 'Authorization'; // JWT가 저장된 쿠키의 이름
+    // 만료일을 예전 날짜로 설정하여 쿠키를 삭제합니다.
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
