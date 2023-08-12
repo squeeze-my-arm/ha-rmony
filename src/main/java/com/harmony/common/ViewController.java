@@ -76,6 +76,7 @@ public class ViewController {
 
         // 그리고 컬럼에 대한 정보가 필요함
         List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findAllByBoardIdOrderByBoardColumnOrder(boardResponseDto.getBoardId())
+
                 .stream().map(BoardColumnResponseDto::new).toList();
 
         for (BoardColumnResponseDto b : boardColumnResponseDto) {

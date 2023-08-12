@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,10 +44,12 @@ public class BoardColumnServiceImpl implements BoardColumnService {
         Integer oldOrder = boardColumn.getBoardColumnOrder();
         Integer newOrder = boardColumnRequestDto.getBoardColumnOrder();
 
-        if (newOrder != null && !newOrder.equals(oldOrder)) {
-            List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardId(board.getId());
+        if (newOrder != null && !newOrder.equals(oldOrder)) { //변경이 있을 때
+            List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(board.getId());
+            //기존 order
             if (newOrder < oldOrder) {
                 for (BoardColumn column : remainedBoardColumnList) {
+
                     if (column.getBoardColumnOrder() >= newOrder && column.getBoardColumnOrder() < oldOrder) {
                         column.setBoardColumnOrder(column.getBoardColumnOrder() + 1);
                     }
@@ -55,12 +58,17 @@ public class BoardColumnServiceImpl implements BoardColumnService {
                 for (BoardColumn column : remainedBoardColumnList) {
                     if (column.getBoardColumnOrder() <= newOrder && column.getBoardColumnOrder() > oldOrder) {
                         column.setBoardColumnOrder(column.getBoardColumnOrder() - 1);
+
                     }
                 }
             }
+            boardColumn.update(boardColumnRequestDto);
             remainedBoardColumnList.sort(Comparator.comparingInt(BoardColumn::getBoardColumnOrder));
+            boardColumnRepository.saveAll(remainedBoardColumnList);
+
+
         }
-        boardColumn.update(boardColumnRequestDto);
+
 
         return new BoardColumnResponseDto(boardColumn);
     }
@@ -76,7 +84,7 @@ public class BoardColumnServiceImpl implements BoardColumnService {
 
         boardColumnRepository.delete(boardColumn);
 
-        List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardId(board.getId());
+        List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(board.getId());
         for (BoardColumn column : remainedBoardColumnList) {
             Integer currentOrder = column.getBoardColumnOrder();
             if (currentOrder > deleteOrder) {
