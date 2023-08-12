@@ -10,5 +10,4 @@ public class BoardUserResponseDto {
     public BoardUserResponseDto(BoardUser boardUser) {
         this.username = boardUser.getUsername();
     }
-
 }

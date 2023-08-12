@@ -58,6 +58,10 @@ public class BoardColumn extends Timestamped {
         this.cards.add(card);
     }
 
+    public void addNewCard(Card card, Integer order) {
+        this.cards.add(order, card);
+    }
+
     public void changeCardOrder(Card card, Integer cardOrder) {
         this.cards.remove(card);
         this.cards.add(cardOrder, card);

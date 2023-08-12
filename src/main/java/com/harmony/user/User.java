@@ -79,11 +79,13 @@ public class User {
     /**
      * 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
      */
-    public void updateUser(String username, String password, String nickname, String introduction) {
-        this.username = username;
+    public void updateUser(UserUpdateRequestDto requestDto, String nickname, String introduction) {
+        if (requestDto.getNickname() != null) this.nickname = nickname;
+        if (requestDto.getIntroduction() != null) this.introduction = introduction;
+    }
+
+    public void updatePassword(String password) {
         this.password = password;
-        this.nickname = nickname;
-        this.introduction = introduction;
     }
 
     public User googleIdupdate(String googleUserInfoId) {

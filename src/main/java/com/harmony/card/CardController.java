@@ -40,6 +40,17 @@ public class CardController {
         return ResponseEntity.ok(result);
     }
 
+    //카드 유저 수정
+    @PatchMapping("/boards/{boardId}/cards/{cardId}")
+    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long boardId,
+                                                      @PathVariable Long cardId,
+                                                      @RequestBody CardRequestUserDto requestDto,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CardResponseDto result = cardService.updateCardUser(boardId, cardId, requestDto,
+                userDetails.getUser());
+        return ResponseEntity.ok(result);
+    }
+
     //카드 삭제
     @DeleteMapping("/boards/{boardId}/columns/cards/{cardId}")
     public ResponseEntity<String> deleteCard(@PathVariable Long boardId, @PathVariable Long cardId,
@@ -64,6 +75,7 @@ public class CardController {
     // 카드 이동
     @PutMapping("/cards/{cardid}/orders")
     public ResponseEntity<ApiResponseDto> changeCardOrder(@PathVariable Long cardid, @RequestBody CardOrderRequestDto cardOrderRequestDto) {
+        log.info("이동 시도");
         try {
             cardService.changeCardOrder(cardid, cardOrderRequestDto);
             return ResponseEntity.ok().body(new ApiResponseDto("이동 성공", HttpStatus.OK.value()));

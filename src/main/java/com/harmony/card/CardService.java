@@ -66,8 +66,9 @@ public class CardService {
             for (int i = 0; i < oldcolumn.getCards().size(); i++) {
                 log.info(oldcolumn.getCards().get(i).getCardname() + ", index: " + i);
                 oldcolumn.getCards().get(i).setCardOrder(i);
+                cardRepository.save(oldcolumn.getCards().get(i));
             }
-            BoardColumn boardColumn = boardColumnRepository.save(oldcolumn);
+
         } else {
             log.info("컬럼 변경 O");
             // 2. 카드가 다른 컬럼으로 이동하는 경우
@@ -75,8 +76,27 @@ public class CardService {
             // => card의 순서는 자동으로 맨 뒤로 붙게 됨
             card.setBoardColumn(newcolumn); // 해당 카드의 컬럼을 새로 찾은 컬럼으로 설정함
             oldcolumn.removeCard(card);     // 기존 컬럼에서는 해당 카드를 제거해줌
-            newcolumn.addCard(card);        // 새로운 컬럼의 맨 뒤로 자동으로 이동
+
+            for (int i = 0; i < oldcolumn.getCards().size(); i++) {
+                log.info(oldcolumn.getCards().get(i).getCardname() + ", index: " + i);
+                oldcolumn.getCards().get(i).setCardOrder(i);
+                cardRepository.save(oldcolumn.getCards().get(i));
+            }
+
+            newcolumn.addNewCard(card, cardOrderRequestDto.getCardOrder());        // 새로운 컬럼의 맨 뒤로 자동으로 이동
+
+
+            for (int i = 0; i < newcolumn.getCards().size(); i++) {
+                log.info(newcolumn.getCards().get(i).getCardname() + ", index: " + i);
+                newcolumn.getCards().get(i).setCardOrder(i);
+                cardRepository.save(newcolumn.getCards().get(i));
+            }
+
+            boardColumnRepository.save(newcolumn);
+
         }
+
+        BoardColumn boardColumn = boardColumnRepository.save(oldcolumn);
     }
 
     //카드 생성
@@ -103,14 +123,22 @@ public class CardService {
     public CardResponseDto updateCard(Long boardId, Long cardId, CardRequestDto requestDto,
                                       User user) {
         Card card = findCard(cardId);
-        for (String s : requestDto.getCardUserNames()) {
-            log.info("username: " + s);
-        }
 
+        card.updateCard(requestDto);
+        return new CardResponseDto(card);
+    }
+
+    @BoardUserCheck
+    @Transactional
+    public CardResponseDto updateCardUser(Long boardId, Long cardId,
+                                              CardRequestUserDto requestDto, User user) {
+
+        Card card = findCard(cardId);
         cardUserRepository.deleteAllByCard(card);
 
         //프론트에서 입력받아온 name 들, 기존 목록 비우고 새 목록의 걸 모두 추가
         if (!requestDto.getCardUserNames().isEmpty()) {
+
             //카드에 있는 카드유저 목록 비우기
             card.clearCardUsers();
             //유저에 있는 카드 유저 목록 중 이 카드의 카드유저만 제거
@@ -131,7 +159,8 @@ public class CardService {
             log.info("생성 반복 확인");
         }
 
-        card.updateCard(requestDto);
+        cardRepository.save(card);
+
         return new CardResponseDto(card);
     }
 
@@ -206,4 +235,6 @@ public class CardService {
 
         return cardUserResponseDtos;
     }
+
+
 }

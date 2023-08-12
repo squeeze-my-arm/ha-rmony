@@ -15,11 +15,13 @@ import com.harmony.cardUser.CardUserResponseDto;
 import com.harmony.comment.CommentRepository;
 import com.harmony.comment.CommentResponseDto;
 import com.harmony.security.JwtUtil;
+import com.harmony.security.UserDetailsImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +66,7 @@ public class ViewController {
 
     @GetMapping("/api/boards/{boardid}")
     public String boardPage(@PathVariable Long boardid, Model model) {
-// 일단 보드에 대한 정보가 필요함
+        // 일단 보드에 대한 정보가 필요함
         BoardResponseDto boardResponseDto = boardRepository.findById(boardid).map(BoardResponseDto::new).orElseThrow();
         model.addAttribute("board", boardResponseDto);
 
@@ -73,7 +75,8 @@ public class ViewController {
         model.addAttribute("boardUsers", boardUsers);
 
         // 그리고 컬럼에 대한 정보가 필요함
-        List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(boardResponseDto.getBoardId())
+        List<BoardColumnResponseDto> boardColumnResponseDto = boardColumnRepository.findAllByBoardIdOrderByBoardColumnOrder(boardResponseDto.getBoardId())
+
                 .stream().map(BoardColumnResponseDto::new).toList();
 
         for (BoardColumnResponseDto b : boardColumnResponseDto) {
@@ -118,4 +121,20 @@ public class ViewController {
         return "card";
     }
 
+    @GetMapping("/api/users/mypage")
+    public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // userDetails 객체에서 현재 사용자의 정보를 가져와서 모델에 추가
+        model.addAttribute("user", userDetails.getUser());
+//        String userId = String.valueOf(userDetails.getUser().getId()); // userId를 문자열로 변환
+//        model.addAttribute("userId", userId);
+//        log.info(userId);
+        return "mypage"; // This should match the name of your HTML file without the .html extension
+    }
+//    @GetMapping("/api/users/mypage")
+//    public String myPage(Model model) {
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String userId = userDetails.getUsername();
+//        model.addAttribute("userId", userId);
+//        return "mypage";
+//    }
 }
