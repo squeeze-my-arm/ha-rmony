@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -19,7 +20,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<String> signUp(@RequestBody @Validated SignupRequestDto signupRequestDto) {
         try {
             userService.signUp(signupRequestDto);
             return ResponseEntity.ok().body("회원가입 성공");
