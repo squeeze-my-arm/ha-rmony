@@ -37,6 +37,14 @@ public class Comment extends Timestamped {
 
     @Column(name = "comment_nickname")
     private String commentNickname;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id")
+    private Card card;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
     
     /**
      * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
