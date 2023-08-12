@@ -7,7 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -366,6 +366,88 @@
 </div>
 </body>
 <script>
+    // Sortable.js를 초기화하여 컬럼을 드래그 앤 드롭 가능하게 만듦 ->완성
+    const columnList = document.querySelector(".content-container");
+    var columnSortable = new Sortable(columnList, {
+        group: 'shared',
+        animation: 150,
+        ghostClass: 'ghost',
+        onStart: function (event) {
+            fromColumnId = event.from.querySelector(".ghost").getAttribute("data-column-id");
+            console.log("From Column ID:", fromColumnId);
+        },
+        onEnd: function (event) {
+            const toColumnId = event.to.querySelector(".column-list-wrapper").getAttribute("data-column-id"); // 새로 추가된 부분
+            const newIndex = Array.from(event.to.children).indexOf(event.item) + 1;
+            console.log("To Column ID:", toColumnId); // 새로 추가된 부분
+            console.log("At Index:", newIndex);
+
+            // 서버로 데이터 전송하는 함수 호출 (이 부분을 실제 서버 요청 코드로 대체해야 함)
+            let url = window.location.href;
+            let id = url.replace("http://localhost:8080/api/boards/", "");
+            console.log(id);
+
+            // 여기에 서버 요청 코드를 추가
+            $.ajax({
+                type: "PUT",
+                url: `/api/board-columns/${fromColumnId}`,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    boardId: id,
+                    boardColumnOrder: newIndex
+                }),
+                success: function () {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                    window.location.reload();
+                }
+            })
+        },
+    });
+
+
+    // list-card 요소에 대한 Sortable 초기화
+    const listCardContainers = document.querySelectorAll('.list-cards');
+    listCardContainers.forEach(cardContainer => {
+        new Sortable(cardContainer, {
+            group: 'list-card',
+            animation: 150,
+            onEnd: async (evt) => {
+                console.log('카드 이동');
+                console.log('카드 ID:', evt.item.dataset.cardId);
+                console.log('새 컬럼 ID:', evt.item.parentElement.dataset.columnId);
+                console.log('새 위치:', evt.newIndex);
+
+                var cardId = evt.item.dataset.cardId;
+                var cardcolumnId = evt.item.parentElement.dataset.columnId;
+                var cardnewIndex = evt.newIndex;
+
+                $.ajax({
+                    type: "PUT",
+                    url: `/api/cards/${cardId}/orders`,
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        columnId: cardcolumnId,
+                        cardOrder: cardnewIndex
+                    }),
+                    success: function () {
+                        console.log("success");
+                    }, error: function () {
+                        console.log("error");
+                    }
+
+                })
+            }
+        });
+    });
+
+    // 서버로 데이터 전송하는 함수 (실제 서버 요청 코드로 대체 필요)
+    function sendCardMoveData(cardId, fromColumnId, toColumnId, cardIndex) {
+        // 여기에 서버 요청 코드를 추가
+    }
+
     // 버튼 요소 가져오기
     const button = document.getElementById('redirectButton');
 

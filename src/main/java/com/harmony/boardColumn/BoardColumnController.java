@@ -29,7 +29,7 @@ public class BoardColumnController {
     public ResponseEntity<BoardColumnResponseDto> updateBoardColumn(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                     @RequestBody BoardColumnRequestDto boardColumnRequestDto,
                                                                     @PathVariable Long columnId) {
-
+        log.info("컬럼 수정");
         BoardColumnResponseDto responseDto = boardColumnService.updateBoardColumn(columnId, boardColumnRequestDto, userDetails.getUser());
         return ResponseEntity.ok().body(responseDto);
     }
