@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,5 +22,9 @@ public class CardRequestDto {
   private String deadline;
   private Long cardOrder;
 
+  @Builder
+  public CardRequestDto(String cardName) {
+    this.cardName = cardName;
+  }
 
 }
