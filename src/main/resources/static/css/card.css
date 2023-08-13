@@ -12,7 +12,6 @@ html, body {
     display: flex;
     justify-content: center; /* 가로 가운데 정렬 추가 */
     align-items: center; /* 세로 가운데 정렬 추가 */
-    overflow: hidden;
     margin: 0;
     padding: 0;
 }
@@ -20,21 +19,57 @@ html, body {
 /* 카드 전체 속성 */
 .card {
     background-color: #f0f0f0;
-    padding: 20px;
+    padding: 30px 60px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     height: 90%;
     width: 80%;
+}
+
+h1 {
+    font-size: 30px; /* 내가 원하는 폰트 크기로 조정 */
+}
+
+.line {
+    height: 0.3%;
+    background-color: transparent;
+    background-color: rgba(200, 200, 200, 0.2);
 }
 
 /* 카드 상단부 - 제목과 설명*/
 
 .card-title {
-    font-size: 24px;
+    font-size: 22px;
     width: auto;
     box-sizing: border-box;
-    margin: 10px 0;
+    margin: 0 0 5px 0;
 }
+.card-title2 {
+    font-size: 22px;
+    width: auto;
+    box-sizing: border-box;
+    margin: 0 0 0 0;
+}
+
+.card-title4 {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.card-title3 {
+    font-size: 22px;
+    width: auto;
+    box-sizing: border-box;
+    margin: 10px 0 10px 0;
+}
+
+.card-title5 {
+    font-size: 22px;
+    width: auto;
+    box-sizing: border-box;
+    margin: 0 0 10px 0;
+}
+
 
 .edit-title {
     font-size: 24px;
@@ -52,22 +87,28 @@ html, body {
     align-items: center; /* 수직 가운데 정렬 */
     justify-content: space-between; /* 각 요소 사이의 간격을 최대한 늘림 */
     margin-bottom: 10px;
-    height: 10%;
+    height: 9%;
+    width: 100%;
+}
+
+.card-buttons {
+    width: 50%;
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: flex-end; /* 요소들을 오른쪽으로 정렬 */
+    margin-bottom: 10px;
+}
+
+.card-buttons > *:not(:last-child) {
+    width: 20%;
+    margin-right: 10px; /* 요소들 간에 간격을 주는 부분 */
 }
 
 .card-buttons button {
-    background-color: var(--primary-color);
-    color: #fff;
     padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
-.card-title2 {
-    font-size: 18px;
-    margin: 0 0 10px;
-}
+
 
 .card-description-wrapper {
     width: 100%;
@@ -110,25 +151,17 @@ html, body {
     align-items: center;
 }
 
-.add-user-btn{
-    width: 10%;
-    margin-left: 2%;
-    padding: 10px;
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .user-selection input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: none;
-    box-sizing: border-box; /* 수정한 부분 */
-    border: 1px solid #ccc;
+    box-sizing: border-box;
+    resize: none;
+    outline: none;
+    background-color: transparent;
+    background-color: rgba(200, 200, 200, 0.2);
 }
 
 .user-list {
@@ -158,19 +191,13 @@ html, body {
 
 .selected-user {
     display: inline-block;
-    background-color: var(--primary-color);
-    color: #fff;
     padding: 5px 10px;
-    margin-right: 5px;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 /* 카드 하반부 - 댓글 작성 및 조회 */
-
 .comment-section {
     width: 100%;
-    margin-top: 20px; /* 추가한 부분 */
+    margin-top: 10px;
 }
 
 .comment-section > h2 {
@@ -190,23 +217,11 @@ html, body {
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: none;
-}
-
-.add-comment-btn {
-    width: 10%;
-    margin-left: 2%;
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.comment-section {
-    width: 100%;
-    margin-top: 20px;
-    overflow-y: auto; /* 스크롤 생성 */
+    box-sizing: border-box;
+    background-color: transparent;
+    background-color: rgba(200, 200, 200, 0.2);
+    outline: none;
+    overflow: hidden;
 }
 
 .comment-list {
@@ -215,6 +230,7 @@ html, body {
 }
 
 .comment-list::-webkit-scrollbar {
+    margin-left: 3px;
     width: 10px;
 }
 
@@ -223,8 +239,8 @@ html, body {
 }
 
 .comment-list::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: var(--primary-color);
+    border-radius: 10px;
+    background-color: #6c757d;
 }
 
 .comment-list::-webkit-scrollbar-button {
@@ -233,10 +249,11 @@ html, body {
 }
 
 .comment_one {
-    height: 10vh;
+    height: 12vh;
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 5px;
+    margin-right: 5px;
     border-radius: 5px;
     display: flex;
     flex-direction: row;
@@ -274,16 +291,6 @@ html, body {
     margin: auto 0 auto 10px;
 }
 
-.updateBtn, .deleteBtn {
-    margin-left: 2%;
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .edit-form{
     width: 100%;
     display: flex;
@@ -293,6 +300,13 @@ html, body {
     margin-left: 10px;
     margin-right: 20px;
     width: 90%;
+    box-sizing: border-box;
+    background-color: transparent;
+    background-color: rgba(200, 200, 200, 0.2);
+    outline: none;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .edit-form-button{
@@ -302,14 +316,22 @@ html, body {
     width: 10%;
 }
 
-.submitBtn, .cancelBtn {
+.btn-outline-secondary {
+    width: 10%;
     margin-left: 2%;
-    background-color: var(--primary-color);
-    color: #fff;
+    padding: 10px;
+}
+
+.btn-outline-secondary.updateBtn,
+.btn-outline-secondary.deleteBtn,
+.btn-outline-secondary.submitBtn,
+.btn-outline-secondary.cancelBtn {
+    width: 100%;
     padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+}
+
+.btn-outline-secondary.date {
+    padding: 5px 10px;
 }
 
 /* 달력 */
@@ -322,47 +344,27 @@ html, body {
 }
 
 .date-section {
+    margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .date-section > p {
-    margin: 0 0 0 10px;
-}
-
-#showDatePicker{
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    margin: auto 20px;
 }
 
 /* 배경색 변경 */
-.card-buttons{
-    width: 18%;
-    display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    justify-content: flex-end; /* 요소들을 오른쪽으로 정렬 */
-    margin-bottom: 10px;
-}
-
-.card-buttons > *:not(:last-child) {
-    margin-right: 10px; /* 요소들 간에 간격을 주는 부분 */
-}
 
 #colorPalette {
+    width: 100%;
     display: flex;
     flex-direction: row;
-    float: right;
+    justify-content: flex-end;
+    margin-bottom: 5px;
 }
 
-#chageColor{
-    background-color: var(--primary-color);
-    color: #fff;
+#colorPalette button {
     padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }

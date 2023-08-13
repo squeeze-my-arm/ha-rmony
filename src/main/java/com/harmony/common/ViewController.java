@@ -27,7 +27,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -125,6 +127,27 @@ public class ViewController {
     public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // userDetails 객체에서 현재 사용자의 정보를 가져와서 모델에 추가
         model.addAttribute("user", userDetails.getUser());
+
+        List<CardUser> cardUsers = cardUserRepository.findByUserId(userDetails.getUser().getId());
+
+        List<Long> cardIds = cardUsers.stream()
+                .map(CardUser::getCard)
+                .map(Card::getId)
+                .collect(Collectors.toList());
+
+        List<CardResponseDto> cardResponseDtos = new ArrayList<>();
+
+        for (Long id: cardIds) {
+            cardResponseDtos.add(cardRepository.findById(id).map(CardResponseDto::new).orElseThrow());
+        }
+
+        model.addAttribute("cards", cardResponseDtos);
+
+        List<CommentResponseDto> commentResponseDtos = commentRepository.findByUserId(userDetails.getUser().getId()).stream().map(CommentResponseDto::new).toList();
+
+        model.addAttribute("comments", commentResponseDtos);
+        // 카드 유저를 찾았으면 ? 그 카드 유저의 카드 아이디로 카드 레파지토리에서 찾아와 ?
+
 //        String userId = String.valueOf(userDetails.getUser().getId()); // userId를 문자열로 변환
 //        model.addAttribute("userId", userId);
 //        log.info(userId);

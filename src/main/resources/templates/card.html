@@ -8,13 +8,22 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="/css/card.css">
 
-    <title>카드</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/9261/9261993.png" />
+
+    <title>하-ㄹ모니</title>
     <style>
 
     </style>
@@ -27,29 +36,32 @@
         <h1 id="card-title" th:class="${card.boardId}" class="card-title" th:text="${card.cardName}" onclick="enableEditMode2()">Card Title</h1>
         <input id="edit-title"  class="edit-title" style="display:none;"/>
         <div class="card-buttons">
-            <button class="colorBtn" onclick="toggleColorPalette()">색상 선택</button>
-            <button class="carddeleteBtn" th:onclick="'deleteCard(\'' + ${card.boardId} + '\')'">카드 삭제</button>
-            <button class="closeBtn" th:onclick="'redirectToBoard(\'' + ${card.boardId} + '\')'">X</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="toggleColorPalette()">색상 선택</button>
+            <button class="btn btn-sm btn-outline-secondary" th:onclick="'deleteCard(\'' + ${card.boardId} + '\')'">카드 삭제</button>
+            <button class="btn btn-sm btn-outline-secondary" th:onclick="'redirectToBoard(\'' + ${card.boardId} + '\')'">X</button>
         </div>
     </div>
 
     <div id="colorPalette" style="display:none;">
-        <input type="color" id="colorPicker">
-        <button id="chageColor" onclick="changeBackgroundColor()">배경색 변경</button>
+        <input class="form-control form-control-color" th:value="${card.color}"
+               id="colorPicker" title="Choose your color" type="color">
+        <button class="btn btn-sm btn-outline-secondary" id="chageColor" onclick="changeBackgroundColor()">배경색 변경</button>
     </div>
 
-    <h4 class="card-title2" th:text="${card.columnName}">in column</h4>
+    <h4 class="card-title4" th:text="${card.columnName}">in column</h4>
 
     <div class="card-description-wrapper">
         <p id="card-description" th:class="${card.boardId}" th:text="${card.desc}" onclick="enableEditMode()"></p>
         <textarea id="edit-description" style="display:none;"></textarea>
     </div>
 
-    <h1 class="card-title">담당자</h1>
+    <div class="line"></div>
+
+    <h1 class="card-title3">담당자</h1>
 
     <div class="selected-users-wrapper">
         <div class="selected-users" id="selectedUsers">
-            <div th:each="user : ${boardusers}" th:if="${user.selected}" class="selected-user">
+            <div th:each="user : ${boardusers}" th:if="${user.selected}" class="btn btn-secondary selected-user">
                 <span th:text="${user.username}"></span>
             </div>
         </div>
@@ -58,7 +70,7 @@
     <div class="user-selection">
         <div class="user-input-wrapper">
             <input class="user-input" type="text" placeholder="사용자 추가하기">
-            <button class="add-user-btn" onclick="sendUser()">유저 추가</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="sendUser()">유저 추가</button>
         </div>
         <div class="user-list" id="userList">
             <div th:each="user : ${boardusers}" class="user-list-item">
@@ -67,28 +79,31 @@
         </div>
     </div>
 
-    <h1 class="card-title">날짜</h1>
+    <div class="line"></div>
 
     <div class="date-section">
-        <button id="showDatePicker">날짜 선택</button>
+        <h1 class="card-title2">날짜</h1>
+        <button  class="btn btn-sm btn-outline-secondary date" id="showDatePicker">날짜 선택</button>
         <p id="selectedDateText" th:text="${card.deadline}"></p>
     </div>
     <div id="datepickerContainer" style="display: none;">
         <div id="datepicker"></div>
     </div>
 
+    <div class="line"></div>
+
     <div class="comment-section">
-        <h2>댓글</h2>
+        <h2 class="card-title5">댓글</h2>
         <div class="comment-submit-section">
             <textarea class="comment-input" placeholder="댓글 작성하기..." id="createcomment"></textarea>
-            <button class="add-comment-btn" onclick="comment()">댓글 작성</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="comment()">댓글 작성</button>
         </div>
         <div class="comment-section">
             <div class="comment-list" id="commentList">
                 <div th:each="comment : ${comments}" class="comment">
                     <div class="comment_one">
                         <div class="comment_head">
-                            <img src="https://i.pinimg.com/236x/03/bf/77/03bf77898801f69e678f4721a522f57d.jpg">
+                            <img src="https://cdn-icons-png.flaticon.com/128/1077/1077114.png">
                         </div>
                         <div class="comment_body">
                             <p class="comment-author" th:text="${comment.username}">작성자</p>
@@ -96,15 +111,15 @@
                             <p class="comment-content" th:text="${comment.commentContent}">댓글 내용</p>
                         </div>
                         <div class="comment_bottom">
-                            <button class="updateBtn">수정</button>
-                            <button class="deleteBtn" th:id="${comment.id}">삭제</button>
+                            <button class="btn btn-sm btn-outline-secondary updateBtn">수정</button>
+                            <button class="btn btn-sm btn-outline-secondary deleteBtn" th:id="${comment.id}">삭제</button>
                         </div>
 
                         <div class="edit-form" style="display: none">
                             <input id="updatecomment" th:placeholder="${comment.commentContent}"/>
                             <div class="edit-form-button">
-                                <button class="submitBtn" th:id="${comment.id}">저장</button>
-                                <button class="cancelBtn">취소</button>
+                                <button class="btn btn-sm btn-outline-secondary submitBtn" th:id="${comment.id}">저장</button>
+                                <button class="btn btn-sm btn-outline-secondary cancelBtn">취소</button>
                             </div>
                         </div>
                     </div>
@@ -174,7 +189,7 @@
 
     function toggleColorPalette() {
         const colorPalette = document.getElementById("colorPalette");
-        colorPalette.style.display = colorPalette.style.display === "none" ? "block" : "none";
+        colorPalette.style.display = colorPalette.style.display === "none" ? "flex" : "none";
     }
 
     function changeBackgroundColor() {
@@ -237,7 +252,6 @@
             }
         });
     }
-
 
     $(document).ready(function() {
         $("#showDatePicker").click(function() {
@@ -480,7 +494,7 @@
     userList.addEventListener('click', function(event) {
         if (event.target.classList.contains('user-list-item')) {
             const selectedUser = document.createElement('div');
-            selectedUser.className = 'selected-user';
+            selectedUser.className = 'btn btn-secondary selected-user';
             selectedUser.textContent = event.target.querySelector('span:first-child').textContent; // 첫 번째 span 태그 안의 텍스트
             selectedUser.addEventListener('click', function() {
                 selectedUser.remove();
