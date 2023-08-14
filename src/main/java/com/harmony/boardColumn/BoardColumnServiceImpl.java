@@ -44,7 +44,7 @@ public class BoardColumnServiceImpl implements BoardColumnService {
         Integer oldOrder = boardColumn.getBoardColumnOrder();
         Integer newOrder = boardColumnRequestDto.getBoardColumnOrder();
 
-        if (newOrder != null /* && ! newOrder.equals(oldOrder)*/) { //변경이 있을 때
+        if (newOrder != null) { //변경이 있을 때
             log.info(boardColumnRequestDto.getBoardColumnOrder().toString());
             List<BoardColumn> remainedBoardColumnList = boardColumnRepository.findByBoardIdOrderByBoardColumnOrder(board.getId());
             // 기존 order

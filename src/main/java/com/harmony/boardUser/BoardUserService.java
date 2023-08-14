@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -48,5 +49,9 @@ public class BoardUserService {
         }
         boardUserRepository.deleteById(boardUser.getId());
         return ResponseEntity.ok().body("떠나기 성공하였습니다.");
+    }
+
+    public List<BoardUser> findBoardUserByBoardId(Long id) {
+        return boardUserRepository.findByBoard_Id(id);
     }
 }

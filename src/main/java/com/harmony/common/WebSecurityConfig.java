@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,15 +25,15 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
-    private final AuthenticationConfiguration authenticationConfiguration;
-
-    // 인터페이스라 객체가 없어서 받아올 수 없기 때문에, 수동으로 등록하여 BCryptPasswordEncoder를 사용할 수 있도록 하는 것
-    // 수동 등록을 해야 사용할 수 있기 때문에 등록을 꼭 해주도록 하자.
-    // spring에 있는 interface를 사용하려면 bean으로 등록을 해줘야 한다.
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -59,13 +61,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/boards").permitAll()
                         .anyRequest().authenticated()
         );
-
-        // Filter를 거쳐서 권한을 부여받고 그 권한을 Http.authorizeHttpReques 코드에서 해당 url에 따른 권한을 매칭시켜 확인
-        // permitAll(): 권한에 상관없이 접근이 가능
-
         // form 로그인 사용하지 않음
         http.formLogin((formLogin) -> formLogin.disable());
-
         // 필터 관리 - 지정된 필터 앞에 커스텀 필터 추가
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 

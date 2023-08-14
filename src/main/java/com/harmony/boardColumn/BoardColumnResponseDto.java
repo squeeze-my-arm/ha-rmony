@@ -11,7 +11,7 @@ public class BoardColumnResponseDto {
 
     private Long boardId;
 
-    private Long columnId;
+    private final Long columnId;
 
     private final String boardColumnName;
 
@@ -21,6 +21,7 @@ public class BoardColumnResponseDto {
 
     public BoardColumnResponseDto(BoardColumn boardColumn) {
         this.columnId = boardColumn.getId();
+        this.boardId = boardColumn.getBoard().getId();
         this.boardColumnName = boardColumn.getBoardColumnName();
         this.boardColumnOrder = boardColumn.getBoardColumnOrder();
     }
