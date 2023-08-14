@@ -112,7 +112,7 @@
 ### 📃 ERD 테이블
 <details>
 <summary>ERD 관계도</summary>
-<p align="center"><img src="https://velog.velcdn.com/images/azuressu/post/b6982de9-bf3f-4a55-938a-12be160f3f9c/image.png" width="800"/></p>
+<p align="center"><img src="https://github.com/squeeze-my-arm/ha-rmony/assets/74248726/54cbe61d-52f6-4ac6-b2df-d1991e67cfe5" width="800"/></p>
 </details>
 
 ### 📂 패키지 구성
