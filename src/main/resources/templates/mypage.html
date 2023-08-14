@@ -4,33 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/mypage.css">
-    <title>My Page</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/9261/9261993.png" />
+
+    <title>하-ㄹ모니</title>
 </head>
 <body>
-<div class="container">
-    <div class="profile-box">
-        <div class="profile-image"></div>
-        <div class="nickname" th:text="${user.nickname}">Nickname</div>
-        <div class="introduction"  th:text="${user.introduction}">Introduction</div>
-    </div>
-    <div class="edit-container">
-        <div class="input-label">닉네임</div>
-        <input type="text" class="edit-input" placeholder="새 닉네임">
-        <div class="input-label">Introduction</div>
-        <textarea class="edit-input" placeholder="새 소개"></textarea>
-        <div class="button-container">
-            <button class="button" th:id="${user.id}">저장</button>
-            <button class="btn" th:id="${user.id}">비밀번호 변경</button>
+<header data-bs-theme="dark">
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/api/boards">
+                <strong>Ha-rmony</strong>
+            </a>
 
+            <a class="navbar-brand d-flex align-items-right">
+                <p id="logout" onclick="logout()">로그아웃</p>
+                <p id="login" th:id="${user.id}" class="leave-button">회원탈퇴</p>
+            </a>
         </div>
     </div>
-    <div class="leave-button-container">
-        <button class="logout-button" onclick="logout()">로그아웃</button>
-        <button class="leave-button" th:id="${user.id}">회원탈퇴</button>
+</header>
+
+
+<div class="container-top">
+    <div class="one">
+        <img src="https://cdn-icons-png.flaticon.com/128/1077/1077114.png" alt="Logo" width="70" height="70" class="d-inline-block align-text-top"
+             style="border-radius: 100px;">
+    </div>
+
+    <div class="two">
+        <a th:text="${user.username}" class="navbar-brand"> Username </a>
+        <a th:text="${user.nickname}" class="navbar-brand nickname"> Nickname </a>
+        <a th:text="${user.introduction}" class="navbar-brand introduction"> Introduction </a>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 로드 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<div class="bottom">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation"  onclick="change()">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
+                프로필 수정</button>
+        </li>
+
+        <li class="nav-item" role="presentation" onclick="change2()">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
+                참여한 카드</button>
+        </li>
+
+        <li class="nav-item" role="presentation" onclick="change3()">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">
+                작성한 댓글</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <!-- 첫 번째 필드 -->
+        <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <div class="edit-container">
+                <div class="input-label">닉네임</div>
+                <input type="text" class="edit-input" placeholder="새 닉네임">
+                <div class="input-label">한줄 소개</div>
+                <textarea class="edit-input" placeholder="새 소개"></textarea>
+                <div class="button-container">
+                    <button class="btn btn-sm btn-outline-secondary save" th:id="${user.id}">저장</button>
+                    <button class="btn btn-sm btn-outline-secondary update" th:id="${user.id}">비밀번호 변경</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 두 번째 필드  -->
+        <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <!--Board 부분-->
+                <div class="col" th:each="card : ${cards}" th:id="${card.getCardId()}">
+                    <input th:id="'card'+${card.getCardId()}" type="hidden">
+                    <div class="card shadow-sm">
+                        <a class="card-svg-link" style="cursor: pointer;"
+                           th:href="'/api/cards/'+${card.cardId}">
+                            <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
+                                 focusable="false" height="100" preserveAspectRatio="xMidYMid slice" role="img"
+                                 width="100%" xmlns="http://www.w3.org/2000/svg">
+                                <title>Placeholder</title>
+                                <rect height="100%" th:fill="${card.color}" width="100%"></rect>
+
+                            </svg>
+                        </a>
+                        <div class="card text-end">
+                            <div class="card-body">
+                                <text class="boardTitleText" dy=".3em" x="50%" y="50%">
+                                    [[${card.getCardName()}]]
+                                </text>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 세 번째 필드  -->
+        <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+            <div class="comment-section">
+                <div class="comment-list" id="commentList">
+                    <div th:each="comment : ${comments}" class="comment">
+                        <div class="comment_one">
+                            <div class="comment_head">
+                                <img src="https://cdn-icons-png.flaticon.com/128/1077/1077114.png">
+                            </div>
+                            <div class="comment_body">
+                                <p class="comment-date" th:text="${comment.createdAt}">날짜</p>
+                                <p class="comment-content" th:text="${comment.commentContent}">댓글 내용</p>
+                            </div>
+                        </div>
+                        <!--한 댓글 종료-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/js/mypage.js"></script> <!-- mypage.js 로드 -->
 </body>
 </html>

@@ -7,6 +7,8 @@ import com.harmony.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +23,22 @@ public class BoardUserService {
     private final BoardService boardService;
     private final BoardUserRepository boardUserRepository;
 
-    public void joinUserBoard(Long boardId, String username) {
+    public String joinUserBoard(Long boardId, String username) {
         User user = userService.findUser(username);
         Board board = boardService.findBoard(boardId);
         Optional<BoardUser> boardUser = boardUserRepository.findByUserAndBoard(user, board);
         if (boardUser.isEmpty()) {
             boardUserRepository.save(new BoardUser(board, user, BoardUserEnum.USER));
         }
+        
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (userDetails.getUsername().equals(username)) {
+                // 해당 보드 페이지로 넘어가도록 할 예정
+                return "redirect:/api/boards/" + boardId;
+            }
+        }
+        return "loginsignup";
     }
 
     public ResponseEntity<String> deleteBoardUser(Long boardId, User user) {
