@@ -66,6 +66,10 @@ public class CommentService {
         return new ApiResponseDto("댓글 삭제 완료", HttpStatus.OK.value());
     }
 
+    public List<CommentResponseDto> findComments(Long id) {
+        return commentRepository.findByUserId(id).stream().map(CommentResponseDto::new).toList();
+    }
+
     // 댓글 찾기
     public Comment findComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
