@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -101,6 +102,24 @@ public class CardUserService {
         }
 
         return cardUserResponseDtos;
+    }
+
+    public List<CardResponseDto> findCardId(Long userId) {
+        List<CardUser> cardUsers = cardUserRepository.findByUserId(userId);
+
+        List<Long> cardIds = cardUsers.stream()
+                .map(CardUser::getCard)
+                .map(Card::getId)
+                .collect(Collectors.toList());
+
+
+        List<CardResponseDto> cardResponseDtos = new ArrayList<>();
+
+        for (Long id: cardIds) {
+            cardResponseDtos.add(cardRepository.findById(id).map(CardResponseDto::new).orElseThrow());
+        }
+
+        return cardResponseDtos;
     }
 
     public List<CardUser> findCardUserByCardId(Long id) {

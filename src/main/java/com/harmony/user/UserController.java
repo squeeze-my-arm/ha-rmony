@@ -1,6 +1,12 @@
 package com.harmony.user;
 
 
+import com.harmony.card.CardResponseDto;
+import com.harmony.card.CardService;
+import com.harmony.cardUser.CardUser;
+import com.harmony.cardUser.CardUserService;
+import com.harmony.comment.CommentResponseDto;
+import com.harmony.comment.CommentService;
 import com.harmony.security.JwtUtil;
 import com.harmony.security.UserDetailsImpl;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +21,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/users")
@@ -22,6 +31,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class UserController {
 
     private final UserService userService;
+    private final CardUserService cardUserService;
+    private final CommentService commentService;
 
     // 회원가입
     @ResponseBody
@@ -92,7 +103,17 @@ public class UserController {
 
     @GetMapping("/mypage")
     public String myPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // userDetails 객체에서 현재 사용자의 정보를 가져와서 모델에 추가
         model.addAttribute("user", userDetails.getUser());
+
+        List<CardResponseDto> cardResponseDtos = cardUserService.findCardId(userDetails.getUser().getId());
+
+        model.addAttribute("cards", cardResponseDtos);
+
+        List<CommentResponseDto> commentResponseDtos = commentService.findComments(userDetails.getUser().getId());
+
+        model.addAttribute("comments", commentResponseDtos);
+
         return "mypage";
     }
 }
