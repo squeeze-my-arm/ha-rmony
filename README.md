@@ -8,8 +8,7 @@
 ------------
 
 ### ⚙️ 개발 환경
-- `Java 8`
-- `JDK 17.0.7`
+- `Java JDK 17.0.7`
 - `MySQL Server 8.0`
 - `JPA`
 
@@ -35,9 +34,9 @@
 ### 🚩 프로젝트 소개
 #### 하-ㄹ모니 (Ha-rmony)
 > "프로젝트 협업 도구"
-  - 조화롭게 협업하라는 의미
-  - 팀원 모두가 조화롭게 협업할 수 있도록 도와주는 협업 툴
-  - 칸반 보드 형태로 프로젝트 관리와 작업 흐름 관리  
+>  - 조화롭게 협업하라는 의미
+>  - 팀원 모두가 조화롭게 협업할 수 있도록 도와주는 협업 툴
+>  - 칸반 보드 형태로 프로젝트 관리와 작업 흐름 관리  
   
 ------------
 
@@ -113,7 +112,7 @@
 ### 📃 ERD 테이블
 <details>
 <summary>ERD 관계도</summary>
-<p align="center"><img src="https://velog.velcdn.com/images/azuressu/post/b6982de9-bf3f-4a55-938a-12be160f3f9c/image.png" width="800"/></p>
+<p align="center"><img src="https://github.com/squeeze-my-arm/ha-rmony/assets/74248726/54cbe61d-52f6-4ac6-b2df-d1991e67cfe5" width="800"/></p>
 </details>
 
 ### 📂 패키지 구성
@@ -193,7 +192,7 @@
      ├── LoginRequestDto.java
      ├── SignupRequestDto.java
      ├── User.java
-	 ├── UserController.java
+     ├── UserController.java
      ├── UserRepository.java
      ├── UserResponseDto.java
      ├── UserService.java
